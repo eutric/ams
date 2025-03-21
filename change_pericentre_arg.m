@@ -21,7 +21,7 @@ if D_om<=0
 end
 %cerco teta migliore
 if th_0>pi
-    th_0 = pi-th_0;
+    th_0 = th_0-2*pi;
 end
 if th_0>-D_om/2 && th_0<D_om/2
     th_best = D_om/2;
