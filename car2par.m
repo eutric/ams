@@ -1,4 +1,12 @@
 function [a,e,i,OM,om,th] = car2par(rr,vv,mu)
+% La funzione prende in ingresso i vettori posizione e velocità di un punto
+% dell'orbita in coordinate cartesiane (sistema di riferimento Geocentrico
+% inerziale) e restituisce i parametri caratterizzanti nel sistema di
+% riferimento perifocale
+
+% Input
+% 
+% Output
 
 kk=[0 0 1]';
 jj=[0 1 0]';
