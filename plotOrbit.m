@@ -1,4 +1,11 @@
-function [] = plotOrbit(a,e,i,OM,om,th0,thf,dth,mu)
+function [] = plotOrbit(orbit,th0,thf,dth)
+a=orbit.a;
+e=orbit.e;
+i=orbit.i;
+om=orbit.om;
+OM=orbit.OM;
+mu=orbit.mu;
+
 teta=th0:dth:thf;
 p=a*(1-e^2);
 r=@(t)p./(1+e.*cos(t));
@@ -18,8 +25,7 @@ R_om=[cos(om) sin(om) 0;
 T=R_om*R_i*R_OM;
 rr=T'*r2;
 plot3(rr(1,:),rr(2,:),rr(3,:))
-hold on
-sist_can
+
 
 grid on
 end

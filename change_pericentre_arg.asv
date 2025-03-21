@@ -1,0 +1,14 @@
+function [delta_v,th_i,th_f] = change_pericentre_arg(a,e,om_f,om_i,mu)
+D_om=om_f-om_i;
+%teta di manovra in riferimento iniziale
+th_1i=D_om/2;
+th_2i=D_om/2+pi;
+th_i=[th_1i;th_2i];
+%teta di manovra in riferimento d arrivo
+th_1f=2*pi-D_om/2;
+th_2f=pi-D_om/2;
+th_f=[th_1f;th_2f];
+delta_v=
+
+end
+
