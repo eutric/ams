@@ -20,8 +20,14 @@ if D_om<=0
     disp('Delta omega nel trasferimento di pericentro è negativo')
 end
 %cerco teta migliore
-
-
-
-
+if th_0>pi
+    th_0 = th_0-2*pi;
+end
+if th_0>-D_om/2 && th_0<D_om/2
+    th_best = D_om/2;
+    disp("Il punto d'intersezione in cui effettuo la manovra è theta1")
+else
+    th_best = pi+D_om/2;
+    disp("Il punto d'intersezione in cui effettuo la manovra è theta2")
+end
 end

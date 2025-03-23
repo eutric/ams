@@ -54,7 +54,8 @@ vv=[-0.948600 -6.134000 1.356000]';
 [O_end,th] = car2par(rr,vv,mu);
 
 %primo orbita di modifica w
-[delta_v,th_i,th_f] = change_pericentre_arg(O_start,O_end.om);
+
+[delta_v,th_i,th_f,th_best] = change_pericentre_arg(O_start,O_end.om,th_start);
 
 %generazione orbita con w uguale
 O_w=O_start;
