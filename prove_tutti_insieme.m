@@ -72,10 +72,10 @@ legend('orbita1','orbita2')
 sist_can
 [X,Y,Z]=sphere(1000);
 k=0.5*10^4;
-surf(k*X,k*Y,k*Z,"LineStyle","none","FaceColor","texturemap",CData=imread('earth.jpg'));
-
-
-
+surf(k*X,k*Y,k*Z,"LineStyle","none","FaceColor","texturemap",CData=flip((imread('pepera.jpg'))));
+xlim([-10^5;10^5])
+ylim([-10^5;10^5])
+zlim([-10^5;10^5])
 
 
 
