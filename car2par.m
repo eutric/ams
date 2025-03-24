@@ -14,10 +14,10 @@ function [orbit,th] = car2par(rr,vv,mu)
 %  orbit.a   valore del semiasse maggiore
 %  orbit.e   modulo del vettore eccentricità
 %  orbit.i   angolo d'inclinazione dell'orbita
-%  orbit.OM  RAAR (?)
+%  orbit.OM  ascensione retta del nodo ascendete (RAAN)
 %  orbit.om  anomalia del pericentro
 %  orbit.mu  Parametro gravitazionale dell'attrattore in questione
-% th angolo theta del punto in questione (?)
+% th anomalia vera
 
 kk=[   % Versore k, del sistema di riferimento cartesiano
     0;
@@ -40,7 +40,7 @@ N=cross(kk,hh)./norm(cross(kk,hh)); % Versore nodo ascendente
 if N(2)>=0
     orbit.OM=acos(N(1)); 
 else
-    orbit.OM=2*pi-acos(N(1)); % RAAR
+    orbit.OM=2*pi-acos(N(1)); % RAAN
 end
 
 if ee(3)>=0
