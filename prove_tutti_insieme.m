@@ -79,6 +79,47 @@ zlim([-10^5;10^5])
 
 
 
+%% STRATEGIA STANDARD 
+% Esempio da pericentro ad apocentro 
+clear 
+close all
+clc
 
+% Parametro attrattore
+mu=398600;
+
+% Orbita 1
+O_start.a=24400.0;
+O_start.e=0.728300;
+O_start.i=0.104700;
+O_start.OM=1.514000;
+O_start.om=3.107000;
+O_start.mu=mu;
+th_start=1.665000;
+
+% Orbita d'Arrivo
+rr=[-12985.280000 3801.011400 8109.619300]';
+vv=[-0.948600 -6.134000 1.356000]';
+
+[O_end,th_end] = car2par(rr,vv,mu);
+
+[delta_v1,om_f, tetacp] = changeOrbitalPlane(O_start, O_end);
+delta_t1 = TOF(O_start, th_start, tetacp);
+
+[delta_v2,th_1,th_2,th_best] = change_pericentre_arg(O_start,om_f,th_start);
+delta_t2 = TOF(O_start, tetacp, th_best);
+
+delta_t3 = TOF(O_start, th_best, 0);
+[delta_v11, delta_v22, delta_t4] = bitangentTransfer(O_start, O_end, 'pa');
+
+
+% pi = 3.1416; 
+% ??????
+delta_t5 = TOF(O_end, pi, th_end);
+
+
+
+delta_vtot = delta_v1 + delta_v2 + delta_v11 + delta_v22;
+delta_ttot = delta_t1 + delta_t2 + delta_t3 + delta_t4 + delta_t5;
 
 
