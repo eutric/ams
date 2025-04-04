@@ -120,9 +120,30 @@ th_1=teta1/180*pi;
 th_2=teta2/180*pi;
 delta_t5 = TOF(O_end,th_1,th_2);
 
+<<<<<<< Updated upstream
 % 
 % 
 % delta_vtot = delta_v1 + delta_v2 + delta_v11 + delta_v22;
 % delta_ttot = delta_t1 + delta_t2 + delta_t3 + delta_t4 + delta_t5;
+=======
+[delta_v2,th_1,th_2,th_best] = change_pericentre_arg(O_start,om_f,th_start);
+delta_t2 = TOF(O_start, tetacp, th_best);
+
+delta_t3 = TOF(O_start, th_best, 0);
+[delta_v11, delta_v22, delta_t4] = bitangentTransfer(O_start, O_end, 'pa');
 
 
+% pi = 3.1416; 
+% ??????
+delta_t5 = TOF(O_end, pi/2, 3/2*pi)
+
+
+
+delta_vtot = delta_v1 + delta_v2 + delta_v11 + delta_v22;
+delta_ttot = delta_t1 + delta_t2 + delta_t3 + delta_t4 + delta_t5;
+>>>>>>> Stashed changes
+
+%% Appunti scenario 2
+% questo giro è un trasferimento diretto
+% Si ignora che i pianeti si muovono durante il traserimento (quindi la
+% vera posizione dei corpi attrattori)
