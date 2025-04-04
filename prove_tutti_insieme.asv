@@ -114,11 +114,11 @@ vv=[-0.948600 -6.134000 1.356000]';
 % % delta_t3 = TOF(O_start, th_best, 0);
 % [delta_v11, delta_v22, delta_t4] = bitangentTransfer(O_start, O_end, 'pa');
 
-teta1=0;
-teta2=360;
+teta1=270;
+teta2=190;
 th_1=teta1/180*pi;
 th_2=teta2/180*pi;
-delta_t5 = TOF(O_end,th_1,th_2);
+delta_t5 = TOF(O_end,th_1,th_2)
 
 % 
 % 
