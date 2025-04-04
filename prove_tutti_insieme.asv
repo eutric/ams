@@ -58,8 +58,11 @@ vv=[-0.948600 -6.134000 1.356000]';
 
 [delta_v,th_i,th_f,th_best] = change_pericentre_arg(O_start,O_end.om,th_start);
 
+<<<<<<< Updated upstream
 %calcolo prima parte trasferimento bitangente 
 
+=======
+>>>>>>> Stashed changes
 %generazione orbita con w uguale
 O_w=O_start;
 O_w.om=O_end.om;
@@ -74,7 +77,11 @@ legend('orbita1','orbita2')
 sist_can
 [X,Y,Z]=sphere(1000);
 k=0.5*10^4;
+<<<<<<< Updated upstream
 surf(k*X,k*Y,k*Z,"LineStyle","none","FaceColor","texturemap",CData=flip((imread(['umba.jpg']))));
+=======
+surf(k*X,k*Y,k*Z,"LineStyle","none","FaceColor","texturemap",CData=flip((imread('pepera.jpg'))));
+>>>>>>> Stashed changes
 xlim([-10^5;10^5])
 ylim([-10^5;10^5])
 zlim([-10^5;10^5])
@@ -102,6 +109,7 @@ th_start=1.665000;
 % Orbita d'Arrivo
 rr=[-12985.280000 3801.011400 8109.619300]';
 vv=[-0.948600 -6.134000 1.356000]';
+<<<<<<< Updated upstream
 % 
 [O_end,th_end] = car2par(rr,vv,mu);
 % 
@@ -114,18 +122,25 @@ vv=[-0.948600 -6.134000 1.356000]';
 % % delta_t3 = TOF(O_start, th_best, 0);
 % [delta_v11, delta_v22, delta_t4] = bitangentTransfer(O_start, O_end, 'pa');
 
-teta1=0;
-teta2=360;
+teta1=270;
+teta2=190;
 th_1=teta1/180*pi;
 th_2=teta2/180*pi;
-delta_t5 = TOF(O_end,th_1,th_2);
+delta_t5 = TOF(O_end,th_1,th_2)
 
-<<<<<<< Updated upstream
 % 
 % 
 % delta_vtot = delta_v1 + delta_v2 + delta_v11 + delta_v22;
 % delta_ttot = delta_t1 + delta_t2 + delta_t3 + delta_t4 + delta_t5;
+
+
 =======
+
+[O_end,th_end] = car2par(rr,vv,mu);
+
+[delta_v1,om_f, tetacp] = changeOrbitalPlane(O_start, O_end);
+delta_t1 = TOF(O_start, th_start, tetacp);
+
 [delta_v2,th_1,th_2,th_best] = change_pericentre_arg(O_start,om_f,th_start);
 delta_t2 = TOF(O_start, tetacp, th_best);
 
@@ -135,15 +150,15 @@ delta_t3 = TOF(O_start, th_best, 0);
 
 % pi = 3.1416; 
 % ??????
-delta_t5 = TOF(O_end, pi/2, 3/2*pi)
+delta_t5 = TOF(O_end, pi, pi/4)
 
 
 
 delta_vtot = delta_v1 + delta_v2 + delta_v11 + delta_v22;
 delta_ttot = delta_t1 + delta_t2 + delta_t3 + delta_t4 + delta_t5;
->>>>>>> Stashed changes
 
 %% Appunti scenario 2
 % questo giro è un trasferimento diretto
 % Si ignora che i pianeti si muovono durante il traserimento (quindi la
 % vera posizione dei corpi attrattori)
+>>>>>>> Stashed changes
