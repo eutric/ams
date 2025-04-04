@@ -31,7 +31,7 @@ t_2=M_2/n;
 % Il tempo di volo
 
 if th_1 > th_2
-    if th_2>
-    delta_t=t_2-t_1+T;
+    if th_2
+    delta_t=t_2-th_1+T;
 
    

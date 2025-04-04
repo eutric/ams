@@ -58,6 +58,8 @@ vv=[-0.948600 -6.134000 1.356000]';
 
 [delta_v,th_i,th_f,th_best] = change_pericentre_arg(O_start,O_end.om,th_start);
 
+%calcolo prima parte trasferimento bitangente 
+
 %generazione orbita con w uguale
 O_w=O_start;
 O_w.om=O_end.om;
@@ -113,9 +115,7 @@ delta_t3 = TOF(O_start, th_best, 0);
 [delta_v11, delta_v22, delta_t4] = bitangentTransfer(O_start, O_end, 'pa');
 
 
-% pi = 3.1416; 
-% ??????
-delta_t5 = TOF(O_end, pi, th_end);
+delta_t5 = TOF(O_end,pi,th_end);
 
 
 
