@@ -1,9 +1,12 @@
-function [delta_v,th_i,th_f,th_best] = change_pericentre_arg(orbit,om_f,th_0)
+function [delta_v,th_i,th_f,th_best,O_end] = change_pericentre_arg(orbit,om_f,th_0)
 a=orbit.a;
 e=orbit.e;
 om_i=orbit.om;
 mu=orbit.mu;
 D_om=om_f-om_i;
+% calcolo orbita finale
+O_end=orbit;
+O_end.om=om_f;
 %teta di manovra in riferimento iniziale
 th_1i=D_om/2;
 th_2i=D_om/2+pi;

@@ -1,4 +1,4 @@
-function [delta_v,om_f, teta] = changeOrbitalPlane(orbit_i, orbit_f)
+function [delta_v,om_f, teta,O_end] = changeOrbitalPlane(orbit_i, orbit_f)
 % funzione che cambia il piano di manovra 
 a=orbit_i.a;
 e=orbit_i.e;
@@ -12,7 +12,10 @@ OM_f=orbit_f.OM;
 delta_OM = OM_f - OM_i;
 delta_i = i_f - i_i;
 p = a*(1-e^2);
-
+%creo orbita d arrivo
+O_end=orbit_i;
+O_end.OM=OM_f;
+O_end.i=i_f;
 if delta_OM>0 && delta_i>0
     alpha = acos(cos(i_i)*cos(i_f) + sin(i_i)*sin(i_f)*cos(abs(delta_OM)));
     cosu_i = (-cos(i_f) + cos(alpha)*cos(i_i)) / (sin(alpha)*sin(i_i));

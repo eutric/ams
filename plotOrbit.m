@@ -1,4 +1,4 @@
-function [] = plotOrbit(orbit,th0,thf,dth)
+function [] = plotOrbit(orbit,th0,thf,dth,linestyle)
 a=orbit.a;
 e=orbit.e;
 i=orbit.i;
@@ -24,9 +24,12 @@ R_om=[cos(om) sin(om) 0;
     0 0 1];
 T=R_om*R_i*R_OM;
 rr=T'*r2;
-plot3(rr(1,:),rr(2,:),rr(3,:))
-
-
+if nargin==5
+plot3(rr(1,:),rr(2,:),rr(3,:),linestyle)
+else
+    plot3(rr(1,:),rr(2,:),rr(3,:))
+end
 grid on
+
 end
 
