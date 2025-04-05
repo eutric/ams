@@ -1,15 +1,10 @@
 function [delta_v1, delta_v2, delta_t] = bitangentTransfer(orbit_i, orbit_f, type)
-arguments
-   orbit_i struct
-   orbit_f struct
-   type (1,:) char {mustBeMember(type, {'pa', 'ap', 'pp', 'aa'})}
-end
 
-a_i=orbit_i.a;
-e_i=orbit_i.e;
-mu=orbit_i.mu;
-a_f=orbit_f.a;
-e_f=orbit_f.e;
+a_i = orbit_i.a;
+e_i = orbit_i.e;
+mu = orbit_i.mu;
+a_f = orbit_f.a;
+e_f = orbit_f.e;
 
 switch type 
     case 'pa'
