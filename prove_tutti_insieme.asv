@@ -177,7 +177,6 @@ vv=[-0.948600 -6.134000 1.356000]';
 [delta_v1,om_f, tetacp] = changeOrbitalPlane(O_start, O_end);
 delta_t1 = TOF(O_start, th_start, tetacp);
 
-O_start.om = om_f;
 [delta_v2,th_1,th_2,th_best] = change_pericentre_arg(O_start,om_f,th_start);
 delta_t2 = TOF(O_start, tetacp, th_best);
 
@@ -203,8 +202,8 @@ delta_t5 = TOF(O_end, pi/2, 3/2*pi);
 
 
 
-delta_vtot = delta_v1 + delta_v2 + delta_v11 + delta_v22
-delta_ttot = delta_t1 + delta_t2 + delta_t3 + delta_t4 + delta_t5
+delta_vtot = delta_v1 + delta_v2 + delta_v11 + delta_v22;
+delta_ttot = delta_t1 + delta_t2 + delta_t3 + delta_t4 + delta_t5;
 
 %% Appunti scenario 2
 % questo giro è un trasferimento diretto
