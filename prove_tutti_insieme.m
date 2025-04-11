@@ -132,7 +132,7 @@ legend('orbita inizio','orbita fine','orbita cp', 'orbita pp')
 g={'ap','aa','pp','pa'};
 min=0;
 for type=g
-    [delta_v1_bt, delta_v2_bt, delta_t_bt] = bitangentTransfer(O_pp, O_end, type);
+    [delta_v1_bt, delta_v2_bt, delta_t_bt] = bitangentTransfer(O_pp, O_end, type{:});
     cost=delta_v1_bt+delta_v2_bt;
     if cost<min || min==0
         min=cost;
