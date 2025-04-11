@@ -94,12 +94,16 @@ O_start.OM=1.514000;
 O_start.om=3.107000;
 O_start.mu=mu;
 th_start=1.665000;
-
+ra_i=O_start.a*(1-O_start.e);
+rp_i=O_start.a*(1+O_start.e);
 
 %dati orbita arrivo in forma parametrica
 rr=[-12985.280000 3801.011400 8109.619300]';
 vv=[-0.948600 -6.134000 1.356000]';
 [O_end,th] = car2par(rr,vv,mu);
+ra_f=O_end.a*(1-O_end.e);
+rp_f=O_end.a*(1+O_end.e);
+rp_f/rp_i
 %plot orbita partenza e arrivo
 th0=0;
 thf=2*pi;
@@ -139,10 +143,28 @@ for type=g
         type_min=type;
     end
 end
+ra_t_vect=linspace(ra_i,100*O_end.a,1000);
+min_bet=0;
+ii=1;
+cost_bet=zeros(length(ra_t_vect),1);
+for ra_ii=ra_t_vect
+  
+    [delta_v1_bet, delta_v2_bet, delta_v3_bet, delta_t1_bet, delta_t2_bet] = biellipticTransfer(O_pp,O_end, ra_ii);
+    delta_v=delta_v2_bet+delta_v3_bet+delta_v1_bet;
+    if delta_v<min_bet || min_bet==0
+        min_bet=delta_v;
+        ra_best=ra_ii;
+    end
+    cost_bet(ii)=delta_v;  
+    ii=ii+1;
 
-[delta_v1_bet, delta_v2_bet, delta_v3_bet, delta_t1_bet, delta_t2_bet] = biellipticTransfer(O_pp,O_end, ra_t);
-
-
+        
+end
+figure
+semilogy(ra_t_vect,cost_bet')
+hold on
+grid on
+semilogy(ra_t_vect,min*ones(length(ra_t_vect),1))
 
 
 
@@ -167,44 +189,47 @@ O_start.OM=1.514000;
 O_start.om=3.107000;
 O_start.mu=mu;
 th_start=1.665000;
-
+[rr_i,vv_i] = par2car(O_start, th_start);
 % Orbita d'Arrivo
 rr=[-12985.280000 3801.011400 8109.619300]';
 vv=[-0.948600 -6.134000 1.356000]';
 % 
 [O_end,th_end] = car2par(rr,vv,mu);
 
-[delta_v1,om_f, tetacp] = changeOrbitalPlane(O_start, O_end);
+%cambio piano
+dth=0.01;
+[delta_v1,om_f, tetacp,o_plane] = changeOrbitalPlane(O_start, O_end);
 delta_t1 = TOF(O_start, th_start, tetacp);
+figure(1)
+%plot punto di partenza
+scatter3(rr_i(1),rr_i(2),rr_i(3),'*',LineWidth=2)
+hold on
+scatter3(rr(1),rr(2),rr(3),'*',LineWidth=2)
 
-O_start.om = om_f;
-[delta_v2,th_1,th_2,th_best] = change_pericentre_arg(O_start,om_f,th_start);
-delta_t2 = TOF(O_start, tetacp, th_best);
+th_plane=tetacp+2*pi;
+%plot prima orbita fino al punto in cui cambio piano
+plotOrbit(O_start,th_start,th_plane,dth,'--')
 
-delta_t3 = TOF(O_start, th_best, 0);
-[delta_v11, delta_v22, delta_t4] = bitangentTransfer(O_start, O_end, 'pa');
+%cambio pericentro
+[delta_v2,th_1,th_2,th_best,o_pericentre] = change_pericentre_arg(o_plane,O_end.om,th_plane);
+delta_t2 = TOF(o_plane, th_plane, th_best(1));
+%plotto orbita a piano modificato fino alla anomalia vera ottimale per
+%effettuare il cambio di om
+plotOrbit(o_plane,th_plane,th_best(1),dth,'-')
 
-teta1=0;
-teta2=360;
-th_1=teta1/180*pi;
-th_2=teta2/180*pi;
-delta_t5 = TOF(O_end,th_1,th_2);
+%calcolo teta finale dell orbita di pericentro cambiato, essendo di tipo
+%pa, cambio orbita nel pericentro ovvero per teta = 0
+[delta_v3_1, delta_v3_2, delta_t4, orbit_bt,th0,thf] = bitangentTransfer(o_pericentre, O_end, ['aa']);
+delta_t3 = TOF(o_pericentre, th_best(2), 0);
+delta_t5 = TOF(O_end,pi,th_end);
+plotOrbit(o_pericentre,th_best(2),th0,dth,'-')
+plotOrbit(orbit_bt,th0,thf,dth,'-')
+plotOrbit(O_end,thf,th_end,dth,'-')
+legend('pt partenza','pt arrivo','orbita di partenza fino a prima manovra','orbita piano cambiato','orbita om cambiato','orbita intermedia','orbita finale fino a teta')
 
-delta_vtot = delta_v1 + delta_v2 + delta_v11 + delta_v22;
-delta_ttot = delta_t1 + delta_t2 + delta_t3 + delta_t4 + delta_t5;
-[delta_v2,th_1,th_2,th_best] = change_pericentre_arg(O_start,om_f,th_start);
-delta_t2 = TOF(O_start, tetacp, th_best);
+costo=delta_v1+delta_v2+delta_v3_1+delta_v3_2;
+tempo=delta_t5+delta_t3+delta_t4+delta_t2+delta_t1;
 
-delta_t3 = TOF(O_start, th_best, 0);
-[delta_v11, delta_v22, delta_t4] = bitangentTransfer(O_start, O_end, 'pa');
-
-
-delta_t5 = TOF(O_end, pi/2, 3/2*pi);
-
-
-
-delta_vtot = delta_v1 + delta_v2 + delta_v11 + delta_v22
-delta_ttot = delta_t1 + delta_t2 + delta_t3 + delta_t4 + delta_t5
 
 %% Appunti scenario 2
 % questo giro è un trasferimento diretto

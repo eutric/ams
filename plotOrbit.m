@@ -27,7 +27,9 @@ om = orbit.om;
 OM = orbit.OM;
 % mu = orbit.mu; % non lo abbiamo usato ma penso serva per il VETTORE VELOCITA'
 % che per ora non abbiamo inserito
-
+if thf<=th0
+    thf=thf+2*pi;
+end
 theta = th0:dth:thf; % angolo discretizzato 
 p = a*(1-e^2);  % semilato retto
 r = @(t)p./(1+e.*cos(t)); % funzione della posizione nell'orbita

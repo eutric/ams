@@ -38,6 +38,7 @@ mu = orbit_i.mu;
 % Parametri finali
 i_f=orbit_f.i;
 OM_f=orbit_f.OM;
+om_f=orbit_f.om;
 
 % Creo l'orbita d'arrivo
 orbit_cp=orbit_i;
@@ -134,7 +135,7 @@ elseif delta_OM<0 && delta_i<0
 
     delta_v = 2*v_theta*sin(alpha/2);
 end
-
+orbit_cp.om=om_f;
 end
 
 

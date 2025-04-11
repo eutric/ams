@@ -26,6 +26,8 @@ e_i = orbit_i.e;
 mu = orbit_i.mu;
 a_f = orbit_f.a;
 e_f = orbit_f.e;
+th0=zeros(2,1);
+thf=zeros(2,1);
 switch type 
     case 'pa'
         % pericentro -> apocentro
