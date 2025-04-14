@@ -1,4 +1,4 @@
-function [delta_v1, delta_v2, delta_t, orbit_bt,th0,thf] = bitangentTransfer(orbit_i, orbit_f, type)
+function [delta_v1, delta_v2, delta_t, orbit_bt, th0, thf] = bitangentTransfer(orbit_i, orbit_f, type)
 % La funzione prende in ingresso parametri dell'orbita iniziale e dell'orbita finale, 
 % una stringa e restituisce i due costi della manovra di trasferimento
 % bitangente, il tempo di manovra e i paramentri dell'orbita di trasferimento.
@@ -18,7 +18,10 @@ function [delta_v1, delta_v2, delta_t, orbit_bt,th0,thf] = bitangentTransfer(orb
 % delta_v2     secondo impulso della manovra
 % delta_t      tempo di manovra
 % orbit_bt     struttura contenente i parametri dell'orbita di trasferimento
-
+% th0          vettore con l'anomalia dal pericentro nell orbita di
+% partenza, nell'orbita d'arrivo e come ultimo nell'orbita di trasferimento
+% thf          vettore con l'anomalia dal pericentro nell orbita di
+% partenza, nell'orbita d'arrivo e come ultimo nell'orbita di trasferimento
 
 % Parametri iniziali e finali 
 a_i = orbit_i.a;
@@ -52,8 +55,8 @@ switch type
         orbit_bt = orbit_i;
         orbit_bt.a = a_t;
         orbit_bt.e = e_t;
-        th0=0;
-        thf=pi;
+        th0=[0;0;0];
+        thf=[pi;pi;pi];
 
     case 'ap'
         % apocentro -> pericentro 
@@ -81,8 +84,8 @@ switch type
         orbit_bt = orbit_i;
         orbit_bt.a = a_t;
         orbit_bt.e = e_t;
-        th0=pi;
-        thf=0;
+        th0=[pi;pi;pi];
+        thf=[0;0;0];
 
     case 'pp'
         % pericentro -> pericentro
@@ -108,10 +111,11 @@ switch type
 
         % definisco orbita di trasferimento 
         orbit_bt = orbit_i;
+        % orbit_bt.om = orbit_i.om+pi; 
         orbit_bt.a = a_t;
         orbit_bt.e = e_t;
-        th0=0;
-        thf=0;
+        th0=[0; pi; 0];
+        thf=[pi; 2*pi; pi];
 
     case 'aa'
         % apocentro -> apocentro
@@ -137,10 +141,11 @@ switch type
 
         % definisco orbita di trasferimento 
         orbit_bt = orbit_i;
+        orbit_bt.om = orbit_i.om+pi;
         orbit_bt.a = a_t;
         orbit_bt.e = e_t;
-        th0=pi;
-        thf=pi;
+        th0=[pi; 0; 0];
+        thf=[2*pi; pi; pi];
 end
 
 end
