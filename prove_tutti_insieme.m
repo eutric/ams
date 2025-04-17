@@ -244,6 +244,81 @@ tempo_ore = tempo / 3600
 r_i = o_pericentre.a*(1-o_pericentre.e);
 r_f = O_end.a*(1+o_pericentre.e);
 rapporto = r_f/r_i
+
+
+%% STRATEGIA STANDARD 
+% Esempio da apocentro a apocentro  
+clear 
+close all
+clc
+
+% Parametro attrattore
+mu=398600;
+
+% Orbita 1
+O_start.a=24400.0;
+O_start.e=0.728300;
+O_start.i=0.104700;
+O_start.OM=1.514000;
+O_start.om=3.107000;
+O_start.mu=mu;
+th_start=1.665000;
+[rr_i,vv_i] = par2car(O_start, th_start);
+% Orbita d'Arrivo
+rr=[-12985.280000 3801.011400 8109.619300]';
+vv=[-0.948600 -6.134000 1.356000]';
+% 
+[O_end,th_end] = car2par(rr,vv,mu);
+
+%cambio piano
+dth=pi/100;
+[delta_v1,om_f, thetacp, o_plane] = changeOrbitalPlane(O_start, O_end);
+delta_t1 = TOF(O_start, th_start, thetacp);
+figure
+
+% Plot punto di partenza
+scatter3(rr_i(1),rr_i(2),rr_i(3),'*',LineWidth=2)
+hold on
+% Plot punto finale
+scatter3(rr(1),rr(2),rr(3),'*',LineWidth=2)
+% Plot corpo attrattore
+scatter3(0,0,0,LineWidth=5)
+
+%plot prima orbita fino al punto in cui cambio piano
+plotOrbit(O_start,th_start,thetacp,dth,'--')
+
+%cambio pericentro
+[delta_v2, th_1, th_2, th_best, o_pericentre] = change_per2(o_plane, O_end.om, thetacp);
+delta_t2 = TOF(o_plane, thetacp, th_best(1));
+%plotto orbita a piano modificato fino alla anomalia vera ottimale per
+%effettuare il cambio di om
+plotOrbit(o_plane,thetacp,th_best(1) - 2*pi,dth,'-')
+
+%calcolo teta finale dell orbita di pericentro cambiato, essendo di tipo
+%pa, cambio orbita nel pericentro ovvero per teta = 0
+
+[delta_v3_1, delta_v3_2, delta_t4, orbit_bt,th0,thf] = bitangentTransfer(o_pericentre, O_end, ['aa']);
+delta_t3 = TOF(o_pericentre, th_best(2), th0(1));
+delta_t5 = TOF(O_end,thf(2),th_end);
+
+plotOrbit(o_pericentre, th_best(2), th0(1), dth,'-')
+plotOrbit(orbit_bt, th0(3), thf(3), dth, '-') % L'orbita intermedia, la dovrei sempre 
+% percorrere da 0 a pi !!! Controllare che vale anche se rimpicciolisco 
+% l'orbita
+plotOrbit(O_end,thf(2),th_end,dth,'-')
+legend('pt partenza','pt arrivo','Corpo Attrattore','orbita di partenza fino a prima manovra','orbita piano cambiato','orbita om cambiato','orbita intermedia','orbita finale fino a teta')
+
+costo=delta_v1+delta_v2+delta_v3_1+delta_v3_2
+tempo=delta_t5+delta_t3+delta_t4+delta_t2+delta_t1
+tempo_ore = tempo / 3600
+
+% Rapporto da verificare per trasferimento bitangente(Honmann Generalizzato)/biellittico
+% tra due ellissi è apocentro_finale/pericentro_iniziale
+r_i = o_pericentre.a*(1-o_pericentre.e);
+r_f = O_end.a*(1+o_pericentre.e);
+rapporto = r_f/r_i
+
+
 %% Appunti scenario 2
 % questo giro è un trasferimento diretto
 % Si ignora che i pianeti si muovono durante il traserimento (quindi la

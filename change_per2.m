@@ -39,7 +39,7 @@ a = orbit.a;
 e = orbit.e;
 om_i = orbit.om;
 mu = orbit.mu;
-D_om = om_f - om_i; % variazione anomalia del pericentro
+D_om = om_f - om_i + pi; % variazione anomalia del pericentro
 
 % Calcolo orbita finale
 orbit_chper = orbit;
