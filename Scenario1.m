@@ -44,51 +44,28 @@ zlim([-0.6*10^5;0.6*10^5])
 % Modifico il piano dell'orbita iniziale 
 [delta_v1, om_cp, th_cp, orbit_cp] = changeOrbitalPlane(O_start, O_end);
 plotOrbit(orbit_cp,th0,thf,dth,['--', 'r'])
+delta_t1 = TOF(O_start, th_start, th_cp);
 
 % Modifico anomalia del pericentro
 [delta_v2, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(orbit_cp, O_end.om, th_cp);
 plotOrbit(orbit_chper,th0,thf,dth,['--', 'g'])
+delta_t2 = TOF(orbit_cp, th_cp, th_best);
 
+delta_t3 = TOF(orbit_cp, th_cp, th_best);
 % Effettuo il trasferimento di orbita 
-[delta_v1_bt, delta_v2_bt, delta_t_bt, orbit_bt] = bitangentTransfer(orbit_chper, O_end, 'pa');
-plotOrbit(orbit_bt,th0,pi,dth,['-', 'c'])
+% [delta_v1_bt, delta_v2_bt, delta_t_bt, orbit_bt] = bitangentTransfer(orbit_chper, O_end, 'ap');
+% plotOrbit(orbit_bt,th0,pi,dth,['-', 'c'])
 % non penso abbiano molto senso i trasferimenti aa o pp per come sono messe
 % le orbite 
 
 
 
-% HO PROVATO A FAR GIRARE UN SATELLITE IN MANIERA APPROSSIMATIVA PERCHE' VOLEVO VEDERLO MUOVERSI 
-% MA NON SI MUOVE COME DOVREBBE, VA AL CONTRARIO E NON SEGUE LEGGI FISICHE 
 
-a = 24400.0;
-e = 0.728300;
-theta = linspace(0, 2*pi, 200); 
-r = (a * (1 - e^2)) ./ (1 + e * cos(theta));
-x = r .* cos(theta);
-y = r .* sin(theta);
-r2 = [x; y; zeros(length(x),1)'];
+% il raggio di apocentro dell'orbita iniziale è 42171, ra_t è arbitrario
+ra_t = 45000.0;
+[delta_v11, delta_v22, delta_v33, delta_t11, delta_t22, orbit_biel1, orbit_biel2] = biellipticTransfer(orbit_chper,O_end, ra_t);
+plotOrbit(orbit_biel1,th0,pi,dth,['-', 'c'])
+hold on
+plotOrbit(orbit_biel2,pi,2*pi,dth,['-', 'r'])
 
-
-R_OM = [cos(O_start.OM) sin(O_start.OM) 0;
-    -sin(O_start.OM) cos(O_start.OM) 0;
-    0 0 1];
-R_i = [1 0 0;
-    0 cos(O_start.i) sin(O_start.i);
-    0 -sin(O_start.i) cos(O_start.i)];
-R_om = [cos(O_start.om) sin(O_start.om) 0;
-    -sin(O_start.om) cos(O_start.om) 0;
-    0 0 1];
-
-T = R_om*R_i*R_OM;
-rr2 = T' * r2; 
-
-
-ss = plot3(rr2(1,:), rr2(2,:), rr2(3,:), 'ro', 'MarkerFaceColor', 'r', 'MarkerSize', 8);
-
-for k = 1:length(theta)
-    set(ss, 'XData', rr2(1,k), 'YData', rr2(2,k), 'ZData', rr2(3,k));
-
-    pause(0.01); 
-    drawnow; 
-end
 

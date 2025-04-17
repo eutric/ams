@@ -5,9 +5,9 @@ mu=orbit_i.mu;
 a_f=orbit_f.a;
 e_f=orbit_f.e;
 
-rp_i = a_i*(1-e_i);
+rp_i = a_i*(a_i-e_i);
 rp_t1= rp_i;
-rp_f = a_f*(1-e_f);
+rp_f = a_f*(a_f-e_f);
 rp_t2 = rp_f;
 a_t1 = (ra_t + rp_t1)/2;
 a_t2 = (ra_t + rp_t2)/2;
@@ -30,9 +30,8 @@ delta_t1 = pi*sqrt(a_t1^3 / mu);
 delta_t2 = pi*sqrt(a_t2^3 / mu);
 
 
-% definisco i parametri delle orbite di trasferimento 
-orbit_biel1 = orbit_i;
-orbit_biel2 = orbit_i;
+orbit_biel1 = orbit_f;
+orbit_biel2 = orbit_f;
 orbit_biel1.a = a_t1;
 orbit_biel2.a = a_t2;
 orbit_biel1.e = ra_t/a_t1 - 1;

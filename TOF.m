@@ -1,6 +1,4 @@
 function delta_t = TOF(orbit, th_1, th_2)
-% La funzione prende in ingresso semiasse maggiore, eccentricità di
-% un'orbita e blah blah blah
 % Time of Flight
 % Algoritmo valido per orbite 0<e<1
 % Problema indiretto 
