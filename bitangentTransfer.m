@@ -1,4 +1,4 @@
-function [delta_v1, delta_v2, delta_t, orbit_bt, th0, thf] = bitangentTransfer(orbit_i, orbit_f, type)
+function [delta_v1, delta_v2, delta_t, orbit_bt, th0, thf, orbit_arr] = bitangentTransfer(orbit_i, orbit_f, type)
 % La funzione prende in ingresso parametri dell'orbita iniziale e dell'orbita finale, 
 % una stringa e restituisce i due costi della manovra di trasferimento
 % bitangente, il tempo di manovra e i paramentri dell'orbita di trasferimento.
@@ -22,6 +22,7 @@ function [delta_v1, delta_v2, delta_t, orbit_bt, th0, thf] = bitangentTransfer(o
 % partenza, nell'orbita d'arrivo e come ultimo nell'orbita di trasferimento
 % thf          vettore con l'anomalia dal pericentro nell orbita di
 % partenza, nell'orbita d'arrivo e come ultimo nell'orbita di trasferimento
+% orbit_arr    Orbita d'arrivo (non per forza coincide con O_end)
 
 % Parametri iniziali e finali 
 a_i = orbit_i.a;
@@ -29,6 +30,12 @@ e_i = orbit_i.e;
 mu = orbit_i.mu;
 a_f = orbit_f.a;
 e_f = orbit_f.e;
+
+% Definisco orbita d'arrivo
+orbit_arr = orbit_i;
+orbit_arr.a = orbit_f.a;
+orbit_arr.e = orbit_f.e;
+% Non cambia sicuramente piano, cambia a, e e può cambiare om (aa, pp)
 switch type 
     case 'pa'
         % pericentro -> apocentro
@@ -117,6 +124,8 @@ switch type
         th0=[0; pi; 0];
         thf=[pi; 2*pi; pi];
 
+        orbit_arr.om = orbit_arr.om+pi;
+
     case 'aa'
         % apocentro -> apocentro
         % definizione dei raggi
@@ -137,7 +146,7 @@ switch type
         % costi manovra 
         delta_v1 = vp_t - va_i;
         delta_v2 = va_f - va_t;
-        delta_t = pi*sqrt(a_t^3 / mu); % tempo di monovra
+        delta_t = pi*sqrt(a_t^3 / mu); % tempo di manovra
 
         % definisco orbita di trasferimento 
         orbit_bt = orbit_i;
@@ -146,7 +155,8 @@ switch type
         orbit_bt.e = e_t;
         th0=[pi; 0; 0];
         thf=[2*pi; pi; pi];
-end
 
+        orbit_arr.om = orbit_arr.om+pi;
+end
 end
 

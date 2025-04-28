@@ -15,11 +15,14 @@ T=2*pi*sqrt(a^3/mu);
 E_1 = 2*atan(sqrt((1-e)/(1+e)) * tan(th_1/2));
 E_2 = 2*atan(sqrt((1-e)/(1+e)) * tan(th_2/2));
 if th_1 > pi
-    E_1 = 2*pi+E_1;
+    E_1 = 2*pi+E_1; % E_1 sarà negativo, a th=pi varrebbe E=-pi, aumentando
+    % E_1 diminuisce ed assume il valore negativo a partire da 0 (quindi va
+    % bene)
 end
 if th_2 > pi
     E_2 = 2*pi+E_2;
 end
+
 M_1=E_1-e*sin(E_1);
 M_2=E_2-e*sin(E_2);
 

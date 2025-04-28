@@ -35,7 +35,7 @@ OM_i = orbit_i.OM;
 om_i = orbit_i.om;
 mu = orbit_i.mu;
 
-% Parametri finali
+% Parametri del piano in cui voglio mettermi
 i_f=orbit_f.i;
 OM_f=orbit_f.OM;
 om_f=orbit_f.om;
