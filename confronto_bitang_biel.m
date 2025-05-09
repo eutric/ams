@@ -63,5 +63,5 @@ plot(k,cost(:,2));
 legend('costo bitangente','costo migliore biellittica')
 figure
 
-plot(cost_be_vect+ùùaùùùù)
+plot(cost_be_vect)
 hold on

@@ -1,0 +1,419 @@
+%% Scenario 1
+clear 
+close all
+clc
+% Parametri attrattore
+mu=398600;
+
+th0=0;
+thf=2*pi;
+dth=pi/100;
+
+% Orbita 1
+O_start.a=24400.0;
+O_start.e=0.728300;
+O_start.i=0.104700;
+O_start.OM=1.514000;
+O_start.om=3.107000;
+O_start.mu=mu;
+th_start=1.665000;
+
+
+% Numerose manovre
+
+
+% Orbita d'Arrivo
+rr=[-12985.280000 3801.011400 8109.619300]';
+vv=[-0.948600 -6.134000 1.356000]';
+
+[O_end,th] = car2par(rr,vv,mu);
+O_end
+th
+% Plot
+plotOrbit(O_start,th0,thf,dth)
+hold on% Plotto Orbita di Partenza
+plotOrbit(O_end,th0,thf,dth) % Plotto Orbita d'Arrivo
+
+%% modifica orbita anomalia del pericentro
+clear all
+close all
+clc
+%dati attrattore
+mu=398600;
+%dati orbita inizio in forma parametrica
+O_start.a=24400.0;
+O_start.e=0.728300;
+O_start.i=0.104700;
+O_start.OM=1.514000;
+O_start.om=3.107000;
+O_start.mu=mu;
+th_start=1.665000;
+
+
+%dati orbita arrivo in forma parametrica
+rr=[-12985.280000 3801.011400 8109.619300]';
+vv=[-0.948600 -6.134000 1.356000]';
+[O_end,th] = car2par(rr,vv,mu);
+
+%primo orbita di modifica w
+
+[delta_v,th_i,th_f,th_best] = change_pericentre_arg(O_start,O_end.om,th_start);
+
+
+%generazione orbita con w uguale
+O_w=O_start;
+O_w.om=O_end.om;
+%plot orbite
+th0=0;
+thf=2*pi;
+dth=pi/100;
+plotOrbit(O_start,th0,thf,dth) % Plotto Orbita di Partenza
+hold on
+plotOrbit(O_end,th0,thf,dth)
+legend('orbita1','orbita2')
+sist_can
+[X,Y,Z]=sphere(1000);
+k=0.5*10^4;
+surf(k*X,k*Y,k*Z,"LineStyle","none","FaceColor","texturemap",CData=flip((imread(['umba.jpg']))));
+xlim([-10^5;10^5])
+ylim([-10^5;10^5])
+zlim([-10^5;10^5])
+
+%% prove passettini passettini
+clear all
+clc
+close all
+
+
+%dati attrattore
+mu=398600;
+%dati orbita inizio in forma parametrica
+O_start.a=24400.0;
+O_start.e=0.728300;
+O_start.i=0.104700;
+O_start.OM=1.514000;
+O_start.om=3.107000;
+O_start.mu=mu;
+th_start=1.665000;
+% ra e rp sono invertitii
+ra_i=O_start.a*(1-O_start.e);
+rp_i=O_start.a*(1+O_start.e);
+
+%dati orbita arrivo in forma parametrica
+rr=[-12985.280000 3801.011400 8109.619300]';
+vv=[-0.948600 -6.134000 1.356000]';
+[O_end,th] = car2par(rr,vv,mu);
+ra_f=O_end.a*(1-O_end.e);
+rp_f=O_end.a*(1+O_end.e);
+rp_f/rp_i
+%plot orbita partenza e arrivo
+th0=0;
+thf=2*pi;
+dth=pi/100;
+plotOrbit(O_start,th0,thf,dth) % Plotto Orbita di Partenza
+hold on
+plotOrbit(O_end,th0,thf,dth)
+
+
+[X,Y,Z]=sphere(1000);
+k=0.5*10^4;
+surf(k*X,k*Y,k*Z,"LineStyle","none","FaceColor","texturemap",CData=flip((imread(['earth.jpg']))));
+xlim([-0.5*10^5;0.5*10^5])
+ylim([-0.5*10^5;0.5*10^5])
+zlim([-0.5*10^5;0.5*10^5])
+
+%modifica piano
+
+[delta_v_cp,om_f_cp,teta_cp,O_plan] = changeOrbitalPlane(O_start, O_end);
+
+plotOrbit(O_plan,th0,thf,dth,'--')
+
+%modifico anomalia pericentro
+[delta_v_pp,th_i_pp,th_f_pp,th_best_pp,O_pp] = change_pericentre_arg(O_plan,O_end.om,teta_cp);
+plotOrbit(O_pp,th0,thf,dth,'--')
+[rr_pp,vv_pp] = par2car(O_pp, th_f_pp(2));
+plot3(rr_pp(1),rr_pp(2),rr_pp(3),'*')
+legend('orbita inizio','orbita fine','orbita cp', 'orbita pp')
+
+%trasferimento bitangente/ biellittico
+g={'ap','aa','pp','pa'};
+min=0;
+for type=g
+    [delta_v1_bt, delta_v2_bt, delta_t_bt] = bitangentTransfer(O_pp, O_end, type{:});
+    cost=delta_v1_bt+delta_v2_bt;
+    if cost<min || min==0
+        min=cost;
+        type_min=type;
+    end
+end
+ra_t_vect=linspace(ra_i,100*O_end.a,1000);
+min_bet=0;
+ii=1;
+cost_bet=zeros(length(ra_t_vect),1);
+for ra_ii=ra_t_vect
+  
+    [delta_v1_bet, delta_v2_bet, delta_v3_bet, delta_t1_bet, delta_t2_bet] = biellipticTransfer(O_pp,O_end, ra_ii);
+    delta_v=delta_v2_bet+delta_v3_bet+delta_v1_bet;
+    if delta_v<min_bet || min_bet==0
+        min_bet=delta_v;
+        ra_best=ra_ii;
+    end
+    cost_bet(ii)=delta_v;  
+    ii=ii+1;
+
+        
+end
+figure
+semilogy(ra_t_vect,cost_bet')
+hold on
+grid on
+semilogy(ra_t_vect,min*ones(length(ra_t_vect),1))
+
+
+
+
+
+
+
+%% STRATEGIA STANDARD 
+% Esempio da pericentro ad apocentro 
+clear 
+close all
+clc
+
+% Parametro attrattore
+mu=398600;
+
+% Orbita 1
+O_start.a=24400.0;
+O_start.e=0.728300;
+O_start.i=0.104700;
+O_start.OM=1.514000;
+O_start.om=3.107000;
+O_start.mu=mu;
+th_start=1.665000;
+[rr_i,vv_i] = par2car(O_start, th_start);
+% Orbita d'Arrivo
+rr=[-12985.280000 3801.011400 8109.619300]';
+vv=[-0.948600 -6.134000 1.356000]';
+% 
+[O_end,th_end] = car2par(rr,vv,mu);
+
+%cambio piano
+dth=pi/100;
+[delta_v1,om_f, thetacp, o_plane] = changeOrbitalPlane(O_start, O_end); % Lo
+% effettuiamo molto lontano dall'attrattore ==> Conveniente
+
+delta_t1 = TOF(O_start, th_start, thetacp);
+figure
+
+% Plot punto di partenza
+scatter3(rr_i(1),rr_i(2),rr_i(3),'*',LineWidth=2)
+hold on
+% Plot punto finale
+scatter3(rr(1),rr(2),rr(3),'*',LineWidth=2)
+% Plot corpo attrattore
+scatter3(0,0,0,LineWidth=5)
+
+%plot prima orbita fino al punto in cui cambio piano
+plotOrbit(O_start,th_start,thetacp,dth,'--')
+
+%cambio pericentro
+[delta_v2,th_1,th_2,th_best,o_pericentre] = change_pericentre_arg(o_plane,O_end.om,thetacp);
+delta_t2 = TOF(o_plane, thetacp, th_best(1));
+
+%plotto orbita a piano modificato fino alla anomalia vera ottimale per
+%effettuare il cambio di om
+plotOrbit(o_plane,thetacp,th_best(1),dth,'-')
+
+%calcolo teta finale dell orbita di pericentro cambiato, essendo di tipo
+%pa, cambio orbita nel pericentro ovvero per teta = 0
+
+[delta_v3_1, delta_v3_2, delta_t4, orbit_bt,th0,thf] = bitangentTransfer(o_pericentre, O_end, ['pa']);
+delta_t3 = TOF(o_pericentre, th_best(2), th0(1));
+delta_t5 = TOF(O_end,thf(2),th_end);
+
+plotOrbit(o_pericentre, th_best(2), th0(1), dth,'-')
+plotOrbit(orbit_bt, th0(3), thf(3), dth, '-') % L'orbita intermedia, la dovrei sempre 
+% percorrere da 0 a pi !!! Controllare che vale anche se rimpicciolisco 
+% l'orbita
+plotOrbit(O_end,thf(2),th_end,dth,'-')
+legend('pt partenza','pt arrivo','Corpo Attrattore','orbita di partenza fino a prima manovra','orbita piano cambiato','orbita om cambiato','orbita intermedia','orbita finale fino a teta')
+
+costo=delta_v1+delta_v2+delta_v3_1+delta_v3_2
+tempo=delta_t5+delta_t3+delta_t4+delta_t2+delta_t1
+tempo_ore = tempo / 3600
+
+% Rapporto da verificare per trasferimento bitangente(Honmann Generalizzato)/biellittico
+% tra due ellissi è apocentro_finale/pericentro_iniziale
+r_i = o_pericentre.a*(1-o_pericentre.e);
+r_f = O_end.a*(1+o_pericentre.e);
+rapporto = r_f/r_i % < 11.94 ==> conviene Honmann (bitangente)
+
+
+%% STRATEGIA STANDARD 
+% Esempio da apocentro a apocentro  
+clear 
+close all
+clc
+
+% Parametro attrattore
+mu=398600;
+
+% Orbita 1
+O_start.a=24400.0;
+O_start.e=0.728300;
+O_start.i=0.104700;
+O_start.OM=1.514000;
+O_start.om=3.107000;
+O_start.mu=mu;
+th_start=1.665000;
+[rr_i,vv_i] = par2car(O_start, th_start);
+% Orbita d'Arrivo
+rr=[-12985.280000 3801.011400 8109.619300]';
+vv=[-0.948600 -6.134000 1.356000]';
+% 
+[O_end,th_end] = car2par(rr,vv,mu);
+
+%cambio piano
+dth=pi/100;
+[delta_v1,om_f, thetacp, o_plane] = changeOrbitalPlane(O_start, O_end);
+delta_t1 = TOF(O_start, th_start, thetacp);
+figure
+
+% Plot punto di partenza
+scatter3(rr_i(1),rr_i(2),rr_i(3),'*',LineWidth=2)
+hold on
+% Plot punto finale
+scatter3(rr(1),rr(2),rr(3),'*',LineWidth=2)
+% Plot corpo attrattore
+scatter3(0,0,0,LineWidth=5)
+
+%plot prima orbita fino al punto in cui cambio piano
+plotOrbit(O_start,th_start,thetacp,dth,'--')
+
+%cambio pericentro
+[delta_v2, th_1, th_2, th_best, o_pericentre] = change_per2(o_plane, O_end.om, thetacp);
+delta_t2 = TOF(o_plane, thetacp, th_best(1));
+%plotto orbita a piano modificato fino alla anomalia vera ottimale per
+%effettuare il cambio di om
+plotOrbit(o_plane,thetacp,th_best(1) - 2*pi,dth,'-')
+
+%calcolo teta finale dell orbita di pericentro cambiato, essendo di tipo
+%pa, cambio orbita nel pericentro ovvero per teta = 0
+
+[delta_v3_1, delta_v3_2, delta_t4, orbit_bt,th0,thf] = bitangentTransfer(o_pericentre, O_end, ['aa']);
+delta_t3 = TOF(o_pericentre, th_best(2), th0(1));
+delta_t5 = TOF(O_end,thf(2),th_end);
+
+plotOrbit(o_pericentre, th_best(2), th0(1), dth,'-')
+plotOrbit(orbit_bt, th0(3), thf(3), dth, '-') % L'orbita intermedia, la dovrei sempre 
+% percorrere da 0 a pi !!! Controllare che vale anche se rimpicciolisco 
+% l'orbita
+plotOrbit(O_end,thf(2),th_end,dth,'-')
+legend('pt partenza','pt arrivo','Corpo Attrattore','orbita di partenza fino a prima manovra','orbita piano cambiato','orbita om cambiato','orbita intermedia','orbita finale fino a teta')
+
+costo=delta_v1+delta_v2+delta_v3_1+delta_v3_2
+tempo=delta_t5+delta_t3+delta_t4+delta_t2+delta_t1
+tempo_ore = tempo / 3600
+
+% Rapporto da verificare per trasferimento bitangente(Honmann Generalizzato)/biellittico
+% tra due ellissi è apocentro_finale/pericentro_iniziale
+r_i = o_pericentre.a*(1-o_pericentre.e);
+r_f = O_end.a*(1+o_pericentre.e);
+rapporto = r_f/r_i
+
+
+%% Appunti scenario 2
+% questo giro è un trasferimento diretto
+% Si ignora che i pianeti si muovono durante il traserimento (quindi la
+% vera posizione dei corpi attrattori)
+close all
+clear all
+clc
+terra.a=1.4946e8;
+terra.e=0.016;
+terra.i=9.192e-5;
+terra.OM=2.7847;
+terra.om=5.2643;
+terra.mu=132712440018;
+
+ast.a=0.827903*1.496e8;
+ast.e=0.209487;
+ast.i=8.55*pi/180;
+ast.OM=273.63*pi/180;
+ast.om=327.03*pi/180;
+ast.mu=132712440018;
+
+scatter3(0,0,0,'*','y',LineWidth=10)
+hold on
+plotOrbit(terra,0,2*pi,0.01,'--')
+
+plotOrbit(ast,0,2*pi,0.01,'-')
+
+fun=@(th1i,th2f,wt)iwbo(terra,ast,wt,th1i,th2f);
+
+f_tim=@(th1i,th2f)fun(th1i,th2f,0);
+x=linspace(-100,100,200);
+y=x;
+[X,Y]=meshgrid(x,y);
+figure
+surf(X,Y,f_tim(X,Y))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function Dv=iwbo(terra,ast,wt,th1i,th2f)
+[ri,vi_1]=par2car(terra,th1i);
+[rf,vf_2]=par2car(ast,th2f);
+h_t=cross(ri,rf)/norm(cross(ri,rf));
+i_t=acos(dot(h_t,[0 0 1]));
+N=cross([0 0 1],h_t)/norm(cross([0 0 1],h_t));
+if dot(N,[0 1 0])>=0
+    OM_t=acos(dot(N,[1 0 0]));
+else
+    OM_t=2*pi-acos(dot(N,[1 0 0]));
+end
+R_OM = [cos(OM_t) sin(OM_t) 0;
+    -sin(OM_t) cos(OM_t) 0;
+    0 0 1];
+R_i = [1 0 0;
+    0 cos(i_t) sin(i_t);
+    0 -sin(i_t) cos(i_t)];
+R_om = [cos(wt) sin(wt) 0;
+    -sin(wt) cos(wt) 0;
+    0 0 1];
+T=R_om*R_i*R_OM;
+r1_t=T*ri;
+r2_t=T*rf;
+th1t=atan(r1_t(2)/r1_t(1));
+th2t=atan(r2_t(2)/r2_t(1));
+r1=norm(ri);
+r2=norm(rf);
+e_t=(r2-r1)/(r1*cos(th1t)-r2*cos(th2t));
+a_t=r1*(1+e_t*cos(th1t))/(1-e_t^2);
+t.a=a_t;
+t.e=e_t;
+t.i=i_t;
+t.om=wt;
+t.OM=OM_t;
+t.mu=terra.mu;
+[r_s1,v1t]=par2car(t,th1t);
+
+[r_s2,v2t]=par2car(t,th2t);
+Dv=norm(v1t-vi_1)+norm(vf_2-v2t);
+
+end
+
