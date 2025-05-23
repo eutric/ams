@@ -55,13 +55,14 @@ DELTA_V_2=delta_v1+delta_v2+delta_v2_bt+delta_v1_bt
 %valutazione soluzione 3: cambio piano lontano
 
 %1) cambio forma
-[delta_v1_be, delta_v2_be, delta_v3_be, delta_t1, delta_t2, orbit_biel1, orbit_biel2] = biellipticTransfer(O_start,O_end, 20*norm(rr));%modifica a,e
+ra_t = 1 * O_start.a*(1+O_start.e); % n volta l'apocentro di O_start
+[delta_v1_be, delta_v2_be, delta_v3_be, delta_t1, delta_t2, orbit_biel1, orbit_biel2] = biellipticTransfer(O_start,O_end, ra_t);%modifica a,e
 %2) cambio piano
 [delta_v_p, om_cp, th_cp, orbit_cp] = changeOrbitalPlane(orbit_biel1, O_end);
 %3) finisco biellittico
 orbit_biel2.i=orbit_cp.i;
 orbit_biel2.OM=orbit_cp.OM;
-orbit_biel2.om=orbit_cp.om;
+orbit_biel2.om= orbit_cp.om;
 orbit_biel3=orbit_biel2;
 orbit_biel3.e=O_end.e;
 orbit_biel3.a=O_end.a;
@@ -70,30 +71,39 @@ orbit_biel3.a=O_end.a;
 
 th0=0;
 thf=2*pi;
-dth=pi/100;
+dth=pi/100/2;
 figure
 scatter3(0,0,0)
 hold on
 plotOrbit(O_start,th0,thf,dth, 'b')
-plotOrbit(orbit_biel1,0,th_cp,dth, 'p')
-plotOrbit(orbit_cp,th0,thf,dth, 'y')
+plotOrbit(orbit_biel1,0,th_cp,dth, 'm') 
+plotOrbit(orbit_cp,th_cp,pi,dth, 'c')
 plotOrbit(orbit_biel2,pi,0,dth, 'k')
-plotOrbit(orbit_biel3,0,2*pi,dth, 'g')
+plotOrbit(orbit_biel3,0,th_best(1),dth, 'g')
+
 plotOrbit(O_end,0,2*pi,dth, 'r')
+legend ('terra','start','prima biell','transfer al cambio piano','seconda biell','transfer al pericentro','end')
+
+% Supponendo che delta_v2 rimane uguale dopo al cambio piano
+DELTA_V_sol3 = delta_v1_be + delta_v_p + delta_v2_be + delta_v3_be + delta_v2
+% con ra_t 10*ra_start, 6.6643
+% con ra_t 20*ra_start, 6.8317 :(
+% con ra_t 5*ra_start, 6.3390 :)
+% con ra_t 4*ra_start, 6.1810 :|
+% con ra_t 1*ra_start, 4.6866 XOXO tragedia
 
 % prova plot soluzione prima forma poi attitude con bitangente aa
-
-th0=0;
-thf=2*pi;
-dth=pi/100;
-figure
-scatter3(0,0,0)
-hold on
-plotOrbit(O_start,th0,thf,dth, 'b')
-plotOrbit(orbit_forma,th0,thf,dth, 'y')
-plotOrbit(orbit_cp,th0,thf,dth, 'p')
-plotOrbit(O_end,th0,thf,dth, 'r')
-legend('attrattore','start','forma','piano','finale')
+% th0=0;
+% thf=2*pi;
+% dth=pi/100;
+% figure
+% scatter3(0,0,0)
+% hold on
+% plotOrbit(O_start,th0,thf,dth, 'b')
+% plotOrbit(orbit_forma,th0,thf,dth, 'y')
+% plotOrbit(orbit_cp,th0,thf,dth, 'p')
+% plotOrbit(O_end,th0,thf,dth, 'r')
+% legend('attrattore','start','forma','piano','finale')
 %%
 
 

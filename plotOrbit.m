@@ -55,7 +55,7 @@ T = R_om*R_i*R_OM; % matrice di trasformazione
 rr = T' * r2; 
 
 if nargin==5 
-    plot3(rr(1,:),rr(2,:),rr(3,:),linestyle)
+    plot3(rr(1,:),rr(2,:),rr(3,:),linestyle,LineWidth=1.4)
 else
     plot3(rr(1,:),rr(2,:),rr(3,:))
 end
