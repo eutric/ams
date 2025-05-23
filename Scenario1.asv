@@ -59,14 +59,6 @@ DELTA_V_2=delta_v1+delta_v2+delta_v2_bt+delta_v1_bt
 %2) cambio piano
 [delta_v_p, om_cp, th_cp, orbit_cp] = changeOrbitalPlane(orbit_biel1, O_end);
 %3) finisco biellittico
-orbit_biel2.i=orbit_cp.i;
-orbit_biel2.OM=orbit_cp.OM;
-orbit_biel2.om=orbit_cp.om;
-orbit_biel3=orbit_biel2;
-orbit_biel3.e=O_end.e;
-orbit_biel3.a=O_end.a;
-%4) cambio anomalia pericentro
-[delta_v2, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(orbit_biel2, O_end.om, th_cp);
 
 th0=0;
 thf=2*pi;
@@ -76,10 +68,9 @@ scatter3(0,0,0)
 hold on
 plotOrbit(O_start,th0,thf,dth, 'b')
 plotOrbit(orbit_biel1,0,th_cp,dth, 'p')
-plotOrbit(orbit_cp,th0,thf,dth, 'y')
-plotOrbit(orbit_biel2,pi,0,dth, 'k')
-plotOrbit(orbit_biel3,0,2*pi,dth, 'g')
-plotOrbit(O_end,0,2*pi,dth, 'r')
+plotOrbit(orbit_cp,th0,thf,dth, 'r')
+
+
 
 % prova plot soluzione prima forma poi attitude con bitangente aa
 
