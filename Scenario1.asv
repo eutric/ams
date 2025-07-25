@@ -41,6 +41,7 @@ sol_1=figure;
 sol_1.Name="soluzione 1: cambio piano - cambio pericentro - trasferimento bitangente";
 scatter3(0,0,0)
 hold on
+scatter3()
 plotOrbit(O_start,0,th_cp,dth,'b')
 plotOrbit(orbit_cp,th_cp,th_best(1),dth,'r')
 plotOrbit(orbit_chper,th_best(2),pi,dth,'g')
@@ -50,8 +51,6 @@ xlim([-1e5,1e5])
 ylim([-1e5,1e5])
 zlim([-1e5,1e5])
 legend('attrattore','orbita di inizio','orbita modificata di piano','orbita modificata anomalia pericentro','orbita biellittica ausiliaria','orbita finale')
-
-
 %valutazione soluzione 2: cambio forma e poi attitudine
 %1)modifico orbita con bitangente 
 
