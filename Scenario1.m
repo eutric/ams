@@ -41,6 +41,7 @@ sol_1=figure;
 sol_1.Name="soluzione 1: cambio piano - cambio pericentro - trasferimento bitangente";
 scatter3(0,0,0)
 hold on
+sist_can
 plotOrbit(O_start,0,th_cp,dth,'b')
 plotOrbit(orbit_cp,th_cp,th_best(1),dth,'r')
 plotOrbit(orbit_chper,th_best(2),pi,dth,'g')
@@ -49,7 +50,7 @@ plotOrbit(O_end,pi,0,dth,'m')
 xlim([-1e5,1e5])
 ylim([-1e5,1e5])
 zlim([-1e5,1e5])
-legend('attrattore','orbita di inizio','orbita modificata di piano','orbita modificata anomalia pericentro','orbita biellittica ausiliaria','orbita finale')
+legend('attrattore','sitema riferimento','orbita di inizio','orbita modificata di piano','orbita modificata anomalia pericentro','orbita biellittica ausiliaria','orbita finale')
 
 
 %valutazione soluzione 2: cambio forma e poi attitudine
@@ -65,6 +66,18 @@ delta_t1 = TOF(O_start, th_start, th_cp);
 delta_t2 = TOF(orbit_cp, th_cp, th_best);
 DELTA_V_2=delta_v1+delta_v2+delta_v2_bt+delta_v1_bt
 
+%plot forma e poi attitudine
+fig_2=figure;
+fig_2.Name='caso modifica forma e poi attitudine';
+scatter3(0,0,0)
+hold on
+sist_can
+plotOrbit(O_start,0,pi,dth,'b')
+plotOrbit(orbit_bt_temporanea,0,pi,dth,'g')
+plotOrbit(orbit_forma,pi,th_cp+2*pi,dth,'c')
+plotOrbit(orbit_cp,th_cp+2*pi,th_best(1),dth,'m')
+plotOrbit(orbit_chper,th_best(2),pi,dth,'r')
+legend('attrattore','sistema ref','start','bitangente ausiliaria','orbita di forma','orbita di piano','orbita pericentro')
 
 %valutazione soluzione 3: cambio piano lontano
 
@@ -83,13 +96,11 @@ orbit_biel3.a=O_end.a;
 %4) cambio anomalia pericentro
 [delta_v2, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(orbit_biel2, O_end.om, th_cp);
 
-th0=0;
-thf=2*pi;
-dth=pi/100/2;
-figure
+fig_3=figure;
+fig_3.Name='caso biellittico con modifica piano in apocentro';
 scatter3(0,0,0)
 hold on
-plotOrbit(O_start,th0,thf,dth, 'b')
+plotOrbit(O_start,0,2*pi,dth, 'b')
 plotOrbit(orbit_biel1,0,th_cp,dth, 'm') 
 plotOrbit(orbit_cp,th_cp,pi,dth, 'c')
 plotOrbit(orbit_biel2,pi,0,dth, 'k')
@@ -97,6 +108,16 @@ plotOrbit(orbit_biel3,0,th_best(1),dth, 'g')
 
 plotOrbit(O_end,0,2*pi,dth, 'r')
 legend ('terra','start','prima biell','transfer al cambio piano','seconda biell','transfer al pericentro','end')
+
+%COMMENTO: da valutare se ha senso modificare due volte il pericentro
+%facendo si che il cambio piano avvenga da biellittica 1 direttamente a
+%biellittica 2
+
+
+
+
+
+
 
 % Supponendo che delta_v2 rimane uguale dopo al cambio piano
 DELTA_V_sol3 = delta_v1_be + delta_v_p + delta_v2_be + delta_v3_be + delta_v2

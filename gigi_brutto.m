@@ -324,6 +324,59 @@ r_f = O_end.a*(1+o_pericentre.e);
 rapporto = r_f/r_i
 
 
+
+
+
+
+%% prove su cambio piano in apocentro
+% Sequenze di manovre standard 
+clear all
+close all
+clc
+
+%parametri figura
+dth=0.001;
+
+dth=0.01;
+% Parametro attrattore
+mu=398600;
+% Dati forniti dell'orbita di partenza
+O_start.a = 24400.0;
+O_start.e = 0.728300;
+O_start.i = 0.104700;
+O_start.OM = 1.514000;
+O_start.om = 3.107000;
+O_start.mu = mu;
+th_start = 1.665000;
+
+
+% Dati forniti dell'orbita d'arrivo
+rr=[-12985.280000 3801.011400 8109.619300]';
+vv=[-0.948600 -6.134000 1.356000]';
+
+% Trovo dati mancanti dell'orbita d'arrivo 
+[O_end,th_end] = car2par(rr,vv,mu);
+
+%CASO 1: cambio pericentro in modo che corrisponda all asse di cambio piano
+%trovo l'angolo al quale mettere l'orbita per mdificare il piano
+[delta_v, om_f_test, theta_cp_test, orbit_cp_test] = changeOrbitalPlane(O_start, O_end);
+%modifico orbita per pormi su quel pericentro
+[delta_v, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(O_start, O_start.om+theta_cp_test, th_start);
+%inizio biellittica
+ra_t=5*O_start.a;
+[delta_v1, delta_v2, delta_v3, delta_t1, delta_t2, orbit_biel1, orbit_biel2] = biellipticTransfer(orbit_chper,O_end, ra_t);
+[delta_v_cp, om_f, theta_cp, orbit_cp] = changeOrbitalPlane(orbit_biel1, O_end);
+[delta_v, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(orbit_cp, O_end, theta_cp);
+plotOrbit(O_start,0,2*pi,dth)
+hold on
+plotOrbit(orbit_chper,0,2*pi,dth)
+plotOrbit(orbit_biel1,0,2*pi,dth)
+plotOrbit(orbit_cp,0,2*pi,dth)
+xlim([-1e5,1e5])
+ylim([-1e5,1e5])
+zlim([-1e5,1e5])
+
+
 %% Appunti scenario 2
 % questo giro è un trasferimento diretto
 % Si ignora che i pianeti si muovono durante il traserimento (quindi la
@@ -416,4 +469,6 @@ t.mu=terra.mu;
 Dv=norm(v1t-vi_1)+norm(vf_2-v2t);
 
 end
+
+
 
