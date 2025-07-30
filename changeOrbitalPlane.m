@@ -1,4 +1,4 @@
-function [delta_v, om_f, theta, orbit_cp] = changeOrbitalPlane(orbit_i, orbit_f)
+function [delta_v, theta, orbit_cp] = changeOrbitalPlane(orbit_i, orbit_f)
 % La funzione prende in ingresso i parametri orbitali iniziali, l'inclinazione e 
 % l'ascensione retta del nodo ascendente dell'orbita finale e restituisce
 % il costo della manovra, l'anomalia del pericentro finale, l'anomalia vera
@@ -44,7 +44,7 @@ om_f=orbit_f.om;
 orbit_cp=orbit_i;
 orbit_cp.OM=OM_f;
 orbit_cp.i=i_f;
-
+orbit_cp.om=om_f;
 
 % Risoluzione del triangolo sferico con le varie casistiche 
 delta_OM = OM_f - OM_i; % variazione di RAAN
@@ -64,7 +64,7 @@ if delta_OM>0 && delta_i>0
     u_f = atan2(sinu_f, cosu_f);
 
     theta = u_i - om_i;
-    om_f = u_f - theta;
+    om_f = u_f - theta; % Impongo lo stesso theta alle 2 orbite, cambia om
 
     if cos(theta)>0 
         v_theta = sqrt(mu/p)*(1+e*cos(theta + pi));
@@ -134,8 +134,10 @@ elseif delta_OM<0 && delta_i<0
     end
 
     delta_v = 2*v_theta*sin(alpha/2);
+elseif delta_OM == 0
+    disp('Aggiungi il caso fannullone!!')
 end
-orbit_cp.om=om_f;
+
 end
 
 
