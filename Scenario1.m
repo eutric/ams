@@ -38,6 +38,7 @@ delta_t2 = TOF(orbit_cp, th_cp, th_best);
 [delta_v1_bt, delta_v2_bt, delta_t_bt, orbit_bt] = bitangentTransfer(orbit_chper, O_end, 'aa'); %testanto tutte 4 le possibilità conviene aa con la modifica del pericentro fatta prima 
 
 DELTA_V_1=delta_v1+delta_v2+delta_v1_bt+delta_v2_bt
+
 sol_1=figure;
 sol_1.Name="soluzione 1: cambio piano - cambio pericentro - trasferimento bitangente";
 scatter3(0,0,0)

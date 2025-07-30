@@ -38,14 +38,13 @@ mu = orbit_i.mu;
 % Parametri del piano in cui voglio mettermi
 i_f=orbit_f.i;
 OM_f=orbit_f.OM;
-om_f=orbit_f.om;
 
 % Creo l'orbita d'arrivo
 orbit_cp=orbit_i;
 orbit_cp.OM=OM_f;
 orbit_cp.i=i_f;
-orbit_cp.om=om_f;
 
+% % 
 % Risoluzione del triangolo sferico con le varie casistiche 
 delta_OM = OM_f - OM_i; % variazione di RAAN
 delta_i = i_f - i_i; % variazione dell'inclinazione 
@@ -137,6 +136,8 @@ elseif delta_OM<0 && delta_i<0
 elseif delta_OM == 0
     disp('Aggiungi il caso fannullone!!')
 end
+
+orbit_cp.om=om_f;
 
 end
 
