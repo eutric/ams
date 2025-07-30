@@ -63,6 +63,9 @@ if delta_OM>0 && delta_i>0
     u_f = atan2(sinu_f, cosu_f);
 
     theta = u_i - om_i;
+    if theta < 0
+        theta = theta + 2*pi;
+    end
     om_f = u_f - theta; % Impongo lo stesso theta alle 2 orbite, cambia om
 
     if cos(theta)>0 

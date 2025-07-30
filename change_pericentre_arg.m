@@ -24,15 +24,13 @@ function [delta_v, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(orb
 %  th_best    anomalia vera migliore dove effettuare la manovra in
 %             riferimento all'orbita iniziale
 % orbit_chper è una struttura che contiene i parammetri caratterizzanti
-% dell'orbita finale dopo il cambio di piano
+% dell'orbita finale dopo il cambio di anomalia del pericentro
+
 %  orbit_chper.a   valore del semiasse maggiore iniziale e finale 
 %  orbit_chper.e   modulo del vettore eccentricità iniziale e finale 
-%  orbit_chper.i   angolo d'inclinazione dell'orbita finale
-%  orbit_chper.OM  ascensione retta del nodo ascendete (RAAN) finale
+%  orbit_chper.i   angolo d'inclinazione dell'orbita iniziale e finale
+%  orbit_chper.OM  ascensione retta del nodo ascendete (RAAN) iniziale e finale
 %  orbit_chper.om  anomalia del pericentro finale 
-
-
-
 
 % Parametri oribita di partenza
 a = orbit.a;

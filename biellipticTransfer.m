@@ -1,4 +1,11 @@
 function [delta_v1, delta_v2, delta_v3, delta_t1, delta_t2, orbit_biel1, orbit_biel2] = biellipticTransfer(orbit_i,orbit_f, ra_t)
+% Funzione che consente, tramite biellittica bitangente, di passare, in
+% termini di forma, da orbit_i a orbit_f. 
+% INPUT
+% Name     Type    Size
+% orbit_i  Struct  1x1
+% orbit_f  Struct  1x1
+% ra_t     Scalar  1x1
 a_i=orbit_i.a;
 e_i=orbit_i.e;
 mu=orbit_i.mu;
