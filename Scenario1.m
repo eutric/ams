@@ -117,14 +117,46 @@ legend ('terra','start','prima biell','transfer al cambio piano','seconda biell'
 %facendo si che il cambio piano avvenga da biellittica 1 direttamente a
 %biellittica 2
 
+% valutazione soluzione 3: cambio piano e om nell'orbita di trasferimento 
+% della bitangente
 
+% 1) bitangente (i costi di trasferimento saranno uguali)
+delta_t1 = TOF(O_start, th_start, pi); % Attesa per la manovra 1
+[delta_v1_bt, delta_v2_bt, delta_t4, orbit_bt_temporanea, th0, thf, orbit_forma] = bitangentTransfer(O_start, O_end, 'aa');
+% 2) modifico piano
+[delta_v2, th_cp, orbit_cp] = changeOrbitalPlane(orbit_bt_temporanea, O_end); % Mi metto nel piano definitivo
+delta_t2 = TOF(orbit_bt_temporanea, pi, th_cp); % Attesa per il cambio piano
+%3) cambio anomalia del pericentro
+[delta_v3, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(orbit_cp, O_end.om, th_cp);
+delta_t3 = TOF(orbit_cp, th_cp, th_best(1)); % Attesa per cambio orientazione
+
+DELTA_V_3 = delta_v1_bt + delta_v2_bt + delta_v2 + delta_v3
+DELTA_T_3 = delta_t1 + delta_t2 + delta_t3 + delta_t4
+
+%plot forma e poi attitudine
+fig_2=figure;
+fig_2.Name='sol 3: impulso 1 - cambio piano - cambio pericentro - impulso 2';
+scatter3(0,0,0)
+hold on
+scatter3(rr_start(1),rr_start(2),rr_start(3))
+scatter3(rr_end(1),rr_end(2), rr_end(3))
+sist_can
+plotOrbit(O_start, th_start, pi, dth, 'b') %           Start
+plotOrbit(orbit_bt_temporanea, 0, th_cp, dth, 'c') %      Trasferimento
+plotOrbit(orbit_cp, th_cp, th_best(1), dth, 'g') %        O_cp
+plotOrbit(orbit_chper, th_best(2), pi,dth,'k') %          O_chper
+plotOrbit(O_end, pi, th_end,dth,'m') % End
+% plotOrbit(orbit_chper,th_best(2),pi,dth,'r')
+legend('attrattore','partenza', 'arrivo', 'sistema ref','start','bitangente ausiliaria','orbita di piano','orbita pericentro', 'end')
+
+% Costo 2.9275 woooow
 
 
 
 
 
 % Supponendo che delta_v2 rimane uguale dopo al cambio piano
-DELTA_V_sol3 = delta_v1_be + delta_v_p + delta_v2_be + delta_v3_be + delta_v2
+% DELTA_V_sol3 = delta_v1_be + delta_v_p + delta_v2_be + delta_v3_be + delta_v2
 % con ra_t 10*ra_start, 6.6643
 % con ra_t 20*ra_start, 6.8317 :(
 % con ra_t 5*ra_start, 6.3390 :)
