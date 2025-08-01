@@ -130,7 +130,7 @@ delta_t2 = TOF(orbit_bt_temporanea, pi, th_cp); % Attesa per il cambio piano
 [delta_v3, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(orbit_cp, O_end.om, th_cp);
 delta_t3 = TOF(orbit_cp, th_cp, th_best(1)); % Attesa per cambio orientazione
 
-DELTA_V_3 = delta_v1_bt + delta_v2_bt + delta_v2 + delta_v3
+DELTA_V_3 = abs(delta_v1_bt) + abs(delta_v2_bt) + abs(delta_v2) + abs(delta_v3)
 DELTA_T_3 = delta_t1 + delta_t2 + delta_t3 + delta_t4
 
 %plot forma e poi attitudine
