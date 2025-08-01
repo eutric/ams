@@ -361,22 +361,21 @@ vv=[-0.948600 -6.134000 1.356000]';
 %trovo l'angolo al quale mettere l'orbita per mdificare il piano
 [delta_v, theta_cp_test,orbit_cp] = changeOrbitalPlane(O_start, O_end);
 %modifico orbita per pormi su quel pericentro
-[delta_v_peri1, th_i, th_f, th_best_1, orbit_chper_1] = change_pericentre_arg(O_start, O_start.om+theta_cp_test, th_start);
+[delta_v_peri1, th_i, th_f, th_best_1, orbit_chper] = change_pericentre_arg(O_start, O_start.om+theta_cp_test, th_start);
 %inizio biellittica
 ra_t=5*O_start.a;
-[delta_v1_be, delta_v2_be, delta_v3_be, delta_t1, delta_t2, orbit_biel1, orbit_biel2] = biellipticTransfer(orbit_chper_1,O_end, ra_t);
+[delta_v1_be, delta_v2_be, delta_v3_be, delta_t1, delta_t2, orbit_biel1, orbit_biel2] = biellipticTransfer(orbit_chper,O_end, ra_t);
 O_post_be=O_end;
 O_post_be.om=orbit_biel2.om;
 [delta_v_cp, theta_cp, orbit_cp] = changeOrbitalPlane(orbit_biel2, O_end);
-[delta_v, th_i, th_f, th_best_2, orbit_chper_2] = change_pericentre_arg(O_post_be, O_end.om, theta_cp);
-
-plotOrbit(O_start,0,th_best_1(1),dth)
+[delta_v, th_i, th_f, th_best_2, orbit_chper] = change_pericentre_arg(orbit_cp, O_end.om, theta_cp);
+plotOrbit(O_start,0,2*pi,dth)
 hold on
-plotOrbit(orbit_chper_1,th_best_1(2),2*pi,dth)
+plotOrbit(O_start,0,th_best_1(1),dth)
+plotOrbit(orbit_chper,th_best(2),2*pi,dth)
 plotOrbit(orbit_biel1,0,pi,dth)
 plotOrbit(orbit_cp,pi,2*pi,dth)
-plotOrbit(O_post_be,0,th_best_2(1),dth)
-plotOrbit(orbit_chper_2,th_best_2(2),3*pi,dth)
+plotOrbit(orbit_chper,th_best_2(1),)
 xlim([-1e5,1e5])
 ylim([-1e5,1e5])
 zlim([-1e5,1e5])
