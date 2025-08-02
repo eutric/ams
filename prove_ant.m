@@ -182,7 +182,7 @@ legend ('attrattore','partenza','arrivo','sitema riferimento','orbita iniziale',
 
 
 %% soluzione   CP - TEB - CPer  
-
+% DA CONTROLLARE 
 % 1) piano orbita
 [dv1, th_cp, O_cp] = changeOrbitalPlane(O_start, O_end);  
 dt1 = TOF(O_start, th_start, th_cp);
@@ -206,7 +206,7 @@ scatter3(rr_end(1),rr_end(2), rr_end(3))
 sist_can
 plotOrbit(O_start,th_start,th_cp,dth,'b') 
 plotOrbit(O_cp,th_cp,pi,dth,'r')
-plotOrbit(O_bt,pi + pi,th_best(1),dth,'g')
+plotOrbit(O_bt,0,th_best(1),dth,'g')
 plotOrbit(O_cper,th_best(2),pi,dth,'c')
 plotOrbit(O_end,0,th_end,dth,'m')
 xlim([-1e5,1e5])
@@ -303,7 +303,7 @@ scatter3(rr_end(1),rr_end(2), rr_end(3))
 sist_can
 plotOrbit(O_start,th_start,th_cp,dth,'b') 
 plotOrbit(O_cp,th_cp,0,dth,'r')
-plotOrbit(O_bt,0,th_best(1),dth,'g')
+plotOrbit(O_bt,pi + pi,th_best(1),dth,'g')
 plotOrbit(O_cper,th_best(2),pi,dth,'c')
 plotOrbit(O_end,0,th_end,dth,'m')
 xlim([-1e5,1e5])
