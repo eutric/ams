@@ -126,7 +126,7 @@ delta_t1 = TOF(O_start, th_start, pi); % Attesa per la manovra 1
 % 2) modifico piano
 [delta_v2, th_cp, orbit_cp] = changeOrbitalPlane(orbit_bt_temporanea, O_end); % Mi metto nel piano definitivo
 delta_t2 = TOF(orbit_bt_temporanea, pi, th_cp); % Attesa per il cambio piano
-%3) cambio anomalia del pericentro
+% 3) cambio anomalia del pericentro
 [delta_v3, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(orbit_cp, O_end.om, th_cp);
 delta_t3 = TOF(orbit_cp, th_cp, th_best(1)); % Attesa per cambio orientazione
 

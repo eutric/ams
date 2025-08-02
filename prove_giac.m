@@ -146,6 +146,7 @@ vv_end=[-0.948600 -6.134000 1.356000]';
 % Trovo dati mancanti dell'orbita d'arrivo 
 [O_end,th_end] = car2par(rr_end,vv_end,mu);
 
+
 % 1) Cambio forma
 n = 1;
 ra_t = n * O_start.a*(1+O_start.e); % n volte l'apocentro di O_start
@@ -195,7 +196,7 @@ legend ('terra','inizio', 'fine', 'SdR', 'start', 'prima biell','transfer al cam
 %COMMENTO: Manovre in Biel1 --> 8.3218
 %          Manovre in Biel2 --> 4.9521
 
-%% Scneraio 1 - SOLUZIONE04
+%% Scenario 1 - SOLUZIONE04
 
 clear 
 close all
@@ -253,3 +254,6 @@ plotOrbit(O_end, pi, th_end,dth,'m') % End
 legend('attrattore','partenza', 'arrivo', 'sistema ref','start','bitangente ausiliaria','orbita di forma','orbita di piano','orbita pericentro')
 
 % Costo 2.9275 woooow
+
+%% Scenario 1 - Prova biell/bitan
+
