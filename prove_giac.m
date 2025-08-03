@@ -200,6 +200,72 @@ legend ('terra','inizio', 'fine', 'SdR', 'start', 'prima biell','transfer al cam
 
 clear 
 close all
+% clc
+
+%parametri figura
+dth=0.001;
+
+% Parametro attrattore
+mu=398600;
+% Dati forniti dell'orbita di partenza
+O_start.a = 24400.0;
+O_start.e = 0.728300;
+O_start.i = 0.104700;
+O_start.OM = 1.514000;
+O_start.om = 3.107000;
+O_start.mu = mu;
+th_start = 1.665000;
+
+[rr_start, vv_start] = par2car(O_start, th_start);
+
+% Dati forniti dell'orbita d'arrivo
+rr_end=[-12985.280000 3801.011400 8109.619300]';
+vv_end=[-0.948600 -6.134000 1.356000]';
+
+% Trovo dati mancanti dell'orbita d'arrivo 
+[O_end,th_end] = car2par(rr_end,vv_end,mu);
+
+%1)modifico orbita con bitangente 
+
+%1) piano orbita
+
+[dv_imp1, dv_imp2, delta_t, orbit_bt_temporanea, th0, thf, orbit_forma] = bitangentTransfer(O_start, O_end, 'aa');
+%2) modifico piano
+[dv_cp, th_cp, orbit_cp] = changeOrbitalPlane(orbit_bt_temporanea, O_end);
+delta_t2 = TOF(O_start, th_start, th_cp);
+%3) cambio anomalia del pericentro
+[dv_cper, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(orbit_cp, O_end.om, th_cp);
+delta_t3 = TOF(orbit_cp, th_cp, th_best(1));
+DELTA_V_4 = abs(dv_imp1) + abs(dv_cp) + abs(dv_cper) + abs(dv_imp2)
+dv_cp
+dv_imp1
+dv_imp2
+dv_cper
+
+DELTA_T_4 = delta_t + delta_t2 + delta_t3
+%plot forma e poi attitudine
+fig_2=figure;
+fig_2.Name='bitangente - cambio piano - cambio pericentro';
+scatter3(0,0,0)
+hold on
+scatter3(rr_start(1),rr_start(2),rr_start(3))
+scatter3(rr_end(1),rr_end(2), rr_end(3))
+sist_can
+plotOrbit(O_start, th_start, pi, dth, 'b') %           Start
+plotOrbit(orbit_bt_temporanea, 0, th_cp, dth, 'c') %      Trasferimento
+plotOrbit(orbit_cp, th_cp, th_best(1), dth, 'g') %          O_end NON cambiata di piano
+plotOrbit(orbit_chper, th_best(2), pi,dth,'k') %       Cambio Piano
+plotOrbit(O_end, pi, th_end,dth,'m') % End
+% plotOrbit(orbit_chper,th_best(2),pi,dth,'r')
+legend('attrattore','partenza', 'arrivo', 'sistema ref','start','bitangente ausiliaria','orbita di forma','orbita di piano','orbita pericentro')
+
+% Costo 4.2537
+figure
+plotOrbit_plane(orbit,th0,thf,dth,linestyle)
+
+%% Scenario 1 - SOLUZIONE 05
+clear
+close all
 clc
 
 %parametri figura
@@ -228,14 +294,20 @@ vv_end=[-0.948600 -6.134000 1.356000]';
 %1)modifico orbita con bitangente 
 
 %1) piano orbita
-[delta_v1_bt, delta_v2_bt, delta_t, orbit_bt_temporanea, th0, thf, orbit_forma] = bitangentTransfer(O_start, O_end, 'aa');
+[dv_cp, th_cp, orbit_cp] = changeOrbitalPlane(O_start, O_end);
+[dv_imp1, dv_imp2, delta_t, orbit_bt_temporanea, th0, thf, orbit_forma] = bitangentTransfer(orbit_cp, O_end, 'aa');
 %2) modifico piano
-[delta_v2, th_cp, orbit_cp] = changeOrbitalPlane(orbit_bt_temporanea, O_end);
+
 delta_t2 = TOF(O_start, th_start, th_cp);
 %3) cambio anomalia del pericentro
-[delta_v3, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(orbit_cp, O_end.om, th_cp);
+[dv_cper, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(orbit_bt_temporanea, O_end.om, th_cp);
 delta_t3 = TOF(orbit_cp, th_cp, th_best(1));
-DELTA_V_4 = delta_v1_bt + delta_v2_bt + delta_v2 + delta_v3
+DELTA_V_4 = abs(dv_imp1) + abs(dv_cp) + abs(dv_cper) + abs(dv_imp2)
+dv_cp
+dv_imp1
+dv_imp2
+dv_cper
+
 DELTA_T_4 = delta_t + delta_t2 + delta_t3
 %plot forma e poi attitudine
 fig_2=figure;
@@ -245,15 +317,72 @@ hold on
 scatter3(rr_start(1),rr_start(2),rr_start(3))
 scatter3(rr_end(1),rr_end(2), rr_end(3))
 sist_can
-plotOrbit(O_start, th_start, pi, dth, 'b') %           Start
-plotOrbit(orbit_bt_temporanea, 0, th_cp, dth, 'c') %      Trasferimento
-plotOrbit(orbit_cp, th_cp, th_best(1), dth, 'g') %          O_end NON cambiata di piano
+plotOrbit(O_start, th_start, th_cp, dth, 'b') %           Start
+plotOrbit(orbit_cp, th_cp, pi, dth, 'c') %      Trasferimento
+plotOrbit(orbit_bt_temporanea, 0, th_best(1), dth, 'g') %          O_end NON cambiata di piano
 plotOrbit(orbit_chper, th_best(2), pi,dth,'k') %       Cambio Piano
 plotOrbit(O_end, pi, th_end,dth,'m') % End
 % plotOrbit(orbit_chper,th_best(2),pi,dth,'r')
 legend('attrattore','partenza', 'arrivo', 'sistema ref','start','bitangente ausiliaria','orbita di forma','orbita di piano','orbita pericentro')
 
-% Costo 2.9275 woooow
+% Costo 4.2537
+figure
+subplot(1,2,1)
 
-%% Scenario 1 - Prova biell/bitan
+scatter(0,0)
+hold on
+xline(0)
+yline(0)
+plotOrbit_plane(O_start, th_start, th_cp, dth, 'b')
+legend('attrattore','x', 'y','vado al cambio piano')
+grid on
+subplot(1,2,2)
+scatter(0,0)
+hold on
+xline(0)
+yline(0)
+% plotOrbit_plane(orbit_cp, th_start, th_cp, dth, 'b')
+plotOrbit_plane(orbit_cp, th_cp, pi, dth, 'c')
+plotOrbit_plane(orbit_bt_temporanea, 0, th_best(1), dth, 'g')
+plotOrbit_plane(orbit_chper, th_best(2), pi, dth, 'k')
+plotOrbit_plane(O_end, pi, th_end, dth, 'm')
+plotOrbit_plane(O_end, 0, 2*pi, dth, '--')
+grid on
+legend('attrattore','x', 'y','vado al primo impulso','trasferimento','vado al secondo impulso','fine')
 
+%% ricerca del miglior cambio piano
+clear
+close all
+clc
+
+% hx*x+hy*y+hz*z = 0, z = (-hx*x-hy*y)/hz
+%parametri figura
+dth=0.001;
+
+% Parametro attrattore
+mu=398600;
+% Dati forniti dell'orbita di partenza
+O_start.a = 24400.0;
+O_start.e = 0.728300;
+O_start.i = 0.104700;
+O_start.OM = 1.514000;
+O_start.om = 3.107000;
+O_start.mu = mu;
+th_start = 1.665000;
+
+[rr_start, vv_start] = par2car(O_start, th_start);
+
+% Dati forniti dell'orbita d'arrivo
+rr_end=[-12985.280000 3801.011400 8109.619300]';
+vv_end=[-0.948600 -6.134000 1.356000]';
+
+% Trovo dati mancanti dell'orbita d'arrivo 
+[O_end,th_end] = car2par(rr_end,vv_end,mu);
+
+z = @(h,x,y) (-h(1)*x -h(2)*y)/h(3);
+x = linespace (-10^4,10^4, 100);
+y = linespace (-10^4,10^4, 100);
+[X, Y] = meshgrid (x,y);
+Z = z(h, X, Y);
+
+surf (X, Y, Z)
