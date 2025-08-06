@@ -1,4 +1,4 @@
-function [delta_v, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(orbit, om_f, th_0)
+function [delta_v, th_i, th_f, th_best, orbit_chper] = change_pericenter_arg(orbit, om_f, th_0)
 % La funzione prende in ingresso il semiasse maggiore, l'eccentricità,
 % l'anomalia del pericentro iniziale e finale e l'anomalia vera di partenza.
 % Restituisce il costo della manovra di cambio dell'anomalia del pericentro, 
@@ -22,7 +22,7 @@ function [delta_v, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(orb
 %  th_f       vettore [2x1] contenente le anomalie vere di manovra in
 %             riferimento all'orbita finale 
 %  th_best    anomalia vera migliore dove effettuare la manovra in
-%             riferimento all'orbita iniziale
+%             riferimento all'orbita iniziale e all'orbita finale
 % orbit_chper è una struttura che contiene i parammetri caratterizzanti
 % dell'orbita finale dopo il cambio di anomalia del pericentro
 
@@ -69,11 +69,11 @@ end
 if th_0>-D_om/2 && th_0<D_om/2
     th_best(1) = D_om/2; %th_best in riferimento partenza
     th_best(2) = 2*pi-D_om/2;
-    disp("Il punto d'intersezione in cui effettuo la manovra è theta1")
+    disp("Il punto d'intersezione in cui effettuo la manovra di cambio pericentro è theta1")
 else
     th_best(1) = pi+D_om/2;
     th_best(2) = pi-D_om/2;
-    disp("Il punto d'intersezione in cui effettuo la manovra è theta2")
+    disp("Il punto d'intersezione in cui effettuo la manovra di cambio pericentro è theta2")
 end
 
 end

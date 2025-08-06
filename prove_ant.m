@@ -6,8 +6,10 @@ clc
 
 % Parametro gravitazionale della Terra
 mu=398600;  % [km^3/s^2]
+% Raggio Terra 
+r_terra = 6378.388; % [km]
 
-dth=0.001;  
+dth=0.001;  % passo 
 
 % Orbita di partenza
 O_start.a = 24400.0;     % [km]
@@ -26,66 +28,126 @@ vv_end=[-0.948600 -6.134000 1.356000]';
 
 [O_end,th_end] = car2par(rr_end,vv_end,mu);
 
-
 %% Strategia 1   CP - CPer - TEB
 
-% 1) piano orbita
+% Calcolo il costo
+
+% 1) cambio piano orbita
 [dv1, th_cp, O_cp] = changeOrbitalPlane(O_start, O_end); 
-dt1 = TOF(O_start, th_start, th_cp);
 
-%2)modifico anomalia pericentro
-[dv2, thi_cper, thf_cper, th_best, O_cper] = change_pericentre_arg(O_cp, O_end.om-pi, th_cp);
-dt2 = TOF(O_cp, th_cp, th_best);
+
+% 2) modifico anomalia pericentro
+[dv2, th_i, th_f, th_best, O_cper] = change_pericenter_arg(O_cp, O_end.om-pi, th_cp);
+
 %3)modifico orbita con bitangente 
-[dv3, dv4, dt3, O_bt] = bitangentTransfer(O_cper, O_end, 'aa'); %testanto tutte 4 le possibilità conviene aa con la modifica del pericentro fatta prima 
+[dv3, dv4, dt4, O_bt] = bitangentTransfer(O_cper, O_end, 'aa'); % testando tutte e 4 le possibilità conviene aa 
 
-DV_1=abs(dv1)+abs(dv2)+abs(dv3)+abs(dv4)
-DT_1= dt1 + dt2 + dt3 
+dt5 = TOF(O_end,pi,0); 
 
-sol_1=figure;
-sol_1.Name="soluzione 1: cambio piano - cambio pericentro - trasferimento bitangente";
-scatter3(0,0,0)
-hold on
+DV_1=abs(dv1)+abs(dv2)+abs(dv3)+abs(dv4);
+
+
+
+% Calcolo il tempo impiegato 
+
+% tempo dalla posizione iniziale fino al punto di cambio di piano
+dt1 = TOF(O_start, th_start, th_cp); 
+
+% tempo dalla posizione di cambio di piano alla posizione di cambio di anomalia di pericentro
+dt2 = TOF(O_cp, th_cp, th_best(1)); 
+
+% tempo dalla posizione dopo il cambio di anomalia di pericentro fino al pericentro:
+dt3 = TOF(O_cper,th_best(1),pi); 
+
+% tempo di manovra della bitangente dt4
+
+% tempo di attesa sull'orbita finale fino al punto d'arrivo
+dt5 = TOF(O_end,pi,0); 
+
+
+DT_1= dt1 + dt2 + dt3 + dt4 + dt5;
+
+dtime = seconds(DT_1);
+    dtime.Format = 'hh:mm:ss';
+
+fprintf("Costo della manovra standard: %d \n", DV_1);
+fprintf("Tempo impiegato: %s \n", dtime);
+
+
+
+Terra_3D(r_terra)
+set(gcf, 'Name', 'Strategia 1: cambio piano - cambio pericentro - trasferimento bitangente', 'NumberTitle', 'off');
 scatter3(rr_start(1),rr_start(2),rr_start(3))
+hold on
 scatter3(rr_end(1),rr_end(2), rr_end(3))
-sist_can(1)
-plotOrbit(O_start,th_start,th_cp,dth,'b') % Orbita di partenza
-plotOrbit(O_cp,th_cp,th_best(1),dth,'r') % Orbita post cambio piano
+plotOrbit(O_start,th_start,th_cp,dth,'b')
+plotOrbit(O_cp,th_cp,th_best(1),dth,'m') % Orbita post cambio piano
 plotOrbit(O_cper,th_best(2),pi,dth,'g')
 plotOrbit(O_bt,0,pi,dth,'c')
-plotOrbit(O_end,pi,0,dth,'m')
-xlim([-1e5,1e5])
-ylim([-1e5,1e5])
-zlim([-1e5,1e5])
-legend('attrattore','partenza','arrivo','sitema riferimento','orbita di inizio','orbita modificata di piano','orbita modificata anomalia pericentro','orbita biellittica ausiliaria','orbita finale')
+plotOrbit(O_end,pi,0,dth,'r')
+
+% plotOrbit(O_start,0,2*pi,dth, ['--','k'])
+% h = findobj(gca, 'Type', 'line', '-not', 'HandleVisibility', 'off');
+% h(1).HandleVisibility = 'off';  % Nasconde dalla legenda
+% plotOrbit(O_end,0,2*pi,dth,['--','k'])
+% h = findobj(gca, 'Type', 'line', '-not', 'HandleVisibility', 'off');
+% h(1).HandleVisibility = 'off';  % Nasconde dalla legenda
+% xlim([-0.6e5,0.6e5])
+% ylim([-0.6e5,0.6e5])
+% zlim([-0.6e5,0.6e5])
+
+legend('Attrattore','Partenza','Arrivo','Orbita iniziale','Orbita modificata di piano','Orbita modificata anomalia pericentro','orbita bitangente','Orbita finale')
+
+%%
+
+% sol_1=figure;
+% sol_1.Name="Strategia 1: cambio piano - cambio pericentro - trasferimento bitangente";
+% scatter3(0,0,0)
+% hold on
+% scatter3(rr_start(1),rr_start(2),rr_start(3))
+% scatter3(rr_end(1),rr_end(2), rr_end(3))
+% sist_can(1)
+% plotOrbit(O_start,th_start,th_cp,dth,'b') % Orbita di partenza
+% plotOrbit(O_cp,th_cp,th_best(1),dth,'r') % Orbita post cambio piano
+% plotOrbit(O_cper,th_best(2),pi,dth,'g')
+% plotOrbit(O_bt,0,pi,dth,'c')
+% plotOrbit(O_end,pi,0,dth,'m')
+% xlim([-1e5,1e5])
+% ylim([-1e5,1e5])
+% zlim([-1e5,1e5])
+% legend('attrattore','partenza','arrivo','sitema riferimento','orbita di inizio','orbita modificata di piano','orbita modificata anomalia pericentro','orbita biellittica ausiliaria','orbita finale')
 
 %% Soluzione 2  TEB - CP - CPer 
 
-%1) modifico orbita con bitangente
-[dv1, dv2, d_t1, O_bt,th0, thf, O_forma] = bitangentTransfer(O_start, O_end, 'aa');
+% Calcolo il costo 
+
+%1) Trasferimento bitangente su orbita ausiliaria 
+[dv1, dv2, dt1, O_bt,th0, thf, O_aus] = bitangentTransfer(O_start, O_end, 'aa');
+dt2 = TOF(O_start, th_start, pi); 
+
 %2)modifico anomalia pericentro
-[dv3, th_cp, O_cp] = changeOrbitalPlane(O_forma, O_end);
+[dv3, th_cp, O_cp] = changeOrbitalPlane(O_aus, O_end);
 dt1 = TOF(O_start, th_start, th_cp);
 %3) modifico angolo ppericentro
-[dv4, th_i, th_f, th_best, O_cper] = change_pericentre_arg(O_cp, O_end.om, th_cp);
+[dv4, th_i, th_f, th_best, O_cper] = change_pericenter_arg(O_cp, O_end.om, th_cp);
 dt2 = TOF(O_cp, th_cp, th_best);
 DV_2=abs(dv1)+abs(dv2)+abs(dv3)+abs(dv4)
 
-%plot forma e poi attitudine
-fig_2=figure;
-fig_2.Name='caso modifica forma e poi attitudine';
-scatter3(0,0,0)
-hold on
+
+
+Terra_3D(r_terra)
+set(gcf, 'Name', 'Strategia 1: cambio piano - cambio pericentro - trasferimento bitangente', 'NumberTitle', 'off');
 scatter3(rr_start(1),rr_start(2),rr_start(3))
+hold on
 scatter3(rr_end(1),rr_end(2), rr_end(3))
-sist_can
 plotOrbit(O_start,th_start,pi,dth,'b')
-plotOrbit(O_bt,0,pi,dth,'g')
-plotOrbit(O_forma,pi,th_cp+2*pi,dth,'c')
+plotOrbit(O_bt,0,pi,dth,'c')
+plotOrbit(O_aus,pi,th_cp+2*pi,dth,'c')
 plotOrbit(O_cp,th_cp+2*pi,th_best(1),dth,'m')
 plotOrbit(O_cper,th_best(2),2*pi,dth,'r')
-%plotOrbit(O_end,pi,th_end,dth,'m')
-legend('attrattore','partenza','arrivo','sitema riferimento','orbita iniziale','orbita bitang','orbita forma', 'orbita cambio piano', 'cambio pericentro')
+% plotOrbit(O_end,0,th_end,dth,'y')
+% plotOrbit(O_start,0,th_end,dth,'y')
+legend('Attrattore','Partenza','Arrivo','Orbita iniziale','Orbita bitangente','Orbita ausiliaria', 'Orbita cambio piano', 'Orbita cambio pericentro', 'Orbita finale')
 
 
 %% Soluzione   TBT - CP - CPer - TBT modo 1
