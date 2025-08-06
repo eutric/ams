@@ -419,61 +419,26 @@ figure
 surf(X,Y,f_tim(X,Y))
 
 
+%% SCENARIO 2
+clear all 
+close all
+clc
+O_terra.a=1.4946e+8;
+O_terra.e=0.016;
+O_terra.i=9.19205-5;
+O_terra.OM=2.7847;
+O_terra.om=5.2643;
+O_ast.a=1.2385252595e+8;
+O_ast.e=0.209487;
+O_ast.i=8.55*pi/180;
+O_ast.OM=273.63*pi/180;
+O_ast.om=327.03*pi/180;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-function Dv=iwbo(terra,ast,wt,th1i,th2f)
-[ri,vi_1]=par2car(terra,th1i);
-[rf,vf_2]=par2car(ast,th2f);
-h_t=cross(ri,rf)/norm(cross(ri,rf));
-i_t=acos(dot(h_t,[0 0 1]));
-N=cross([0 0 1],h_t)/norm(cross([0 0 1],h_t));
-if dot(N,[0 1 0])>=0
-    OM_t=acos(dot(N,[1 0 0]));
-else
-    OM_t=2*pi-acos(dot(N,[1 0 0]));
-end
-R_OM = [cos(OM_t) sin(OM_t) 0;
-    -sin(OM_t) cos(OM_t) 0;
-    0 0 1];
-R_i = [1 0 0;
-    0 cos(i_t) sin(i_t);
-    0 -sin(i_t) cos(i_t)];
-R_om = [cos(wt) sin(wt) 0;
-    -sin(wt) cos(wt) 0;
-    0 0 1];
-T=R_om*R_i*R_OM;
-r1_t=T*ri;
-r2_t=T*rf;
-th1t=atan(r1_t(2)/r1_t(1));
-th2t=atan(r2_t(2)/r2_t(1));
-r1=norm(ri);
-r2=norm(rf);
-e_t=(r2-r1)/(r1*cos(th1t)-r2*cos(th2t));
-a_t=r1*(1+e_t*cos(th1t))/(1-e_t^2);
-t.a=a_t;
-t.e=e_t;
-t.i=i_t;
-t.om=wt;
-t.OM=OM_t;
-t.mu=terra.mu;
-[r_s1,v1t]=par2car(t,th1t);
-
-[r_s2,v2t]=par2car(t,th2t);
-Dv=norm(v1t-vi_1)+norm(vf_2-v2t);
-
-end
-
-
+figure
+scatter3(0,0,0);
+hold on
+sist_can(2)
+plotOrbit(O_terra,0,2*pi,0.01);
+plotOrbit(O_ast,0,2*pi,0.01)
+legend('attrattore','sistema riferimento','terra','asteroide')
 
