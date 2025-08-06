@@ -1,39 +1,38 @@
 %% Scenario 1
-% Sequenze di manovre standard 
+% Trasferimento geocentrico - da GTO ad orbita di parcheggio assegnata
 clear all
 close all
 clc
 
-%parametri figura
-dth=0.001;
+% Parametro gravitazionale della Terra
+mu=398600;  % [km^3/s^2]
 
-% Parametro attrattore
-mu=398600;
+dth=0.001;  
 
-% Dati forniti dell'orbita di partenza
-O_start.a = 24400.0;
-O_start.e = 0.728300;
-O_start.i = 0.104700;
-O_start.OM = 1.514000;
-O_start.om = 3.107000;
-O_start.mu = mu;
-th_start = 1.665000;
+% Orbita di partenza
+O_start.a = 24400.0;     % [km]
+O_start.e = 0.728300;    % [ ]
+O_start.i = 0.104700;    % [rad]
+O_start.OM = 1.514000;   % [rad]
+O_start.om = 3.107000;   % [rad]
+O_start.mu = mu;         % [km^3/s^2]
+th_start = 1.665000;     % [rad]
 
 [rr_start, vv_start] = par2car(O_start, th_start);
 
-% Dati forniti dell'orbita d'arrivo
+% Orbita d'arrivo
 rr_end=[-12985.280000 3801.011400 8109.619300]';
 vv_end=[-0.948600 -6.134000 1.356000]';
 
-% Trovo dati mancanti dell'orbita d'arrivo 
 [O_end,th_end] = car2par(rr_end,vv_end,mu);
 
 
+%% Strategia 1   CP - CPer - TEB
 
-%% Soluzione 1   CP - CPer - TEB
 % 1) piano orbita
-[dv1, th_cp, O_cp] = changeOrbitalPlane(O_start, O_end); %la funzione calcola il costo solo in funzione del piano di arrivo, l'orbita che restituisce non è O_end
+[dv1, th_cp, O_cp] = changeOrbitalPlane(O_start, O_end); 
 dt1 = TOF(O_start, th_start, th_cp);
+
 %2)modifico anomalia pericentro
 [dv2, thi_cper, thf_cper, th_best, O_cper] = change_pericentre_arg(O_cp, O_end.om-pi, th_cp);
 dt2 = TOF(O_cp, th_cp, th_best);
@@ -41,6 +40,7 @@ dt2 = TOF(O_cp, th_cp, th_best);
 [dv3, dv4, dt3, O_bt] = bitangentTransfer(O_cper, O_end, 'aa'); %testanto tutte 4 le possibilità conviene aa con la modifica del pericentro fatta prima 
 
 DV_1=abs(dv1)+abs(dv2)+abs(dv3)+abs(dv4)
+DT_1= dt1 + dt2 + dt3 
 
 sol_1=figure;
 sol_1.Name="soluzione 1: cambio piano - cambio pericentro - trasferimento bitangente";
@@ -48,7 +48,7 @@ scatter3(0,0,0)
 hold on
 scatter3(rr_start(1),rr_start(2),rr_start(3))
 scatter3(rr_end(1),rr_end(2), rr_end(3))
-sist_can
+sist_can(1)
 plotOrbit(O_start,th_start,th_cp,dth,'b') % Orbita di partenza
 plotOrbit(O_cp,th_cp,th_best(1),dth,'r') % Orbita post cambio piano
 plotOrbit(O_cper,th_best(2),pi,dth,'g')
