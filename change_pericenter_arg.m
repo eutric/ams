@@ -69,11 +69,11 @@ end
 if th_0>-D_om/2 && th_0<D_om/2
     th_best(1) = D_om/2; %th_best in riferimento partenza
     th_best(2) = 2*pi-D_om/2;
-    disp("Il punto d'intersezione in cui effettuo la manovra di cambio pericentro è theta1")
+    disp("Il punto d'intersezione in cui effettuo la manovra di cambio om è theta1")
 else
     th_best(1) = pi+D_om/2;
     th_best(2) = pi-D_om/2;
-    disp("Il punto d'intersezione in cui effettuo la manovra di cambio pericentro è theta2")
+    disp("Il punto d'intersezione in cui effettuo la manovra di cambio om è theta2")
 end
 
 end

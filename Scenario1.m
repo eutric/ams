@@ -32,12 +32,12 @@ vv_end=[-0.948600 -6.134000 1.356000]';
 [delta_v1, th_cp, orbit_cp] = changeOrbitalPlane(O_start, O_end); %la funzione calcola il costo solo in funzione del piano di arrivo, l'orbita che restituisce non è O_end
 delta_t1 = TOF(O_start, th_start, th_cp);
 %2)modifico anomalia pericentro
-[delta_v2, th_i_cper, th_f_cper, th_best, orbit_chper] = change_pericentre_arg(orbit_cp, O_end.om-pi, th_cp);
+[delta_v2, th_i_cper, th_f_cper, th_best, orbit_chper] = change_pericenter_arg(orbit_cp, O_end.om-pi, th_cp);
 delta_t2 = TOF(orbit_cp, th_cp, th_best);
 %3)modifico orbita con bitangente 
 [delta_v1_bt, delta_v2_bt, delta_t_bt, orbit_bt] = bitangentTransfer(orbit_chper, O_end, 'aa'); %testanto tutte 4 le possibilità conviene aa con la modifica del pericentro fatta prima 
 
-DELTA_V_1=delta_v1+delta_v2+delta_v1_bt+delta_v2_bt
+DELTA_V_1=abs(delta_v1)+abs(delta_v2)+abs(delta_v1_bt)+abs(delta_v2_bt)
 
 sol_1=figure;
 sol_1.Name="soluzione 1: cambio piano - cambio pericentro - trasferimento bitangente";
@@ -45,7 +45,7 @@ scatter3(0,0,0)
 hold on
 scatter3(rr_start(1),rr_start(2),rr_start(3))
 scatter3(rr_end(1),rr_end(2), rr_end(3))
-sist_can
+sist_can(1)
 plotOrbit(O_start,th_start,th_cp,dth,'b') % Orbita di partenza
 plotOrbit(orbit_cp,th_cp,th_best(1),dth,'r') % Orbita post cambio piano
 plotOrbit(orbit_chper,th_best(2),pi,dth,'g')
@@ -56,7 +56,7 @@ ylim([-1e5,1e5])
 zlim([-1e5,1e5])
 legend('attrattore','partenza','arrivo','sitema riferimento','orbita di inizio','orbita modificata di piano','orbita modificata anomalia pericentro','orbita biellittica ausiliaria','orbita finale')
 
-
+%%
 %valutazione soluzione 2: cambio forma e poi attitudine
 %1)modifico orbita con bitangente 
 
@@ -66,16 +66,16 @@ legend('attrattore','partenza','arrivo','sitema riferimento','orbita di inizio',
 [delta_v1, th_cp, orbit_cp] = changeOrbitalPlane(orbit_forma, O_end);
 delta_t1 = TOF(O_start, th_start, th_cp);
 %3) modifico angolo ppericentro
-[delta_v2, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(orbit_cp, O_end.om, th_cp);
+[delta_v2, th_i, th_f, th_best, orbit_chper] = change_pericenter_arg(orbit_cp, O_end.om, th_cp);
 delta_t2 = TOF(orbit_cp, th_cp, th_best);
-DELTA_V_2=delta_v1+delta_v2+delta_v2_bt+delta_v1_bt
+DELTA_V_2=abs(delta_v1)+abs(delta_v2)+abs(delta_v1_bt)+abs(delta_v2_bt)
 
 %plot forma e poi attitudine
 fig_2=figure;
 fig_2.Name='caso modifica forma e poi attitudine';
 scatter3(0,0,0)
 hold on
-sist_can
+sist_can(1)
 plotOrbit(O_start,0,pi,dth,'b')
 plotOrbit(orbit_bt_temporanea,0,pi,dth,'g')
 plotOrbit(orbit_forma,pi,th_cp+2*pi,dth,'c')
@@ -98,7 +98,7 @@ orbit_biel3=orbit_biel2;
 orbit_biel3.e=O_end.e;
 orbit_biel3.a=O_end.a;
 %4) cambio anomalia pericentro
-[delta_v2, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(orbit_biel2, O_end.om, th_cp);
+[delta_v2, th_i, th_f, th_best, orbit_chper] = change_pericenter_arg(orbit_biel2, O_end.om, th_cp);
 
 fig_3=figure;
 fig_3.Name='caso biellittico con modifica piano in apocentro';
@@ -127,7 +127,7 @@ delta_t1 = TOF(O_start, th_start, pi); % Attesa per la manovra 1
 [delta_v2, th_cp, orbit_cp] = changeOrbitalPlane(orbit_bt_temporanea, O_end); % Mi metto nel piano definitivo
 delta_t2 = TOF(orbit_bt_temporanea, pi, th_cp); % Attesa per il cambio piano
 % 3) cambio anomalia del pericentro
-[delta_v3, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(orbit_cp, O_end.om, th_cp);
+[delta_v3, th_i, th_f, th_best, orbit_chper] = change_pericenter_arg(orbit_cp, O_end.om, th_cp);
 delta_t3 = TOF(orbit_cp, th_cp, th_best(1)); % Attesa per cambio orientazione
 
 DELTA_V_3 = abs(delta_v1_bt) + abs(delta_v2_bt) + abs(delta_v2) + abs(delta_v3)
@@ -140,7 +140,7 @@ scatter3(0,0,0)
 hold on
 scatter3(rr_start(1),rr_start(2),rr_start(3))
 scatter3(rr_end(1),rr_end(2), rr_end(3))
-sist_can
+sist_can(1)
 plotOrbit(O_start, th_start, pi, dth, 'b') %           Start
 plotOrbit(orbit_bt_temporanea, 0, th_cp, dth, 'c') %      Trasferimento
 plotOrbit(orbit_cp, th_cp, th_best(1), dth, 'g') %        O_cp

@@ -38,7 +38,7 @@ plotOrbit(O_start,0,2*pi,dth,'b')
 plotOrbit(O_end,0,2*pi,dth,'r')
 legend('Attrattore','Partenza','Arrivo','Orbita iniziale','Orbita finale')
 
-%% Strategia 1   CP - CPer - TEB   VERSIONE 1
+%% Strategia 1   CP - CPer - TEB
 % Strategia standard: cambio piano, modifico anomalia pericentro, effettuo il trasferimento bitangente 
 
 % Calcolo i costi
@@ -98,7 +98,7 @@ plotOrbit(O_end,pi,0,dth,'r')
 
 legend('Attrattore','Partenza','Arrivo','Orbita iniziale','Orbita modificata di piano','Orbita modificata anomalia pericentro','orbita bitangente','Orbita finale')
 
-%% Strategia 1   CP - CPer - TEB     VERSIONE 2
+%% Strategia 1   CP - CPer - TEB
 % Strategia standard: cambio piano, modifico anomalia pericentro, effettuo il trasferimento bitangente 
 
 % Calcolo i costi
@@ -146,8 +146,8 @@ scatter3(rr_end(1),rr_end(2), rr_end(3))
 plotOrbit(O_start,th_start,th_cp,dth,'b')
 plotOrbit(O_cp,th_cp,th_best(1),dth,'m') % Orbita post cambio piano
 plotOrbit(O_cper,th_best(2),pi,dth,'g')
-plotOrbit(O_bt,pi,0,dth,'c')
-plotOrbit(O_end,0,2*pi,dth,'r--')
+plotOrbit(O_bt,pi,pi,dth,'c')
+plotOrbit(O_end,pi,0,dth,'r')
 
 % plotOrbit(O_start,0,2*pi,dth, ['--','b'])
 % h = findobj(gca, 'Type', 'line', '-not', 'HandleVisibility', 'off');
