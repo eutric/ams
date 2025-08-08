@@ -27,7 +27,7 @@ end
 
 %%  Load the Earth image from a website
 % Earth_image = 'https://www.solarsystemscope.com/textures/download/8k_earth_daymap.jpg';
-Earth_image = 'http://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Land_ocean_ice_2048.jpg/1024px-Land_ocean_ice_2048.jpg';
+ Earth_image = 'http://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Land_ocean_ice_2048.jpg/1024px-Land_ocean_ice_2048.jpg';
 
 %% Figure
 
