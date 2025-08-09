@@ -136,11 +136,10 @@ elseif delta_OM<0 && delta_i<0
     end
 
     delta_v = 2*v_theta*sin(alpha/2);
-
+    
 elseif delta_OM == 0
     disp('Aggiungi il caso fannullone!!')
 end
-
 
 orbit_cp.om=om_f;
 
