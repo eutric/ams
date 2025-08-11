@@ -24,8 +24,8 @@ O_end.mu = mu;               % [km^3/s^2]
 figure
 scatter3 (0,0,0, 'red', LineWidth=2)
 hold on
-plotOrbit (O_start, 0, 2*pi, dth, 'b')
-plotOrbit (O_end, 0, 2*pi, dth, 'k')
+plotOrbit (O_start, 0, 2*pi, dth, 'b');
+plotOrbit (O_end, 0, 2*pi, dth, 'k');
 %prova caso esempio scelgo theta1i=theta2f=0
 th1i=0;
 th2f=0;
@@ -110,7 +110,7 @@ O_end.OM = 273.63 *pi/180;   % [rad]
 O_end.om = 327.03 *pi/180;   % [rad]
 O_end.mu = mu;          
 
-n = 20; % Dimensioni griglia
+n = 100; % Dimensioni griglia
 a = 0;
 b = 2*pi;
 OO_t = []; % Vettore di oggetti orbita, non si può preallocare
@@ -120,8 +120,8 @@ costmin=1e16;
 figure
 scatter3 (0,0,0, 'red', LineWidth=2)
 hold on
-plotOrbit (O_start, 0, 2*pi, dth, 'b')
-plotOrbit (O_end, 0, 2*pi, dth, 'k')
+plotOrbit (O_start, 0, 2*pi, dth, 'b');
+plotOrbit (O_end, 0, 2*pi, dth, 'k');
 tic
 for th1i=linspace(a, b, n)
     for th2f=linspace(a, b, n)
@@ -153,13 +153,13 @@ scatter3 (punto1_t(1), punto1_t(2), punto1_t(3), 'red')
 scatter3 (punto2_t(1), punto2_t(2), punto2_t(3), 'red')
 scatter3 (punto_1(1), punto_1(2), punto_1(3), 'red')
 scatter3 (punto_2(1), punto_2(2), punto_2(3), 'red')
-plotOrbit(O_best, th_t_best(1), th_t_best(2), dth, 'g') % Trasferimento vincente
+plotOrbit(O_best, th_t_best(1), th_t_best(2), dth, 'g'); % Trasferimento vincente
 
 th_best_12
 costmin
 % th1_t = 3.6368, th2_t = 3.5000, dV = 6.3194
 %% test ga
-clear  all
+clear all
 close all
 clc
 
@@ -182,7 +182,8 @@ O_end.OM = 273.63 *pi/180;   % [rad]
 O_end.om = 327.03 *pi/180;   % [rad]
 O_end.mu = mu;          
 
-fun=@(th1,th2,om)O_tfun(O_start,O_end,th1,th2,om).cost;
-ga(fun,3)
-
+% fun=@(th1,th2,om)brutta(th1,th2,om,O_start,O_end);
+fun=@(x)brutta(x(1),x(2),x(3),O_start,O_end);
+x = ga(fun,3,[],[],[],[],[0,0,0],[2*pi,2*pi,2*pi])
+fun(x)
 

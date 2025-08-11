@@ -33,7 +33,7 @@ Terra_3D(r_terra)
 set(gcf, 'Name', 'Orbita di partenza', 'NumberTitle', 'off');
 scatter3(rr_start(1),rr_start(2),rr_start(3))
 hold on
-plotOrbit(O_start,0,2*pi,dth,'b')
+plotOrbit(O_start,0,2*pi,dth,'b');
 
 %% Orbita iniziale nel piano orbitale
 % DA AGGIUSTARE
@@ -47,7 +47,7 @@ Terra_3D(r_terra)
 set(gcf, 'Name', 'Orbita finale', 'NumberTitle', 'off');
 scatter3(rr_end(1),rr_end(2),rr_end(3))
 hold on
-plotOrbit(O_end,0,2*pi,dth,'r')
+plotOrbit(O_end,0,2*pi,dth,'r');
 
 %% Orbita finale nel piano orbitale
 % DA AGGIUSTARE
@@ -62,8 +62,8 @@ set(gcf, 'Name', 'Orbita di partenza e orbita di arrivo', 'NumberTitle', 'off');
 scatter3(rr_start(1),rr_start(2),rr_start(3))
 hold on
 scatter3(rr_end(1),rr_end(2), rr_end(3))
-plotOrbit(O_start,0,2*pi,dth,'b')
-plotOrbit(O_end,0,2*pi,dth,'r')
+plotOrbit(O_start,0,2*pi,dth,'b');
+plotOrbit(O_end,0,2*pi,dth,'r');
 legend('Attrattore','Partenza','Arrivo','Orbita iniziale','Orbita finale')
 
 %% Strategia 1 CP - CPer - TEB 
@@ -111,11 +111,11 @@ set(gcf, 'Name', 'Strategia 1: cambio piano - cambio pericentro - trasferimento 
 scatter3(rr_start(1),rr_start(2),rr_start(3))
 hold on
 scatter3(rr_end(1),rr_end(2), rr_end(3))
-plotOrbit(O_start,th_start,th_cp,dth,'b')
-plotOrbit(O_cp,th_cp,th_best(1),dth,'m')
-plotOrbit(O_cper,th_best(2),0,dth,'g')
-plotOrbit(O_bt,0,pi,dth,'c')
-plotOrbit(O_end,pi,0,dth,'r')
+plotOrbit(O_start,th_start,th_cp,dth,'b');
+plotOrbit(O_cp,th_cp,th_best(1),dth,'m');
+plotOrbit(O_cper,th_best(2),0,dth,'g');
+plotOrbit(O_bt,0,pi,dth,'c');
+plotOrbit(O_end,pi,0,dth,'r');
 
 legend('Attrattore','Partenza','Arrivo','Orbita iniziale','Orbita modificata di piano','Orbita modificata anomalia pericentro','orbita bitangente','Orbita finale')
 
@@ -161,11 +161,11 @@ set(gcf, 'Name', 'Strategia 2: trasferimento bitangente - cambio piano - cambio 
 scatter3(rr_start(1),rr_start(2),rr_start(3))
 hold on
 scatter3(rr_end(1),rr_end(2), rr_end(3))
-plotOrbit(O_start,th_start,2*pi,dth,'b')
-plotOrbit(O_bt,0,pi,dth,'c')
-plotOrbit(O_aus,pi,th_cp,dth,'g')
-plotOrbit(O_cp,th_cp,th_best(1),dth,'m')
-plotOrbit(O_cper,th_best(2),th_end,dth,'r')
+plotOrbit(O_start,th_start,2*pi,dth,'b');
+plotOrbit(O_bt,0,pi,dth,'c');
+plotOrbit(O_aus,pi,th_cp,dth,'g');
+plotOrbit(O_cp,th_cp,th_best(1),dth,'m');
+plotOrbit(O_cper,th_best(2),th_end,dth,'r');
 
 
 legend('Attrattore','Partenza','Arrivo','Orbita iniziale','Orbita bitangente','Orbita ausiliaria', 'Orbita cambio piano', 'Orbita cambio pericentro coincidende con finale')
@@ -212,11 +212,11 @@ set(gcf, 'Name', 'Strategia 3: cambio piano e anomalia del pericentro durante il
 scatter3(rr_start(1),rr_start(2),rr_start(3))
 hold on
 scatter3(rr_end(1),rr_end(2), rr_end(3))
-plotOrbit(O_start, th_start, pi, dth, 'b')           
-plotOrbit(O_bt, 0, th_cp, dth, 'c')      
-plotOrbit(O_cp, th_cp, th_best(1), dth, 'm') 
-plotOrbit(O_cper, th_best(2), pi,dth,'g') 
-plotOrbit(O_end, pi, th_end,dth,'r') 
+plotOrbit(O_start, th_start, pi, dth, 'b');           
+plotOrbit(O_bt, 0, th_cp, dth, 'c');
+plotOrbit(O_cp, th_cp, th_best(1), dth, 'm'); 
+plotOrbit(O_cper, th_best(2), pi,dth,'g');
+plotOrbit(O_end, pi, th_end,dth,'r');
 
 legend('Attrattore','Partenza', 'Arrivo','Orbita iniaziale','Bitangente ausiliaria','Orbita cambio piano','Orbita cambio pericentro', 'Orbita finale')
 
@@ -265,11 +265,11 @@ set(gcf, 'Name', 'Strategia 4: cambio piano - trasferimento bitangente - cambio 
 scatter3(rr_start(1),rr_start(2),rr_start(3))
 hold on
 scatter3(rr_end(1),rr_end(2), rr_end(3))
-plotOrbit(O_start,th_start,th_cp,dth,'b') 
-plotOrbit(O_cp,th_cp,pi,dth,'m')
-plotOrbit(O_bt,0,th_best(1)-pi,dth,'c')
-plotOrbit(O_cper,th_best(2)-pi,pi,dth,'g')
-plotOrbit(O_end,pi,th_end,dth,'r')
+plotOrbit(O_start,th_start,th_cp,dth,'b') ;
+plotOrbit(O_cp,th_cp,pi,dth,'m');
+plotOrbit(O_bt,0,th_best(1)-pi,dth,'c');
+plotOrbit(O_cper,th_best(2)-pi,pi,dth,'g');
+plotOrbit(O_end,pi,th_end,dth,'r');
 
 legend('Attrattore','Partenza','Arrivo','Orbita iniziale','Orbita cambio piano','Orbita bitangente','Orbita cper','Orbita finale')
 
@@ -326,12 +326,12 @@ set(gcf, 'Name', 'Strategia 5: TBT - CP - CPer - TBT', 'NumberTitle', 'off');
 scatter3(rr_start(1),rr_start(2),rr_start(3))
 hold on
 scatter3(rr_end(1),rr_end(2), rr_end(3))
-plotOrbit(O_start,th_start,2*pi,dth,'b')
-plotOrbit(O_biel1,0,th_cp,dth, 'm') 
-plotOrbit(O_cp,th_cp,pi,dth, 'c')
-plotOrbit(O_biel2,pi,th_best(1),dth, 'k') 
-plotOrbit(O_cper,th_best(2),th_end, dth, 'g')
-plotOrbit(O_end,0,th_end,dth, 'r--')
+plotOrbit(O_start,th_start,2*pi,dth,'b');
+plotOrbit(O_biel1,0,th_cp,dth, 'm');
+plotOrbit(O_cp,th_cp,pi,dth, 'c');
+plotOrbit(O_biel2,pi,th_best(1),dth, 'k'); 
+plotOrbit(O_cper,th_best(2),th_end, dth, 'g');
+plotOrbit(O_end,0,th_end,dth, 'r--');
 legend ('Attrattore','Partenza','Arrivo','Orbita iniziale','Prima ellisse','Orbita cambio piano', 'Orbita cambio pericentro', 'Seconda ellisse', 'Orbita finale')
 
 %% Strategia 6   CP - CPer - TBT
@@ -382,12 +382,12 @@ set(gcf, 'Name', 'Strategia 6: CP - CPer - TBT', 'NumberTitle', 'off');
 scatter3(rr_start(1),rr_start(2),rr_start(3))
 hold on
 scatter3(rr_end(1),rr_end(2), rr_end(3))
-plotOrbit(O_start,th_start,th_cp,dth,'b') 
-plotOrbit(O_cp,th_cp,th_best(1),dth,'m') 
-plotOrbit(O_cper,th_best(2),0,dth,'g')
-plotOrbit(O_biel1,0,pi,dth,'c')
-plotOrbit(O_biel2,pi,0,dth,'k')
-plotOrbit(O_end,0,th_end,dth,'r--')
+plotOrbit(O_start,th_start,th_cp,dth,'b');
+plotOrbit(O_cp,th_cp,th_best(1),dth,'m');
+plotOrbit(O_cper,th_best(2),0,dth,'g');
+plotOrbit(O_biel1,0,pi,dth,'c');
+plotOrbit(O_biel2,pi,0,dth,'k');
+plotOrbit(O_end,0,th_end,dth,'r--');
 legend('Attrattore','Partenza','Arrivo','Orbita iniziale','Orbita cambio piano','Orbita cambio anomalia pericentro','Orbita ellisse 1','Orbita ellisse 2')
 
 %% Strategia 7    CP - TBT - CPer 
@@ -438,10 +438,10 @@ set(gcf, 'Name', 'Strategia 7: CP - TBT - CPer', 'NumberTitle', 'off');
 scatter3(rr_start(1),rr_start(2),rr_start(3))
 hold on
 scatter3(rr_end(1),rr_end(2), rr_end(3))
-plotOrbit(O_start,th_start,th_cp,dth,'b')
-plotOrbit(O_cp,th_cp,0,dth, 'm')
-plotOrbit(O_biel1,0,pi,dth, 'c') 
-plotOrbit(O_biel2,pi,th_best(1),dth, 'k')
-plotOrbit(O_cper,th_best(2),th_end, dth, 'g')
-plotOrbit(O_end,0,th_end,dth, 'r--')
+plotOrbit(O_start,th_start,th_cp,dth,'b');
+plotOrbit(O_cp,th_cp,0,dth, 'm');
+plotOrbit(O_biel1,0,pi,dth, 'c');
+plotOrbit(O_biel2,pi,th_best(1),dth, 'k');
+plotOrbit(O_cper,th_best(2),th_end, dth, 'g');
+plotOrbit(O_end,0,th_end,dth, 'r--');
 legend('Attrattore','Partenza','Arrivo','Orbita iniziale','Orbita cambio piano','Orbita ellisse 1','Orbita ellisse 2','Orbita cambio anomalia pericentro')

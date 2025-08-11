@@ -476,3 +476,23 @@ O_end.i = 8.55 *pi/180;      % [rad]
 O_end.OM = 273.63 *pi/180;   % [rad]
 O_end.om = 327.03 *pi/180;   % [rad]
 O_end.mu = mu;       
+
+% [th1, th2, kk] = intersezione(O_start, O_end);
+
+figure
+scatter3 (0,0,0, 'red', LineWidth=2)
+hold on
+rr_start = plotOrbit (O_start, 0, 2*pi, dth, 'b');
+rr_end = plotOrbit (O_end, 0, 2*pi, dth, 'k');
+
+kk = 0;
+% toll = 
+for ii = 1:length(rr_start)
+    for jj = 1:length(rr_end);
+        if rr_start(:,ii) == rr_end(:,jj)
+            kk = kk+1;
+            intersezione(:,kk) = rr_start(:,ii);
+        end
+    end
+end
+intersezione
