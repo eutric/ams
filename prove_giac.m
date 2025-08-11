@@ -386,3 +386,69 @@ y = linespace (-10^4,10^4, 100);
 Z = z(h, X, Y);
 
 surf (X, Y, Z)
+
+%% Sistemo change_pericenter
+clear
+close all
+clc
+
+%parametri figura
+dth=0.001;
+
+% Parametro attrattore
+mu=398600;
+% Dati forniti dell'orbita di partenza
+O_start.a = 24400.0;
+O_start.e = 0.728300;
+O_start.i = 0.104700;
+O_start.OM = 1.514000;
+O_start.om = 3.107000;
+O_start.mu = mu;
+th_start = 1.665000;
+
+[rr_start, vv_start] = par2car(O_start, th_start);
+
+% Dati forniti dell'orbita d'arrivo
+rr_end=[-12985.280000 3801.011400 8109.619300]';
+vv_end=[-0.948600 -6.134000 1.356000]';
+
+% Trovo dati mancanti dell'orbita d'arrivo 
+[O_end,th_end] = car2par(rr_end,vv_end,mu);
+
+%1)modifico orbita con bitangente 
+
+%1) piano orbita
+[dv_cp, th_cp, orbit_cp] = changeOrbitalPlane(O_start, O_end);
+[dv_imp1, dv_imp2, delta_t, orbit_bt_temporanea, th0, thf, orbit_forma] = bitangentTransfer(orbit_cp, O_end, 'aa');
+%2) modifico piano
+
+delta_t2 = TOF(O_start, th_start, th_cp);
+%3) cambio anomalia del pericentro
+[dv_cper, th_i, th_f, th_best, orbit_chper] = change_pericentre_arg(orbit_bt_temporanea, O_end.om, th_cp);
+
+delta_t3 = TOF(orbit_cp, th_cp, th_best(1));
+DELTA_V_4 = abs(dv_imp1) + abs(dv_cp) + abs(dv_cper) + abs(dv_imp2)
+% Costo 4.2537
+figure
+subplot(1,2,1)
+
+scatter(0,0)
+hold on
+xline(0)
+yline(0)
+plotOrbit_plane(O_start, th_start, th_cp, dth, 'b')
+legend('attrattore','x', 'y','vado al cambio piano')
+grid on
+subplot(1,2,2)
+scatter(0,0)
+hold on
+xline(0)
+yline(0)
+% plotOrbit_plane(orbit_cp, th_start, th_cp, dth, 'b')
+plotOrbit_plane(orbit_cp, th_cp, pi, dth, 'c')
+plotOrbit_plane(orbit_bt_temporanea, 0, th_best(1), dth, 'g')
+plotOrbit_plane(orbit_chper, th_best(2), pi, dth, 'k')
+plotOrbit_plane(O_end, pi, th_end, dth, 'm')
+plotOrbit_plane(O_end, 0, 2*pi, dth, '--')
+grid on
+legend('attrattore','x', 'y','vado al primo impulso','trasferimento','vado al secondo impulso','fine')

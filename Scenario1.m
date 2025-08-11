@@ -231,7 +231,8 @@ legend('Attrattore','Partenza', 'Arrivo','Orbita iniaziale','Bitangente ausiliar
 % 2) trasferimento bitangente 
 [dv3, dv4, dt_t, O_bt] = bitangentTransfer(O_cp, O_end, 'aa');
 % 3) modifico anomalia pericentro
-[dv2, thi, thf, th_best, O_cper] = change_pericenter_arg(O_bt, O_end.om, th_cp);
+[dv2, thi, thf, th_best, O_cper] = change_pericenter_arg(O_bt, O_end.om, pi);
+% [dv2, thi, thf, th_best, O_cper] = change_pericenter_aggiustata(O_bt, O_end.om, pi);
 
 % Costo totale 
 DV_4=abs(dv1)+abs(dv2)+abs(dv3)+abs(dv4);

@@ -61,19 +61,43 @@ if D_om <= 0
     disp('Delta omega nel trasferimento di pericentro è negativo')
 end
 th_best=zeros(2,1);
-% Cerco il theta migliore
-if th_0>pi
-    th_0 = th_0-2*pi;
-end
+% Cerco il theta migliore; th_0 è nel primo sistema di riferimento, i punti
+% d'intersezione sono quindi D_om/2 e D_om/2+pi. Per confrontarli, ho vari
+% casi:
+if th_0 == th_i(1) 
+    th_best(1) = th_i(1);
+    th_best(2) = th_f(1);
+elseif th_0 == th_i(2)
+        th_best(1) = th_i(2);
+        th_best(2) = th_f(2);
+elseif th_0 < 0 
+    if D_om < 0
+        if th_0 > th_i(1) % Quindi sono tra th1 e th2, vado in th2
+            th_best(1) = th_i(2); % Il th2 del sdr 1
+            th_best(2) = th_f(2); % Il th2 del sdr 2
+        else % Sono tra th2 e th1, vado in th1
+            th_best(1) = th_i(1);
+            th_best(2) = th_f(1);
+        end
+    else % D_om > 0 e th_0 < 0
+        th_0 = th_0 + 2*pi; % Quindi th0, th1, th2 tutti compresi tra 0 e 2pi
+        if th_0 > th_i(1) && th_0 < th_i(2) % Sono tra th1 e th2, vado in th2
+            th_best(1) = th_i(2); % Il th2 del sdr 1
+            th_best(2) = th_f(2); % Il th2 del sdr 2
+        else % Sono tra th2 e th1, vado in th1
+            th_best(1) = th_i(1);
+            th_best(2) = th_f(1);
+        end    
+    end
+else % th_0 > 0 % Li ho tutti e tre compresi tra 0 e 2pi
+    if th_0 > th_i(1) && th_0 < th_i(2) % Vado in th2
+        th_best(1) = th_i(2);
+        th_best(2) = th_f(2);
+    else % Vado in th1
+        th_best(1) = th_i(1);
+        th_best(2) = th_f(1);
+    end
+end 
 
-if th_0>-D_om/2 && th_0<D_om/2
-    th_best(1) = D_om/2; %th_best in riferimento partenza
-    th_best(2) = 2*pi-D_om/2;
-    disp("Il punto d'intersezione in cui effettuo la manovra di cambio om è theta1")
-else
-    th_best(1) = pi+D_om/2;
-    th_best(2) = pi-D_om/2;
-    disp("Il punto d'intersezione in cui effettuo la manovra di cambio om è theta2")
-end
 
 end
