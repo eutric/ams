@@ -121,16 +121,10 @@ for th1i=linspace(0,2*pi,10)
                 if cost<costmin
                     costmin=cost;
                     O_best=O_t;
-                    th_t_best=th_t;
-                end
+                    e
             end
 
         end
     end
 end
-figure
-scatter3 (0,0,0, 'red', LineWidth=2)
-hold on
-plotOrbit (O_start, 0, 2*pi, dth, 'b')
-plotOrbit (O_end, 0, 2*pi, dth, 'k')
-plotOrbit(O_best,0,2*pi,0.01)
+
