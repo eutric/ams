@@ -86,8 +86,8 @@ xlim([-2e8,2e8])
 ylim([-2e8,2e8])
 zlim([-2e8,2e8])
 
-%% test funzione
-clear 
+%% test funzione cicli annidati
+clear  
 close all
 clc
 
@@ -110,7 +110,7 @@ O_end.OM = 273.63 *pi/180;   % [rad]
 O_end.om = 327.03 *pi/180;   % [rad]
 O_end.mu = mu;          
 
-n = 100; % Dimensioni griglia
+n = 20; % Dimensioni griglia
 a = 0;
 b = 2*pi;
 OO_t = []; % Vettore di oggetti orbita, non si può preallocare
@@ -126,14 +126,14 @@ tic
 for th1i=linspace(a, b, n)
     for th2f=linspace(a, b, n)
         for om=linspace(a, b,n)
-            [O_t,th_t,cost] = O_tfun(O_start,O_end,th1i,th2f,om);
+            [O_t] = O_tfun(O_start,O_end,th1i,th2f,om);
             if O_t.e<=1 && O_t.e>=0
                 OO_t=[OO_t,O_t];
                 % plotOrbit (O_t, 0, 2*pi, dth, 'y--')
-                if cost<costmin
-                    costmin=cost;
+                if O_t.cost<costmin
+                    costmin=O_t.cost;
                     O_best=O_t;
-                    th_t_best=th_t;
+                    th_t_best=O_t.th_t;
                     th_best_12 = [th1i, th2f];
                 end
             else 
@@ -158,3 +158,31 @@ plotOrbit(O_best, th_t_best(1), th_t_best(2), dth, 'g') % Trasferimento vincente
 th_best_12
 costmin
 % th1_t = 3.6368, th2_t = 3.5000, dV = 6.3194
+%% test ga
+clear  all
+close all
+clc
+
+mu = 1.32712440042e20 * 0.001^3; % km^3/s^2
+dth = 0.001;
+
+% Terra
+O_start.a = 1.4946e8;  % [km]
+O_start.e = 0.016;     % [ ]
+O_start.i = 9.1920e-5; % [rad]
+O_start.OM = 2.7847;   % [rad]
+O_start.om = 5.2643;   % [rad]
+O_start.mu = mu;       % [km^3/s^2]
+
+% Asteroide 163899 (2003 SD220)
+O_end.a = 0.827903 *1.496e8; % [km]
+O_end.e = 0.209487;          % [ ]
+O_end.i = 8.55 *pi/180;      % [rad]
+O_end.OM = 273.63 *pi/180;   % [rad]
+O_end.om = 327.03 *pi/180;   % [rad]
+O_end.mu = mu;          
+
+fun=@(th1,th2,om)O_tfun(O_start,O_end,th1,th2,om).cost;
+ga(fun,3)
+
+

@@ -1,4 +1,4 @@
-function [O_t,th_t,cost] = O_tfun(O_start,O_end,th1i,th2f,om)
+function [O_t] = O_tfun(O_start,O_end,th1i,th2f,om)
 %proviamo a fare una funzione che nserendo delle limitazioni in input
 %restituisce l'orbita di trasferimento in output
 [rri,vvi] = par2car(O_start, th1i);
@@ -67,9 +67,9 @@ O_t.mu=O_start.mu;
 [~,vv1t]=par2car(O_t,th1_t);
 [~,vv2t]=par2car(O_t,th2_t);
 
-cost= norm(vv1t-vvi) + norm(vv2t-vvf);
+O_t.cost= norm(vv1t-vvi) + norm(vv2t-vvf);
 
-th_t=[th1_t,th2_t]; % th1 e th2 nel perifocale dell'orbita di trasferimento
+O_t.th_t=[th1_t,th2_t]; % th1 e th2 nel perifocale dell'orbita di trasferimento
 
 end
 
