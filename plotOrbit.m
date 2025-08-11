@@ -1,4 +1,4 @@
-function [rr] = plotOrbit(orbit,th0,thf,dth,linestyle)
+function [rr, r] = plotOrbit(orbit,th0,thf,dth,linestyle)
 % La funzione prende in ingresso i parametri di un'orbita, l'anomalia vera
 % iniziale e finale, la step size e una stringa o un vettore di stringhe e
 % restituisce il plot tridimensionale dell'orbita.

@@ -70,6 +70,8 @@ O_t.mu=O_start.mu;
 O_t.cost= norm(vv1t-vvi) + norm(vv2t-vvf);
 
 O_t.th_t=[th1_t,th2_t]; % th1 e th2 nel perifocale dell'orbita di trasferimento
+O_t.tempo = TOF (O_t, th1_t, th2_t);
+
 
 end
 

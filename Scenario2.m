@@ -173,6 +173,9 @@ O_start.i = 9.1920e-5; % [rad]
 O_start.OM = 2.7847;   % [rad]
 O_start.om = 5.2643;   % [rad]
 O_start.mu = mu;       % [km^3/s^2]
+r_terra = 6378.388;
+
+[rr_start, vv_start] = par2car(O_start, 0);
 
 % Asteroide 163899 (2003 SD220)
 O_end.a = 0.827903 *1.496e8; % [km]
@@ -182,8 +185,66 @@ O_end.OM = 273.63 *pi/180;   % [rad]
 O_end.om = 327.03 *pi/180;   % [rad]
 O_end.mu = mu;          
 
-% fun=@(th1,th2,om)brutta(th1,th2,om,O_start,O_end);
-fun=@(x)brutta(x(1),x(2),x(3),O_start,O_end);
-x = ga(fun,3,[],[],[],[],[0,0,0],[2*pi,2*pi,2*pi])
-fun(x)
+[rr_end, vv_end] = par2car(O_end, 0);
 
+% fun=@(th1,th2,om)brutta(th1,th2,om,O_start,O_end);
+% fun=@(x)brutta(x(1),x(2),x(3),O_start,O_end);
+fun_costo = @(x)O_tfun(O_start,O_end,x(1),x(2),x(3)).cost;
+x = ga(fun_costo,3,[],[],[],[],[0,0,0],[2*pi,2*pi,2*pi]);
+O_opt_costo = O_tfun(O_start, O_end,x(1),x(2),x(3))
+
+figure
+scatter3 (0, 0, 0, 'y', 'filled', LineWidth=10)
+hold on
+scatter3(rr_start(1),rr_start(2),rr_start(3), 'green', 'filled', LineWidth=10)
+scatter3(rr_end(1), rr_end(2), rr_end(3), 'magenta', 'filled', LineWidth=10)
+plotOrbit (O_start, 0, x(1), dth, 'k--');
+[rr, r_theta_transfer] = plotOrbit (O_opt_costo, O_opt_costo.th_t(1), O_opt_costo.th_t(2), dth, 'r');
+plotOrbit (O_end, x(2), 2*pi, dth, 'k--');
+% plotOrbit (O_start, 0, 2*pi, dth, 'k--');
+% plotOrbit (O_opt, 0, 2*pi, dth, 'k--');
+% plotOrbit (O_end, 0, 2*pi, dth, 'k--');
+
+legend ('SOLE', 'START', 'END', 'Orbita terrestre', 'Orbita di trasferimento', 'Orbita Asteroide')
+
+O_opt_costo.tempo = seconds(O_opt_costo.tempo);
+O_opt_costo.tempo.Format = 'hh:mm:ss';
+O_opt_costo.tempo
+
+%% Scenario 2 - ottimizzo il TOF con ga()
+clear
+close all
+clc
+
+mu = 1.32712440042e20 * 0.001^3; % km^3/s^2
+dth = 0.001;
+
+% Terra
+O_start.a = 1.4946e8;  % [km]
+O_start.e = 0.016;     % [ ]
+O_start.i = 9.1920e-5; % [rad]
+O_start.OM = 2.7847;   % [rad]
+O_start.om = 5.2643;   % [rad]
+O_start.mu = mu;       % [km^3/s^2]
+r_terra = 6378.388;
+
+[rr_start, vv_start] = par2car(O_start, 0);
+
+% Asteroide 163899 (2003 SD220)
+O_end.a = 0.827903 *1.496e8; % [km]
+O_end.e = 0.209487;          % [ ]
+O_end.i = 8.55 *pi/180;      % [rad]
+O_end.OM = 273.63 *pi/180;   % [rad]
+O_end.om = 327.03 *pi/180;   % [rad]
+O_end.mu = mu;          
+
+[rr_end, vv_end] = par2car(O_end, 0);
+
+% fun=@(th1,th2,om)brutta(th1,th2,om,O_start,O_end);
+% fun=@(x)brutta(x(1),x(2),x(3),O_start,O_end);
+fun_tempo = @(x)O_tfun(O_start,O_end,x(1),x(2),x(3)).tempo;
+x = ga(fun_tempo,3,[],[],[],[],[0,0,0],[2*pi,2*pi,2*pi])
+O_opt_tempo = O_tfun(O_start, O_end,x(1),x(2),x(3))
+O_opt_tempo.tempo = seconds(real(O_opt_tempo.tempo));
+O_opt_tempo.tempo.Format = 'hh:mm:ss';
+O_opt_tempo.tempo
