@@ -33,10 +33,12 @@ th2f=0;
 [rrf,vvf] = par2car(O_end, th2f);
 scatter3(rri(1),rri(2),rri(3))
 scatter3(rrf(1),rrf(2),rrf(3))
+
 %identifico orbita
 hh=cross(rri,rrf)./(norm(cross(rri,rrf)));
 i=acos(dot(hh,[0,0,1]));
 NN=cross([0,0,1],hh)./norm(cross([0,0,1],hh));
+
 if dot(NN,[0,1,0])>=0
     OM=acos(dot(NN,[1,0,0]));
 elseif dot(NN,[0,1,0])<0
@@ -85,7 +87,7 @@ ylim([-2e8,2e8])
 zlim([-2e8,2e8])
 
 %% test funzione
-clear all
+clear 
 close all
 clc
 
@@ -107,30 +109,48 @@ O_end.i = 8.55 *pi/180;      % [rad]
 O_end.OM = 273.63 *pi/180;   % [rad]
 O_end.om = 327.03 *pi/180;   % [rad]
 O_end.mu = mu;          
-thi1=0;
-th2f=0;
-OO_t=[];
-om=0;
-costmin=1e16;
-for th1i=linspace(0,2*pi,10)
-    for th2f=linspace(0,2*pi,10)
-        for om=linspace(0,2*pi,10)
-            [O_t,th_t,cost] = O_tfun(O_start,O_end,th1i,th2f,om);
-            if O_t.e<=1 && O_t.e>=0
-                OO_t=[OO_t,O_t];
-                if cost<costmin
-                    costmin=cost;
-                    O_best=O_t;
-                    th_t_best=th_t;
-                end
-            end
 
-        end
-    end
-end
+n = 10; % Dimensioni griglia
+OO_t = []; % Vettore di oggetti orbita, non si può preallocare
+kk = 0; % Contatore
+costmin=1e16;
+
 figure
 scatter3 (0,0,0, 'red', LineWidth=2)
 hold on
 plotOrbit (O_start, 0, 2*pi, dth, 'b')
 plotOrbit (O_end, 0, 2*pi, dth, 'k')
-plotOrbit(O_best,0,2*pi,0.01)
+
+for th1i=linspace(0,2*pi,n)
+    for th2f=linspace(0,2*pi,n)
+        for om=linspace(0,2*pi,n)
+            [O_t,th_t,cost] = O_tfun(O_start,O_end,th1i,th2f,om);
+            if O_t.e<=1 && O_t.e>=0
+                OO_t=[OO_t,O_t];
+                % plotOrbit (O_t, 0, 2*pi, dth, 'y--')
+                if cost<costmin
+                    costmin=cost;
+                    O_best=O_t;
+                    th_t_best=th_t;
+                    th_best_12 = [th1i, th2f];
+                end
+            else 
+                kk = kk+1;
+            end
+
+        end
+    end
+end
+
+[punto_1, ~] = par2car(O_start, th_best_12(1));
+[punto1_t, ~] = par2car(O_best, th_t_best(1));
+[punto2_t, ~] = par2car(O_best, th_t_best(2));
+[punto_2, ~] = par2car(O_end, th_best_12(2));
+
+scatter3 (punto1_t(1), punto1_t(2), punto1_t(3), 'red')
+scatter3 (punto2_t(1), punto2_t(2), punto2_t(3), 'red')
+scatter3 (punto_1(1), punto_1(2), punto_1(3), 'red')
+scatter3 (punto_2(1), punto_2(2), punto_2(3), 'red')
+plotOrbit(O_best, th_t_best(1), th_t_best(2), dth, 'g') % Trasferimento vincente
+
+costmin

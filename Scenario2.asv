@@ -33,10 +33,12 @@ th2f=0;
 [rrf,vvf] = par2car(O_end, th2f);
 scatter3(rri(1),rri(2),rri(3))
 scatter3(rrf(1),rrf(2),rrf(3))
+
 %identifico orbita
 hh=cross(rri,rrf)./(norm(cross(rri,rrf)));
 i=acos(dot(hh,[0,0,1]));
 NN=cross([0,0,1],hh)./norm(cross([0,0,1],hh));
+
 if dot(NN,[0,1,0])>=0
     OM=acos(dot(NN,[1,0,0]));
 elseif dot(NN,[0,1,0])<0
@@ -85,7 +87,7 @@ ylim([-2e8,2e8])
 zlim([-2e8,2e8])
 
 %% test funzione
-clear all
+clear 
 close all
 clc
 
@@ -107,24 +109,33 @@ O_end.i = 8.55 *pi/180;      % [rad]
 O_end.OM = 273.63 *pi/180;   % [rad]
 O_end.om = 327.03 *pi/180;   % [rad]
 O_end.mu = mu;          
-thi1=0;
-th2f=0;
-OO_t=[];
-om=0;
+
+n = 100; % Dimensioni griglia
+OO_t=[]; % Vettore di oggetti orbita, non si può preallocare
+kk = 0; % Contatore
 costmin=1e16;
-for th1i=linspace(0,2*pi,10)
-    for th2f=linspace(0,2*pi,10)
-        for om=linspace(0,2*pi,10)
+for th1i=linspace(0,2*pi,n)
+    for th2f=linspace(0,2*pi,n)
+        for om=linspace(0,2*pi,n)
             [O_t,th_t,cost] = O_tfun(O_start,O_end,th1i,th2f,om);
+            kk = kk+1;
             if O_t.e<=1 && O_t.e>=0
                 OO_t=[OO_t,O_t];
                 if cost<costmin
                     costmin=cost;
                     O_best=O_t;
-                    e
+                    th_t_best=th_t;
+                end
+            else 
+                fprintf("L'orbita numero %d non è realizzabile", kk)
             end
 
         end
     end
 end
-
+figure
+scatter3 (0,0,0, 'red', LineWidth=2)
+hold on
+plotOrbit (O_start, 0, 2*pi, dth, 'b')
+plotOrbit (O_end, 0, 2*pi, dth, 'k')
+plotOrbit(O_best,0,2*pi,0.01)

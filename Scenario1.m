@@ -75,6 +75,7 @@ legend('Attrattore','Partenza','Arrivo','Orbita iniziale','Orbita finale')
 [dv1, th_cp, O_cp] = changeOrbitalPlane(O_start, O_end); 
 % 2) modifico anomalia pericentro
 [dv2, th_i, th_f, th_best, O_cper] = change_pericenter_arg(O_cp, O_end.om, th_cp);
+
 % 3) modifico orbita con bitangente PERICENTRO-APOCENTRO
 [dv3, dv4, dt4, O_bt] = bitangentTransfer(O_cper, O_end, 'pa'); % testando tutte e 4 le possibilità conviene pa 
  
@@ -181,7 +182,6 @@ legend('Attrattore','Partenza','Arrivo','Orbita iniziale','Orbita bitangente','O
 % 3) cambio anomalia pericentro
 [dv4, th_i, th_f, th_best, O_cper] = change_pericenter_arg(O_cp, O_end.om, th_cp);
 
-
 % Costo totale 
 DV_3 = abs(dv1)+abs(dv2)+abs(dv3)+abs(dv4);
 
@@ -232,7 +232,6 @@ legend('Attrattore','Partenza', 'Arrivo','Orbita iniaziale','Bitangente ausiliar
 [dv3, dv4, dt_t, O_bt] = bitangentTransfer(O_cp, O_end, 'aa');
 % 3) modifico anomalia pericentro
 [dv2, thi, thf, th_best, O_cper] = change_pericenter_arg(O_bt, O_end.om, pi);
-% [dv2, thi, thf, th_best, O_cper] = change_pericenter_aggiustata(O_bt, O_end.om, pi);
 
 % Costo totale 
 DV_4=abs(dv1)+abs(dv2)+abs(dv3)+abs(dv4);
@@ -291,7 +290,7 @@ O_biel2.i=O_cp.i;
 O_biel2.OM=O_cp.OM;
 O_biel2.om= O_cp.om;
 % 4) cambio anomalia pericentro
-[dv5, th_i, th_f, th_best, O_cper] = change_pericenter_arg(O_biel2, O_end.om, th_cp);
+[dv5, th_i, th_f, th_best, O_cper] = change_pericenter_arg(O_biel2, O_end.om, pi);
 
 % Costo totale
 DV_5=abs(dv1)+abs(dv2)+abs(dv3)+abs(dv4)+ abs(dv5);
@@ -305,16 +304,16 @@ dt1 = TOF(O_start, th_start, 2*pi);
 dt2 = TOF(O_biel1, 0, th_cp);
 % tempo sulla bitangente ausiliaria
 dt3 = TOF(O_cp, th_cp, pi); 
-% tempo dalla posizione dopo il cambio di anomalia di pericentro fino all'apocentro:
+% tempo sulla seconda ausiliaria, fino al cambio anomalia del pericentro
 dt4 = TOF(O_biel2,pi,th_best(1)); 
 % tempo sulla seconda ellisse
-dt5 = TOF(O_cper,th_best(2),th_end); 
+dt5 = TOF(O_cper,th_best(2), 0); 
 % tempo di attesa sull'orbita finale fino al punto d'arrivo
-%dt6 = TOF(O_end,pi,th_end); 
+dt6 = TOF(O_end, 0, th_end); 
 
 
 % Tempo totale
-DT_5 = dt1 + dt2 + dt3 + dt4 + dt5; %+ dt6;
+DT_5 = dt1 + dt2 + dt3 + dt4 + dt5 + dt6;
 
 dtime = seconds(DT_5);
     dtime.Format = 'hh:mm:ss';

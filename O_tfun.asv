@@ -35,21 +35,9 @@ r2 = norm(rrf);
 
 cos_th1 = rri_t(1)/r1;
 cos_th2 = rrf_t(1)/r2;
-
-if rri_t(2) >= 0
-    th1_t = acos (cos_th1);
-else
-    th1_t = 2*pi - acos (cos_th1);
-end
-
-if rrf_t(2)  >= 0
-    th2_t = acos(cos_th2);
-else
-    th2_t = 2*pi - acos(cos_th2);
-end
-
-% th1_t = atan(rri_t(2)/rri_t(1)); % Possono esserci problemi con la periodicità?
-% th2_t = atan(rrf_t(2)/rrf_t(1));
+th1_t = acos(th_t)
+th1_t = atan(rri_t(2)/rri_t(1)); % Possono esserci problemi con la periodicità?
+th2_t = atan(rrf_t(2)/rrf_t(1));
 
 
 %calcolo valori scalari e parametri di forma
