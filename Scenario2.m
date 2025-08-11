@@ -110,7 +110,9 @@ O_end.OM = 273.63 *pi/180;   % [rad]
 O_end.om = 327.03 *pi/180;   % [rad]
 O_end.mu = mu;          
 
-n = 10; % Dimensioni griglia
+n = 100; % Dimensioni griglia
+a = 0;
+b = 2*pi;
 OO_t = []; % Vettore di oggetti orbita, non si può preallocare
 kk = 0; % Contatore
 costmin=1e16;
@@ -120,10 +122,10 @@ scatter3 (0,0,0, 'red', LineWidth=2)
 hold on
 plotOrbit (O_start, 0, 2*pi, dth, 'b')
 plotOrbit (O_end, 0, 2*pi, dth, 'k')
-
-for th1i=linspace(0,2*pi,n)
-    for th2f=linspace(0,2*pi,n)
-        for om=linspace(0,2*pi,n)
+tic
+for th1i=linspace(a, b, n)
+    for th2f=linspace(a, b, n)
+        for om=linspace(a, b,n)
             [O_t,th_t,cost] = O_tfun(O_start,O_end,th1i,th2f,om);
             if O_t.e<=1 && O_t.e>=0
                 OO_t=[OO_t,O_t];
@@ -141,7 +143,7 @@ for th1i=linspace(0,2*pi,n)
         end
     end
 end
-
+% 
 [punto_1, ~] = par2car(O_start, th_best_12(1));
 [punto1_t, ~] = par2car(O_best, th_t_best(1));
 [punto2_t, ~] = par2car(O_best, th_t_best(2));
@@ -153,4 +155,6 @@ scatter3 (punto_1(1), punto_1(2), punto_1(3), 'red')
 scatter3 (punto_2(1), punto_2(2), punto_2(3), 'red')
 plotOrbit(O_best, th_t_best(1), th_t_best(2), dth, 'g') % Trasferimento vincente
 
+th_best_12
 costmin
+% th1_t = 3.6368, th2_t = 3.5000, dV = 6.3194
