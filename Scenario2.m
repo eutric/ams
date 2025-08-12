@@ -110,9 +110,9 @@ O_end.OM = 273.63 *pi/180;   % [rad]
 O_end.om = 327.03 *pi/180;   % [rad]
 O_end.mu = mu;          
 
-n = 100; % Dimensioni griglia
-a = 0;
-b = 2*pi;
+n = 20; % Dimensioni griglia
+a = 3.4;
+b = 3.7;
 OO_t = []; % Vettore di oggetti orbita, non si può preallocare
 kk = 0; % Contatore
 costmin=1e16;
@@ -127,9 +127,8 @@ for th1i=linspace(a, b, n)
     for th2f=linspace(a, b, n)
         for om=linspace(a, b,n)
             [O_t] = O_tfun(O_start,O_end,th1i,th2f,om);
-            if O_t.e<=1 && O_t.e>=0
+            if O_t.e<1 && O_t.e>=0
                 OO_t=[OO_t,O_t];
-                % plotOrbit (O_t, 0, 2*pi, dth, 'y--')
                 if O_t.cost<costmin
                     costmin=O_t.cost;
                     O_best=O_t;
@@ -248,3 +247,81 @@ O_opt_tempo = O_tfun(O_start, O_end,x(1),x(2),x(3))
 O_opt_tempo.tempo = seconds(real(O_opt_tempo.tempo));
 O_opt_tempo.tempo.Format = 'hh:mm:ss';
 O_opt_tempo.tempo
+% Meglio trovato: th1 = 5.7728, th2 = 3.3450, om = 5.9189 => 
+% tempo = 33 ore 33 minuti e 22 secondi
+
+%% Scenario 2 - Ottimizzo il tempo con approccio a tappeto
+clear  
+close all
+clc
+
+mu = 1.32712440042e20 * 0.001^3; % km^3/s^2
+dth = 0.001;
+
+% Terra
+O_start.a = 1.4946e8;  % [km]
+O_start.e = 0.016;     % [ ]
+O_start.i = 9.1920e-5; % [rad]
+O_start.OM = 2.7847;   % [rad]
+O_start.om = 5.2643;   % [rad]
+O_start.mu = mu;       % [km^3/s^2]
+
+% Asteroide 163899 (2003 SD220)
+O_end.a = 0.827903 *1.496e8; % [km]
+O_end.e = 0.209487;          % [ ]
+O_end.i = 8.55 *pi/180;      % [rad]
+O_end.OM = 273.63 *pi/180;   % [rad]
+O_end.om = 327.03 *pi/180;   % [rad]
+O_end.mu = mu;          
+
+n = 50; % Dimensioni griglia
+a = 3.5;
+b = 6.2;
+OO_t = []; % Vettore di oggetti orbita, non si può preallocare
+kk = 0; % Contatore
+tmin=1e16;
+
+figure
+scatter3 (0,0,0, 'red', LineWidth=2)
+hold on
+plotOrbit (O_start, 0, 2*pi, dth, 'b');
+plotOrbit (O_end, 0, 2*pi, dth, 'k');
+tic
+for th1i=linspace(a, b, n)
+    for th2f=linspace(a, b, n)
+        for om=linspace(0, b,n)
+            [O_t] = O_tfun(O_start,O_end,th1i,th2f,om);
+            if O_t.e<1 && O_t.e>=0
+                OO_t=[OO_t,O_t];
+                if O_t.tempo<tmin
+                    tmin=O_t.tempo;
+                    O_best=O_t;
+                    th_t_best=O_t.th_t;
+                    th_best_12 = [th1i, th2f];
+                end
+            else 
+                kk = kk+1;
+            end
+
+        end
+    end
+end
+toc 
+[punto_1, ~] = par2car(O_start, th_best_12(1));
+[punto1_t, ~] = par2car(O_best, th_t_best(1));
+[punto2_t, ~] = par2car(O_best, th_t_best(2));
+[punto_2, ~] = par2car(O_end, th_best_12(2));
+
+scatter3 (punto1_t(1), punto1_t(2), punto1_t(3), 'red')
+scatter3 (punto2_t(1), punto2_t(2), punto2_t(3), 'red')
+scatter3 (punto_1(1), punto_1(2), punto_1(3), 'red')
+scatter3 (punto_2(1), punto_2(2), punto_2(3), 'red')
+plotOrbit(O_best, th_t_best(1), th_t_best(2), dth, 'g'); % Trasferimento vincente
+
+O_best.tempo = seconds(O_best.tempo);
+O_best.tempo.Format = 'hh:mm:ss';
+O_best.tempo
+th_best_12
+O_best.om
+% Con n = 50, a = 3.5, b = 6.2, per om 0-b, si trova in th1=6.0898,
+% th2=3.6653 e om=1.8980 si trova 21:03:12, in 470 secondi
