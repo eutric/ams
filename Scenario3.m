@@ -67,7 +67,7 @@ vv_inf1 = vv_t1 - vv_end1_S; % Velocità dell'orbita di T - la velocità
 % Il raggio di pericentro dell'iperbole, lo facciamo coincidere col
 % pericentro del'orbita di parcheggio:
 rp_parcheggio = r_parametrica(O_parcheggio, 0); % rp_iperbole1
-vp_parcheggio = v_theta(O_parcheggio, 0);
+vp_parcheggio = v_theta(O_parcheggio, 0)
 
 % Caratterizzo l'orbita iperbolica, per trovarne v nel pericentro
 O_hyper1.a = -mu_T/norm(vv_inf1)^2; % Dalla conservazione dell'energia meccanica
@@ -77,7 +77,7 @@ O_hyper1.e = (O_hyper1.a-rp_parcheggio)/O_hyper1.a;
 O_hyper1.i = 0.590342952766537;
 O_hyper1.OM = 1.749480463333461;
 O_hyper1.om = 1.177309652253865; % Stesso piano e orientazione dell'orbita di parcheggio
-O_hyper1.thetainf = acos(-1/O_hyper1.e);
+O_hyper1.thetainf = acos(-1/O_hyper1.e); % 2.7413 rad
 O_hyper1.mu = 398600;
 
 % Trovo la velocità nel pericentro dell'orbita:
@@ -86,14 +86,14 @@ vp_hyper = v_theta(O_hyper1, 0)
 % e quindi il deltaV richiesto, visto che il sistema di riferimento è lo
 % stesso, ho preso le parametriche, toccherebbe verificare che sia giusto,
 % ma devo andare
-DELTA_V1 = abs(vp_hyper - vp_parcheggio) % Bello basso
+DELTA_V1 = abs(vp_hyper - vp_parcheggio)
 
 % Vediamo se funziona, disegnando
 figure
 Terra_3D(R_T)
 hold on
 plotOrbit (O_parcheggio, 0, 2*pi, dth, 'k--');
-plotOrbit (O_hyper1, 0, 2.5, dth, 'r');
+plotOrbit (O_hyper1, 0, O_hyper1.thetainf, dth, 'r');
 
 %%%%%%%%%%%%%%%%%%%%%%% Parentesi Grafica %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % R_SOI_TERRA = R_t_s* (m_T/m_S)^(2/5) % km
