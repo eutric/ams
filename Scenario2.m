@@ -190,11 +190,11 @@ O_end.mu = mu;
 % fun=@(th1,th2,om)brutta(th1,th2,om,O_start,O_end);
 % fun=@(x)brutta(x(1),x(2),x(3),O_start,O_end);
 fun_costo = @(x)O_tfun(O_start,O_end,x(1),x(2),x(3)).cost;
-x = ga(fun_costo,3,[],[],[],[],[0,0,0],[2*pi,2*pi,2*pi]);
+x = ga(fun_costo,3,[],[],[],[],[3.4,3.4,3.4],[3.8,3.8,3.8]);
 O_opt_costo = O_tfun(O_start, O_end,x(1),x(2),x(3))
 
 figure
-scatter3 (0, 0, 0, 'y', 'filled', LineWidth=10)
+scatter3 (0, 0, 0, 'y', 'filled', LineWidth=500)
 hold on
 scatter3(rr_start(1),rr_start(2),rr_start(3), 'green', 'filled', LineWidth=10)
 scatter3(rr_end(1), rr_end(2), rr_end(3), 'magenta', 'filled', LineWidth=10)
@@ -204,6 +204,18 @@ plotOrbit (O_end, x(2), 2*pi, dth, 'k--');
 % plotOrbit (O_start, 0, 2*pi, dth, 'k--');
 % plotOrbit (O_opt, 0, 2*pi, dth, 'k--');
 % plotOrbit (O_end, 0, 2*pi, dth, 'k--');
+% ga() trova in th1 = 3.618171175145259, th2 = 3.498164148433855, om = 3.728950325042778, Dv = 6.319048000705591, con
+% durata di 3304:25:45 (damn)
+
+% O_t.a = 1.481231188816134e+08;
+% O_t.e = 0.028295312693238;
+% O_t.i = 0.043993770239157;
+% O_t.OM = 5.382908205403476;
+% O_t.om = 3.729157082348018;
+% O_t.mu = 1.327124400420000e+11;
+% th_t1 = 2.555106932985983;
+% th_t2 = 4.871467598525006;
+
 
 legend ('SOLE', 'START', 'END', 'Orbita terrestre', 'Orbita di trasferimento', 'Orbita Asteroide')
 
@@ -325,4 +337,4 @@ O_best.tempo
 th_best_12
 O_best.om
 % Con n = 50, a = 3.5, b = 6.2, per om 0-b, si trova in th1=6.0898,
-% th2=3.6653 e om=1.8980 si trova 21:03:12, in 470 secondi
+% th2=3.6653 e om=1.8980 21:03:12, in 470 secondi di computazione
