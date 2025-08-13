@@ -142,6 +142,7 @@ for th1i=linspace(a, b, n)
         end
     end
 end
+toc
 % 
 [punto_1, ~] = par2car(O_start, th_best_12(1));
 [punto1_t, ~] = par2car(O_best, th_t_best(1));
@@ -172,9 +173,9 @@ O_start.i = 9.1920e-5; % [rad]
 O_start.OM = 2.7847;   % [rad]
 O_start.om = 5.2643;   % [rad]
 O_start.mu = mu;       % [km^3/s^2]
-r_terra = 6378.388;
+% r_terra = 6378.388;
 
-[rr_start, vv_start] = par2car(O_start, 0);
+[rr_start, ~] = par2car(O_start, 0);
 
 % Asteroide 163899 (2003 SD220)
 O_end.a = 0.827903 *1.496e8; % [km]
@@ -184,7 +185,7 @@ O_end.OM = 273.63 *pi/180;   % [rad]
 O_end.om = 327.03 *pi/180;   % [rad]
 O_end.mu = mu;          
 
-[rr_end, vv_end] = par2car(O_end, 0);
+[rr_end, ~] = par2car(O_end, 0);
 
 % fun=@(th1,th2,om)brutta(th1,th2,om,O_start,O_end);
 % fun=@(x)brutta(x(1),x(2),x(3),O_start,O_end);
