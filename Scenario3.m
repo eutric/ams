@@ -12,6 +12,7 @@ R_T = 6378; % km
 R_S = 696340; % km
 R_t_s = 149597870707 * 10^-3; % km
 
+dth = 0.1;
 % !!!! RIFERITA ALLA TERRA
 O_parcheggio.a = 3.918174284575137e+04; % km
 O_parcheggio.e = 0.597404804289614;
@@ -71,17 +72,12 @@ vp_parcheggio = v_theta(O_parcheggio, 0);
 % Caratterizzo l'orbita iperbolica, per trovarne v nel pericentro
 O_hyper1.a = -mu_T/norm(vv_inf1)^2; % Dalla conservazione dell'energia meccanica
 
-% Passando per l'equazione della conica al pericentro, si trova un'eq di
-% secondo grado per le eccentricità
-eH_1 = (-rp_parcheggio/2 - ...
-    sqrt( (rp_parcheggio/2)^2 - O_hyper1.a*(rp_parcheggio-O_hyper1.a) ))/O_hyper1.a; % 1.0858 > 1 ==> ok
-eH_2 = (-rp_parcheggio/2 + ...
-    sqrt( (rp_parcheggio/2)^2 - O_hyper1.a*(rp_parcheggio-O_hyper1.a) ))/O_hyper1.a; % < 0 la scarto
-
-O_hyper1.e = eH_1;
+% Passando per l'equazione della conica al pericentro
+O_hyper1.e = (O_hyper1.a-rp_parcheggio)/O_hyper1.a;
 O_hyper1.i = 0.590342952766537;
 O_hyper1.OM = 1.749480463333461;
 O_hyper1.om = 1.177309652253865; % Stesso piano e orientazione dell'orbita di parcheggio
+O_hyper1.thetainf = acos(-1/O_hyper1.e);
 O_hyper1.mu = 398600;
 
 % Trovo la velocità nel pericentro dell'orbita:
@@ -91,6 +87,14 @@ vp_hyper = v_theta(O_hyper1, 0)
 % stesso, ho preso le parametriche, toccherebbe verificare che sia giusto,
 % ma devo andare
 DELTA_V1 = abs(vp_hyper - vp_parcheggio) % Bello basso
+
+% Vediamo se funziona, disegnando
+figure
+Terra_3D(R_T)
+hold on
+plotOrbit (O_parcheggio, 0, 2*pi, dth, 'k--');
+plotOrbit (O_hyper1, 0, 2.5, dth, 'r');
+
 %%%%%%%%%%%%%%%%%%%%%%% Parentesi Grafica %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % R_SOI_TERRA = R_t_s* (m_T/m_S)^(2/5) % km
 % 
