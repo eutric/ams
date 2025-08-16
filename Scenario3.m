@@ -77,7 +77,7 @@ O_hyper1.e = (O_hyper1.a-rp_parcheggio)/O_hyper1.a;
 O_hyper1.i = 0.590342952766537;
 O_hyper1.OM = 1.749480463333461;
 O_hyper1.om = 1.177309652253865; % Stesso piano e orientazione dell'orbita di parcheggio
-O_hyper1.thetainf = acos(-1/O_hyper1.e); % 2.7413 rad
+O_hyper1.thetainf = acos(-1/O_hyper1.e); % 2.7413 rad %anomalia vera 'asintotica'
 O_hyper1.mu = 398600;
 
 % Trovo la velocità nel pericentro dell'orbita:
