@@ -66,6 +66,8 @@ O_t.mu=O_start.mu;
 if e_t >= 0 && e_t < 1
     [~,vv1t]=par2car(O_t,th1_t);
     [~,vv2t]=par2car(O_t,th2_t);
+    O_t.cost1=norm(vv1t-vvi);
+    O_t.cost2=norm(vv2t-vvf);
     O_t.cost= norm(vv1t-vvi) + norm(vv2t-vvf);
     O_t.tempo = TOF (O_t, th1_t, th2_t);
 else
