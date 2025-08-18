@@ -167,18 +167,13 @@ O_hyper2.thetainf = acos(-1/O_hyper2.e);
 % manovra
 % Dell'orbita d'arrivo impongo solo r_a
 O_arrivo.mu = mu_A;
-O_arrivo.a=(r_a+r_p)/2;
-O_arrivo.e=(r_a-r_p)/2/O_arrivo.a;
-O_arrivo.i=0.590342952766537;
-O_arrivo.OM=1.749480463333461;
-O_arrivo.om=1.177309652253865;
 
 figure
 subplot (1,2,1)
-Terra_3D(0.395)
+Terra_3D(r_a)
 hold on
-plotOrbit (O_arrivo, 0, 2*pi, dth, 'k--');
-plotOrbit (O_hyper2, 0, O_hyper2.thetainf, dth, 'r');
+plotOrbit (O_parcheggio, 0, 2*pi, dth, 'k--');
+plotOrbit (O_hyper1, 0, O_hyper1.thetainf, dth, 'r');
 
 
 %%%%%%%%%%%%%%%%%%%%%%% Parentesi Grafica %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
