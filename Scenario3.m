@@ -2,17 +2,25 @@ clear
 close all
 clc
 
-m_T = 5.974e24; % kg
-m_S = 1.989e30; % kg
+% Dati
+
+G = 6.67e-11; % N*m^2/kg^2
+
+m_T = 5.974e24;  % kg
+m_S = 1.989e30;  % kg
+m_A = 5.1827e11; % Kg
+
+R_T = 6378;   % km
+R_S = 696340; % km
+R_A = 0.79/2; % km
 
 mu_T = 398600;  % km^3/s^2
 mu_S = 1.32712440042e20 * 0.001^3; % km^3/s^2
+mu_A = G * m_A;
 
-R_T = 6378; % km
-R_S = 696340; % km
-R_t_s = 149597870707 * 10^-3; % km
 
 dth = 0.1;
+
 % !!!! RIFERITA ALLA TERRA
 O_parcheggio.a = 3.918174284575137e+04; % km
 O_parcheggio.e = 0.597404804289614;
@@ -90,6 +98,7 @@ DELTA_V1 = abs(vp_hyper - vp_parcheggio)
 
 % Vediamo se funziona, disegnando
 figure
+subplot (1,2,1)
 Terra_3D(R_T)
 hold on
 plotOrbit (O_parcheggio, 0, 2*pi, dth, 'k--');
@@ -100,38 +109,57 @@ plotOrbit (O_hyper1, 0, O_hyper1.thetainf, dth, 'r');
 %sfera di influenza dell asteroide rispetto al sole e che sia sullo stesso
 %piano di quella di traferimento nello scenario 2
 
-%dati massa e dieamtero asteroide  M = 5.1827E+11 Kg  D = 0.79 Km
-
-%orbita asteroide intorno al sole
-O_end.a = 0.827903 *1.496e8; % [km]
-O_end.e = 0.209487;          % [ ]
-O_end.i = 8.55 *pi/180;      % [rad]
-O_end.OM = 273.63 *pi/180;   % [rad]
-O_end.om = 327.03 *pi/180;
-O_end.mu=1.32712440042e20 * 0.001^3;
-th_sc2_ast= 3.5105;
+% Orbita asteroide intorno al sole
+O_A.a = 0.827903 *1.496e8; % [km]
+O_A.e = 0.209487;          % [ ]
+O_A.i = 8.55 *pi/180;      % [rad]
+O_A.OM = 273.63 *pi/180;   % [rad]
+O_A.om = 327.03 *pi/180;
+O_A.mu=1.32712440042e20 * 0.001^3;
+% th_sc2_ast= 3.5105; % Dove era stato preso?
+th_sc2_ast = 3.498164148433855; % th2 trovato con ga()
 
 %
-%calcolo sfera di influenza dell asteroide rispetto al sole
-%prima cosa calcolo distanza asteroide sole nel punto in cui avviene la
-%manovra
-m_sole=1.989e30;
-d_ast_sun=r_parametrica(O_end, th_sc2_ast);
-r_soi=d_ast_sun*(5.1827E+11/m_sole)^(2/5);
-% bisogna quindi scegliere un orbita con raggio massimo di 5.4226 km e
-% minimo di 0.79
+% calcolo sfera di influenza dell asteroide rispetto al sole
+% prima cosa calcolo distanza asteroide sole nel punto in cui avviene la
+% manovra
+d_ast_sun=r_parametrica(O_A, th_sc2_ast); % Distanza asteroide - sole al 
+% momento d'arrivo
+R_SOI_A=d_ast_sun*(m_A/m_S)^(2/5);
+
+
+
+% La velocità all'infinito dell'iperbole di rientro è definita, è quella
+% dell'orbita di trasferimento in theta 2
+[rr_th2_t, vv_th2_t] = par2car (O_t_scenario2, th2_transfer); % Velocità rispetto al Sole
+% del satellite nell'orbita di trasferimento
+
+[rr_th2_S, vv_th2_S] = par2car (O_A, th_sc2_ast); % Velocità rispetto al Sole
+% dell'asteroide, nel punto di trasferimento
+
+vv_inf2_A = vv_th2_t - vv_th2_S; % km/s, velocità di eccesso iperbolico, rispetto
+% all'asteroide... su che piano sono?
+v_inf2 = norm(vv_inf2_A);
+rr_inf2_A = rr_th2_t - rr_th2_S; % km, distanza relativa rispetto all'asteroide
+
+
+O_hyper2.a = - mu_A/v_inf2^2;
+
+
+O_hyper2.mu = mu_A;
+% Ignorando per ora i piani in cui giaccio, posso trovare il costo minimo
+% della manovra, costruendo l'ellisse con la velocità più alta possibile al
+% pericentro
+
+% bisogna quindi scegliere un orbita con raggio massimo di 5.4226 km 
 %OSS: datemi comferma ma volendo ottimizzare la manovra forse conviene un
 %orbita molto ellittica così la velocità di pericentro è alta e risparmio
-%carburante => prendendo margine potremmo scegliere 
-rp=1;
-ra=4.5;
-a=(rp+ra)/2;
-e=(ra-rp)/2/a;
-O_ast_sat.a=a;
-O_ast_sat.e=e;
-O_ast_sat.i = 0.590342952766537;
-O_ast_sat.OM = 1.749480463333461;
-O_ast_sat.om = 1.177309652253865;
+%carburante, giac d'accordo
+r_a = 0.9*R_SOI_A; % Margine del 10%, aumentandolo, aumentano i costi della 
+% manovra
+% Dell'orbita d'arrivo impongo solo r_a
+O_arrivo.mu = mu_A;
+
 %%%%%%%%%%%%%%%%%%%%%%% Parentesi Grafica %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % R_SOI_TERRA = R_t_s* (m_T/m_S)^(2/5) % km
 % 
