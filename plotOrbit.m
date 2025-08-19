@@ -1,4 +1,4 @@
-function [rr, r] = plotOrbit(orbit,th0,thf,dth,linestyle)
+function [rr, r] = plotOrbit(orbit,th0,thf,dth,linestyle, origine)
 % La funzione prende in ingresso i parametri di un'orbita, l'anomalia vera
 % iniziale e finale, la step size e una stringa o un vettore di stringhe e
 % restituisce il plot tridimensionale dell'orbita.
@@ -55,10 +55,10 @@ R_om = [cos(om) sin(om) 0;
 T = R_om*R_i*R_OM; % matrice di trasformazione 
 rr = T' * r2; 
 
-if nargin==5
-    plot3(rr(1,:),rr(2,:),rr(3,:), linestyle, LineWidth=1.4)
+if nargin == 6
+    plot3(origine(1) + rr(1,:),origine(2) + rr(2,:),origine(3) + rr(3,:), linestyle, LineWidth=1.4)
 else
-    plot3(rr(1,:),rr(2,:),rr(3,:))
+    plot3(rr(1,:),rr(2,:),rr(3,:), linestyle, LineWidth=1.4)
 end
 
 grid on

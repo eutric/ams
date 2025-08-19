@@ -1,4 +1,4 @@
-function [rr,vv] = par2car(orbit, th)
+function [rr,vv, matrici] = par2car(orbit, th)
 % La funzione prende in ingresso i parametri caratterizzanti nel sistema di
 % riferimento perifocale (Kepleriano) e restituisce i vettori posizione e 
 % velocità di un punto dell'orbita in coordinate cartesiane (sistema di 
@@ -50,5 +50,9 @@ T=R_om*R_i*R_OM; % matrice di trasformazione ECI -> PF
 rr=T'*rr2; % vettore posizione nel cartesiano 
 vv=T'*vv2; % vettore velocità nel cartesiano 
 
+matrici.R_om = R_om;
+matrici.R_i = R_i;
+matrici.R_OM = R_OM;
+matrici.T = T;
 end
 

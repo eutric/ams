@@ -52,7 +52,7 @@ O_t_scenario2.mu = 1.327124400420000e+11;
 th1_transfer = 2.555106932985983;
 th2_transfer = 4.871467598525006;
 
-[rr_t1, vv_t1] = par2car(O_t_scenario2, th1_transfer); % Coordinate cartesiane 
+[rr_t1, vv_t1, matrici] = par2car(O_t_scenario2, th1_transfer); % Coordinate cartesiane 
 % rispetto al sole del satellite quando fa la manovra, la velocità è la
 % velocità subito dopo l'impulso, quindi sta già percorrendo l'orbita di
 % trasferimento
@@ -97,8 +97,6 @@ vp_hyper = v_theta(O_hyper1, 0)
 DELTA_V1 = abs(vp_hyper - vp_parcheggio)
 
 % Vediamo se funziona, disegnando
-figure
-subplot (1,2,1)
 Terra_3D(R_T)
 hold on
 plotOrbit (O_parcheggio, 0, 2*pi, dth, 'k--');
@@ -137,15 +135,14 @@ R_SOI_A=d_ast_sun*(m_A/m_S)^(2/5);
 [rr_th2_S, vv_th2_S] = par2car (O_A, th_sc2_ast); % Velocità rispetto al Sole
 % dell'asteroide, nel punto di trasferimento
 
-vv_inf2_A = vv_th2_t - vv_th2_S; % km/s, velocità di eccesso iperbolico, rispetto
+vv_inf2_S = vv_th2_t - vv_th2_S; % km/s, velocità di eccesso iperbolico, rispetto
 % all'asteroide... su che piano sono?
-v_inf2 = norm(vv_inf2_A);
-rr_inf2_A = rr_th2_t - rr_th2_S; % km, distanza relativa rispetto all'asteroide
+v_inf2 = norm(vv_inf2_S);
+rr_inf2_S = rr_th2_t - rr_th2_S; % km, distanza relativa rispetto allo 
+% asteroide, per approssimazione delle patched conics, = 0
 
 
 O_hyper2.a = - mu_A/v_inf2^2;
-
-
 O_hyper2.mu = mu_A;
 % Ignorando per ora i piani in cui giaccio, posso trovare il costo minimo
 % della manovra, costruendo l'ellisse con la velocità più alta possibile al
@@ -156,29 +153,45 @@ O_hyper2.mu = mu_A;
 %orbita molto ellittica così la velocità di pericentro è alta e risparmio
 %carburante, giac d'accordo
 r_a = 0.9*R_SOI_A; % Margine del 10%, aumentandolo, aumentano i costi della
-r_p = 0.79/2*1.2;
+% manovra
+r_p = 1.2*R_A;
 
-O_hyper2.i = 0.590342952766537;
-O_hyper2.OM = 1.749480463333461;
-O_hyper2.om = 1.177309652253865;
 O_hyper2.e = (O_hyper2.a-r_p)/O_hyper2.a;
 O_hyper2.thetainf = acos(-1/O_hyper2.e);
 
-% manovra
+
 % Dell'orbita d'arrivo impongo solo r_a
 O_arrivo.mu = mu_A;
 O_arrivo.a=(r_a+r_p)/2;
 O_arrivo.e=(r_a-r_p)/2/O_arrivo.a;
-O_arrivo.i=0.590342952766537;
-O_arrivo.OM=1.749480463333461;
-O_arrivo.om=1.177309652253865;
+
+% Quindi, l'impulso finale per pormi nell'ultima orbita di parcheggio, sarà
+DELTA_V2 = abs (v_theta (O_arrivo, 0) - v_theta (O_hyper2, 0))
+
+% Cerco il piano in cui giacciono le orbite, per farlo devo ruotare il
+% sistema di riferimento cartesiano eliocentrico, lungo l'asse x, di eps,
+% cioè l'inclinazione del piano equatoriale dell'asteroide rispetto al
+% piano dell'eclittica:
+eps_A = 8.51490 * pi/180; % [rad], fonte: wikipedia
+
+% Quindi l'angolazione dell'orbita parabolica e d'arrivo, rispetto al SdR
+% inerziale dell'asteroide, cambierà solo in i:
+O_hyper2.i = O_t_scenario2.i - eps_A;
+O_hyper2.om = O_t_scenario2.om;
+O_hyper2.OM = O_t_scenario2.OM;
+O_arrivo.i = O_hyper2.i;
+O_arrivo.om = O_hyper2.om;
+O_arrivo.OM = O_hyper2.OM;
 
 figure
-subplot (1,2,1)
-Terra_3D(0.395)
+scatter3(0,0,0, 100, 'yellow', 'filled') % SOLE
 hold on
-plotOrbit (O_arrivo, 0, 2*pi, dth, 'k--');
-plotOrbit (O_hyper2, 0, O_hyper2.thetainf, dth, 'r');
+scatter3(rr_th2_S(1), rr_th2_S(2), rr_th2_S(3), 'red', 'filled') % ASTEROIDE
+scatter3(rr_end1_S(1), rr_end1_S(2), rr_end1_S(3), 'blue', 'filled') % TERRA
+plotOrbit (O_t_scenario2, 0, 2*pi, dth, 'k--');
+plotOrbit (O_A, 0, 2*pi, dth, 'k--');
+% plotOrbit (O_arrivo, 0, 2*pi, dth, 'k--');
+plotOrbit (O_hyper2, 0, O_hyper2.thetainf, dth, 'green', rr_th2_S);
 
 
 %%%%%%%%%%%%%%%%%%%%%%% Parentesi Grafica %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
