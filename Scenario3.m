@@ -30,6 +30,7 @@ O_parcheggio.om = 1.177309652253865;
 O_parcheggio.mu = 398600;
 [rr_start_T, vv_start_T] = par2car(O_parcheggio, 0); % Per ora mi metto nel pericentro; SdR Terra
 
+
 % Sarebbe l'orbita di parcheggio del nostro gruppo, dello scenario 1
 
 % Terra !!!! RIFERITA AL SOLE
@@ -176,7 +177,7 @@ eps_A = 8.51490 * pi/180; % [rad], fonte: wikipedia
 
 % Quindi l'angolazione dell'orbita parabolica e d'arrivo, rispetto al SdR
 % inerziale dell'asteroide, cambierà solo in i:
-O_hyper2.i = O_t_scenario2.i - eps_A;
+O_hyper2.i = O_t_scenario2.i;
 O_hyper2.om = O_t_scenario2.om;
 O_hyper2.OM = O_t_scenario2.OM;
 O_arrivo.i = O_hyper2.i;

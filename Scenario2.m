@@ -84,10 +84,11 @@ cost=abs(norm(vv1t-vvi))+abs(norm(vv2t-vvf));
 plotOrbit(O_t,0,2*pi,0.01)
 xlim([-2e8,2e8])
 ylim([-2e8,2e8])
+
 zlim([-2e8,2e8])
 
 %% test funzione cicli annidati
-clear  
+clear all
 close all
 clc
 
@@ -160,7 +161,7 @@ costmin
 % th1_t = 3.6368, th2_t = 3.5000, dV = 6.3194
 %% test ga
 clear all
-close all
+
 clc
 
 mu = 1.32712440042e20 * 0.001^3; % km^3/s^2
