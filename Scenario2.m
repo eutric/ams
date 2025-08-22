@@ -480,3 +480,79 @@ scatter3 (punto_2(1), punto_2(2), punto_2(3), 30, 'k', 'filled')
 grid on
 legend ('SOLE', 'Orbita Terrestre', 'Orbita Asteroide', 'Orbita di Trasferimento')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Ottimizzazione pesata
+clear 
+close all
+clc
+
+clear
+close all
+clc
+
+mu = 1.32712440042e20 * 0.001^3; % km^3/s^2
+dth = 0.001;
+
+% Terra
+O_start.a = 1.4946e8;  % [km]
+O_start.e = 0.016;     % [ ]
+O_start.i = 9.1920e-5; % [rad]
+O_start.OM = 2.7847;   % [rad]
+O_start.om = 5.2643;   % [rad]
+O_start.mu = mu;       % [km^3/s^2]
+r_terra = 6378.388;
+
+[rr_start, vv_start] = par2car(O_start, 0);
+
+% Asteroide 163899 (2003 SD220)
+O_end.a = 0.827903 *1.496e8; % [km]
+O_end.e = 0.209487;          % [ ]
+O_end.i = 8.55 *pi/180;      % [rad]
+O_end.OM = 273.63 *pi/180;   % [rad]
+O_end.om = 327.03 *pi/180;   % [rad]
+O_end.mu = mu;          
+
+[rr_end, vv_end] = par2car(O_end, 0);
+
+% fun=@(th1,th2,om)brutta(th1,th2,om,O_start,O_end);
+% fun=@(x)brutta(x(1),x(2),x(3),O_start,O_end);
+fun_opt = @(x)O_tfun(O_start,O_end,x(1),x(2),x(3),30000).fun_pesata;
+x = ga(fun_opt,3,[],[],[],[],[0,0,0],[2*pi,2*pi,2*pi])
+O_opt_pesata = O_tfun(O_start, O_end,x(1),x(2),x(3), 0)
+O_opt_pesata.tempo = seconds(O_opt_pesata.tempo);
+O_opt_pesata.tempo.Format = 'hh:mm:ss';
+O_opt_pesata.tempo
+O_opt_pesata.cost
+% x =
+% 
+%     6.0707    3.7180    5.2941
+% 
+% 
+% O_opt_pesata = 
+% 
+%   struct with fields:
+% 
+%              a: 1.4033e+08
+%              e: 0.2824
+%              i: 6.4789e-04
+%             OM: 4.5607
+%             om: 5.2941
+%             mu: 1.3271e+11
+%          cost1: 8.3369
+%          cost2: 6.3621
+%           cost: 14.6990
+%          tempo: 4.1759e+05
+%     fun_pesata: 4.1759e+05
+%           th_t: [4.2648 4.3466]
+% 
+% 
+% ans = 
+% 
+%   duration
+% 
+%    115:59:48
+% 
+% 
+% ans =
+% 
+%    14.6990
