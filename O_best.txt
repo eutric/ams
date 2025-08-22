@@ -1,0 +1,88 @@
+Risultato - 22-Aug-2025 10:50:22
+In 5.254401e+02 secondi, con n = 50
+
+ La miglior orbita in termini di tempo, trovata con cicli annidati ha
+a = 974121862.949664
+e = 0.945997
+i = 0.633663
+OM = 1.572542
+om = 1.897959
+In termini di tempo il costo è 
+Risultato - 22-Aug-2025 11:03:34
+In 5.568584e+02 secondi, con n = 50
+La miglior orbita in termini di tempo, trovata con cicli annidati ha
+a = 974121862.949664
+e = 0.945997
+i = 0.633663
+OM = 1.572542
+om = 1.897959
+In termini di tempo il costo è 21:03:12
+In termini di velocità il costo è 72.100453
+Il traferimento avviene in theta_1_t = 4.385081e+00, theta_2_t = 4.398208e+00
+In riferimento alla orbita 1 e 2, 6.089796e+00 e 3.665306e+00
+
+Risultato - 22-Aug-2025 11:24:20
+In 4.382300e-02 secondi, con n = 10
+La miglior orbita in termini di tempo, trovata con cicli annidati ha
+a = 1028367689.586428
+e = 0.865033
+i = 1.926297
+OM = 1.493708
+om = 0.500000
+In termini di tempo il costo è 24:20:36
+In termini di velocità il costo è 117.030347
+Il trasferimento avviene in theta_1_t = 5.783091e+00, theta_2_t = 5.806943e+00
+In riferimento a alla orbita 1 e 2, 6.011111e+00 e 3.566667e+00
+
+Risultato - 22-Aug-2025 11:25:08
+In 2.759260e-02 secondi, con n = 10
+La miglior orbita in termini di tempo, trovata con cicli annidati ha
+a = 7625125456.531316
+e = 0.981135
+i = 2.876127
+OM = 1.582314
+om = 0.300000
+In termini di tempo il costo è 64:26:43
+In termini di velocità il costo è 141.000256
+Il trasferimento avviene in theta_1_t = 5.982858e+00, theta_2_t = 6.049399e+00
+In riferimento a alla orbita 1 e 2, 6.100000e+00 e 3.600000e+00
+
+Risultato - 22-Aug-2025 11:25:23
+In 4.131630e-02 secondi, con n = 10
+La miglior orbita in termini di tempo, trovata con cicli annidati ha
+a = 3328820891.653139
+e = 0.956760
+i = 2.248016
+OM = 1.493669
+om = 0.300000
+In termini di tempo il costo è 30:09:32
+In termini di velocità il costo è 129.552933
+Il trasferimento avviene in theta_1_t = 5.983072e+00, theta_2_t = 6.013861e+00
+In riferimento a alla orbita 1 e 2, 6.011111e+00 e 3.555556e+00
+
+Risultato - 22-Aug-2025 11:26:03
+In 4.287240e-02 secondi, con n = 10
+La miglior orbita in termini di tempo, trovata con cicli annidati ha
+a = 737058252.899215
+e = 0.804298
+i = 1.452650
+OM = 1.460418
+om = 0.300000
+In termini di tempo il costo è 26:19:41
+In termini di velocità il costo è 96.478115
+Il trasferimento avviene in theta_1_t = 5.983096e+00, theta_2_t = 6.008899e+00
+In riferimento a alla orbita 1 e 2, 5.977778e+00 e 3.544444e+00
+
+Risultato - 22-Aug-2025 11:26:31
+In 5.197100e-02 secondi, con n = 10
+La miglior orbita in termini di tempo, trovata con cicli annidati ha
+a = 737058252.899215
+e = 0.804298
+i = 1.452650
+OM = 1.460418
+om = 0.300000
+In termini di tempo il costo è 26:19:41
+In termini di velocità il costo è 96.478115
+Il trasferimento avviene in theta_1_t = 5.983096e+00, theta_2_t = 6.008899e+00
+In riferimento a alla orbita 1 e 2, 5.977778e+00 e 3.544444e+00
+
