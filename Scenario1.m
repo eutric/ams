@@ -60,7 +60,7 @@ x2 = -ra1;
 y2 = 0;
 t = linspace(0,2*pi);
 X = O_start.a*cos(t);
-Y = b1*sin(t);
+
 w = atan2(y2-y1,x2-x1);
 x = (x1+x2)/2 + X*cos(w) - Y*sin(w);
 y = (y1+y2)/2 + X*sin(w) + Y*cos(w);
