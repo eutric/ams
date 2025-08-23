@@ -101,9 +101,8 @@ DELTA_V1 = abs(vp_hyper - vp_parcheggio)
 %(pericentro iperbole, arrivando a th tale da raggiungere il raggio della
 %sfera di influenza
 d_ear_sun=norm(rr_end1_S);
-r_soi_ear=d_ear_sun*(m_T/m_S)^(2/5);
-th_r_soi_ear=acos(1/O_hyper1.e*(O_hyper1.a*(1-O_hyper1.e^2)/r_soi_ear-1));
-DELTA_T_SOI1= TOF_open(O_hyper1, 0, th_r_soi_ear)
+r_soi_ear=d_ear_sun
+th_r_soi_ear=acor
 
 
 
@@ -179,14 +178,6 @@ O_arrivo.e=(r_a-r_p)/2/O_arrivo.a;
 % Quindi, l'impulso finale per pormi nell'ultima orbita di parcheggio, sarà
 DELTA_V2 = abs (v_theta (O_arrivo, 0) - v_theta (O_hyper2, 0))
 
-
-%COSTO in tempo: prendo la legge oraria dell iperbole artendo da un th = 0
-%(pericentro iperbole, arrivando a th tale da raggiungere il raggio della
-%sfera di influenza
-
-th_r_soi_ast=acos(1/O_hyper2.e*(O_hyper2.a*(1-O_hyper2.e^2)/R_SOI_A-1));
-DELTA_T_SOI2= TOF_open(O_hyper2, 0, th_r_soi_ast)
-
 % Cerco il piano in cui giacciono le orbite, per farlo devo ruotare il
 % sistema di riferimento cartesiano eliocentrico, lungo l'asse x, di eps,
 % cioè l'inclinazione del piano equatoriale dell'asteroide rispetto al
@@ -226,13 +217,13 @@ rr_inf_eci=vv_inf1_eci/norm(vv_inf1_eci);
 %2)cerco r_h raggio intersezione tra i piani iperbole e parcheggio =>
 %calcolo i vettori hh per iperbole e per ellisse di parcheggio 
 
-% hh_parc=cross(rr_start_T,vv_start_T);
-% hh_hyper=cross(rr_t1,vv_t1);
-% rr_h=cross(hh_parc,hh_hyper)/norm(cross(hh_parc,hh_hyper));
-% rh=norm(rr_h);
-% a_h
-% fun=@(eh,theta_inf,theta_h)[
-%     ]
+hh_parc=cross(rr_start_T,vv_start_T);
+hh_hyper=cross(rr_t1,vv_t1);
+rr_h=cross(hh_parc,hh_hyper)/norm(cross(hh_parc,hh_hyper));
+rh=norm(rr_h);
+a_h
+fun=@(eh,theta_inf,theta_h)[
+    ]
 
 
 %verifica grafica
