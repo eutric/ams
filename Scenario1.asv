@@ -349,7 +349,6 @@ plotOrbit(O_end, 0, th_end,dth,'r--');
 legend('Attrattore','Partenza', 'Arrivo','Orbita iniaziale','Bitangente ausiliaria','Orbita cambio piano','Orbita cambio pericentro', 'Orbita finale')
 
 %% Strategia circolare
-% strategia più economica 
 
 % definizione di un'orbita circolare
 O_circ = O_start;
@@ -568,6 +567,7 @@ legend ('Attrattore','Partenza','Arrivo','Orbita iniziale','Prima ellisse','Orbi
 
 %% Valutazione opzione migliore
 
+
 % caso 1: cambio piano nella prima ellisse
 
 dVtot_v1 = [];
@@ -673,5 +673,3 @@ plotOrbit(O_cp,th_cp,th_best(1),dth, 'c');
 plotOrbit(O_cper,th_best(2),th_end, dth, 'g');
 plotOrbit(O_end,0,th_end,dth, 'r--');
 legend ('Attrattore','Partenza','Arrivo','Orbita iniziale','Prima ellisse','Seconda ellisse','Orbita cambio piano', 'Orbita cambio pericentro', 'Orbita finale')
-
-
