@@ -1,6 +1,20 @@
-function [O_t] = O_tfun(O_start,O_end,th1i,th2f,om)
+function [O_t] = O_tfun(O_start,O_end,th1i,th2f,om, alpha)
 %proviamo a fare una funzione che nserendo delle limitazioni in input
-%restituisce l'orbita di trasferimento in output
+%restituisce l'orbita di trasferimento in output.
+% O_start e O_end sono le orbite da unire. th1i, th2f e om sono le
+% variabili della funzione
+% Alpha indica il peso da dare al costo delta_v, se si vuole dare priorità
+% al delta_v bisogna mettere alpha >> 1 (viste le grandezze in gioco), se
+% invece si vuole dare priorità al tempo alpha << 1
+% In realtà si può dare il valore che si vuole ed andare ad ottimizzare
+% O_tfun.cost o O_tfun.tempo
+% INPUT
+% O_start  Struct   1x1
+% O_end    Struct   1x1
+% th1i     Int      1x1
+% th2f     Int      1x1
+% om       Int      1x1
+% alpha    Int      1x1
 [rri,vvi] = par2car(O_start, th1i);
 [rrf,vvf] = par2car(O_end, th2f);
 %identifico orbita
@@ -63,6 +77,8 @@ O_t.OM=OM;
 O_t.om=om;
 O_t.mu=O_start.mu;
 
+beta = 1 - alpha;
+
 if e_t >= 0 && e_t < 1
     [~,vv1t]=par2car(O_t,th1_t);
     [~,vv2t]=par2car(O_t,th2_t);
@@ -70,9 +86,11 @@ if e_t >= 0 && e_t < 1
     O_t.cost2=norm(vv2t-vvf);
     O_t.cost= norm(vv1t-vvi) + norm(vv2t-vvf);
     O_t.tempo = TOF (O_t, th1_t, th2_t);
+    O_t.fun_pesata = alpha * O_t.cost + O_t.tempo;
 else
     O_t.cost = 1e15;
     O_t.tempo = 1e20;
+    O_t.fun_pesata = 1e22;
 end
 
 O_t.th_t=[th1_t,th2_t]; % th1 e th2 nel perifocale dell'orbita di trasferimento
