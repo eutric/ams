@@ -486,10 +486,6 @@ clear
 close all
 clc
 
-clear
-close all
-clc
-
 mu = 1.32712440042e20 * 0.001^3; % km^3/s^2
 dth = 0.001;
 
@@ -516,43 +512,227 @@ O_end.mu = mu;
 
 % fun=@(th1,th2,om)brutta(th1,th2,om,O_start,O_end);
 % fun=@(x)brutta(x(1),x(2),x(3),O_start,O_end);
-fun_opt = @(x)O_tfun(O_start,O_end,x(1),x(2),x(3),30000).fun_pesata;
+fun_opt = @(x)O_tfun(O_start,O_end,x(1),x(2),x(3),[8,1]).fun_pesata;
 x = ga(fun_opt,3,[],[],[],[],[0,0,0],[2*pi,2*pi,2*pi])
-O_opt_pesata = O_tfun(O_start, O_end,x(1),x(2),x(3), 0)
+O_opt_pesata = O_tfun(O_start, O_end,x(1),x(2),x(3), [0,0])
 O_opt_pesata.tempo = seconds(O_opt_pesata.tempo);
 O_opt_pesata.tempo.Format = 'hh:mm:ss';
 O_opt_pesata.tempo
 O_opt_pesata.cost
+
 % x =
 % 
-%     6.0707    3.7180    5.2941
+%     6.0164    3.6966    2.1982
 % 
 % 
 % O_opt_pesata = 
 % 
 %   struct with fields:
 % 
-%              a: 1.4033e+08
-%              e: 0.2824
-%              i: 6.4789e-04
-%             OM: 4.5607
-%             om: 5.2941
+%              a: 1.3535e+08
+%              e: 0.1959
+%              i: 0.0272
+%             OM: 1.5022
+%             om: 2.1982
 %             mu: 1.3271e+11
-%          cost1: 8.3369
-%          cost2: 6.3621
-%           cost: 14.6990
-%          tempo: 4.1759e+05
-%     fun_pesata: 4.1759e+05
-%           th_t: [4.2648 4.3466]
+%          cost1: 5.3826
+%          cost2: 5.4235
+%           cost: 10.8061
+%          tempo: 5.8680e+05
+%     fun_pesata: 0
+%           th_t: [4.0817 4.1967]
 % 
 % 
 % ans = 
 % 
 %   duration
 % 
-%    115:59:48
+%    162:59:59
 % 
 % 
 % ans =
 % 
-%    14.6990
+%    10.8061
+
+%% 
+clear
+close all
+clc
+
+mu = 1.32712440042e20 * 0.001^3; % km^3/s^2
+dth = 0.001;
+
+% Terra
+O_start.a = 1.4946e8;  % [km]
+O_start.e = 0.016;     % [ ]
+O_start.i = 9.1920e-5; % [rad]
+O_start.OM = 2.7847;   % [rad]
+O_start.om = 5.2643;   % [rad]
+O_start.mu = mu;       % [km^3/s^2]
+
+% Asteroide 163899 (2003 SD220)
+O_end.a = 0.827903 *1.496e8; % [km]
+O_end.e = 0.209487;          % [ ]
+O_end.i = 8.55 *pi/180;      % [rad]
+O_end.OM = 273.63 *pi/180;   % [rad]
+O_end.om = 327.03 *pi/180;   % [rad]
+O_end.mu = mu;          
+
+
+O_best.a = 1.3535e+08;
+O_best.e = 0.1959;
+O_best.i = 0.0272;
+O_best.OM = 1.5022;
+O_best.om = 2.1982;
+O_best.mu = mu;
+th_t_best = [4.0817, 4.1967];
+th_best_12 = [6.0164, 3.6966];
+[punto_1, ~] = par2car(O_start, th_best_12(1));
+[punto1_t, ~] = par2car(O_best, th_t_best(1));
+[punto2_t, ~] = par2car(O_best, th_t_best(2));
+[punto_2, ~] = par2car(O_end, th_best_12(2));
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% figure 4 - scenario 2, trasferimento approccio a tappeto min (delta t)
+figure
+scatter3 (0,0,0,100,"yellow", 'filled')
+hold on
+plotOrbit(O_start, 0, 2*pi, dth, 'b--');
+plotOrbit(O_end, 0, 2*pi, dth, 'r--');
+plotOrbit(O_best, th_t_best(1), th_t_best(2), dth, 'g');
+scatter3 (punto1_t(1), punto1_t(2), punto1_t(3), 30, 'k', 'filled')
+scatter3 (punto_2(1), punto_2(2), punto_2(3), 30, 'k', 'filled')
+grid on
+legend ('SOLE', 'Orbita Terrestre', 'Orbita Asteroide', 'Orbita di Trasferimento')
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% fmincon per il deltav
+clear
+close all
+clc
+
+mu = 1.32712440042e20 * 0.001^3; % km^3/s^2
+dth = 0.001;
+
+% Terra
+O_start.a = 1.4946e8;  % [km]
+O_start.e = 0.016;     % [ ]
+O_start.i = 9.1920e-5; % [rad]
+O_start.OM = 2.7847;   % [rad]
+O_start.om = 5.2643;   % [rad]
+O_start.mu = mu;       % [km^3/s^2]
+% r_terra = 6378.388;
+
+[rr_start, ~] = par2car(O_start, 0);
+
+% Asteroide 163899 (2003 SD220)
+O_end.a = 0.827903 *1.496e8; % [km]
+O_end.e = 0.209487;          % [ ]
+O_end.i = 8.55 *pi/180;      % [rad]
+O_end.OM = 273.63 *pi/180;   % [rad]
+O_end.om = 327.03 *pi/180;   % [rad]
+O_end.mu = mu;          
+
+[rr_end, ~] = par2car(O_end, 0);
+
+% fun=@(th1,th2,om)brutta(th1,th2,om,O_start,O_end);
+% fun=@(x)brutta(x(1),x(2),x(3),O_start,O_end);
+fun_costo = @(x)O_tfun(O_start,O_end,x(1),x(2),x(3),[0,0]).cost;
+x0 = [pi,pi,pi];
+x = fmincon(fun_costo,x0,[],[],[],[],[0,0,0],[2*pi, 2*pi, 2*pi])
+O_opt_costo = O_tfun(O_start, O_end,x(1),x(2),x(3),[0,0])
+
+figure
+scatter3 (0, 0, 0, 'y', 'filled', LineWidth=500)
+hold on
+scatter3(rr_start(1),rr_start(2),rr_start(3), 'green', 'filled', LineWidth=10)
+scatter3(rr_end(1), rr_end(2), rr_end(3), 'magenta', 'filled', LineWidth=10)
+plotOrbit (O_start, 0, x(1), dth, 'k--');
+[rr, r_theta_transfer] = plotOrbit (O_opt_costo, O_opt_costo.th_t(1), O_opt_costo.th_t(2), dth, 'r');
+plotOrbit (O_end, x(2), 2*pi, dth, 'k--');
+% plotOrbit (O_start, 0, 2*pi, dth, 'k--');
+% plotOrbit (O_opt, 0, 2*pi, dth, 'k--');
+% plotOrbit (O_end, 0, 2*pi, dth, 'k--');
+% ga() trova in th1 = 3.6181, th2 = 3.4982, om = 3.7291, Dv = 6.3190, con
+% durata di 3304:29:10 (damn)
+
+% O_t.a = 1.4812e+08;
+% O_t.e = 0.0283;
+% O_t.i = 0.0440;
+% O_t.OM = 5.3829;
+% O_t.om = 3.7291;
+% O_t.mu = 1.327124400420000e+11;
+% th_t1 = 2.5551;
+% th_t2 = 4.8716;
+
+
+legend ('SOLE', 'START', 'END', 'Orbita terrestre', 'Orbita di trasferimento', 'Orbita Asteroide')
+
+O_opt_costo.tempo = seconds(O_opt_costo.tempo);
+O_opt_costo.tempo.Format = 'hh:mm:ss';
+O_opt_costo.tempo
+
+%% fmincon per il deltat
+clear
+close all
+clc
+
+mu = 1.32712440042e20 * 0.001^3; % km^3/s^2
+dth = 0.001;
+
+% Terra
+O_start.a = 1.4946e8;  % [km]
+O_start.e = 0.016;     % [ ]
+O_start.i = 9.1920e-5; % [rad]
+O_start.OM = 2.7847;   % [rad]
+O_start.om = 5.2643;   % [rad]
+O_start.mu = mu;       % [km^3/s^2]
+% r_terra = 6378.388;
+
+[rr_start, ~] = par2car(O_start, 0);
+
+% Asteroide 163899 (2003 SD220)
+O_end.a = 0.827903 *1.496e8; % [km]
+O_end.e = 0.209487;          % [ ]
+O_end.i = 8.55 *pi/180;      % [rad]
+O_end.OM = 273.63 *pi/180;   % [rad]
+O_end.om = 327.03 *pi/180;   % [rad]
+O_end.mu = mu;          
+
+[rr_end, ~] = par2car(O_end, 0);
+
+% fun=@(th1,th2,om)brutta(th1,th2,om,O_start,O_end);
+% fun=@(x)brutta(x(1),x(2),x(3),O_start,O_end);
+fun_tempo = @(x)O_tfun(O_start,O_end,x(1),x(2),x(3),[0,0]).tempo;
+x0 = [6, 3.6, 1.7]
+x = fmincon(fun_tempo,x0,[],[],[],[],[0,0,0],[2*pi, 2*pi, 2*pi])
+O_opt_costo = O_tfun(O_start, O_end,x(1),x(2),x(3),[0,0])
+
+figure
+scatter3 (0, 0, 0, 'y', 'filled', LineWidth=500)
+hold on
+scatter3(rr_start(1),rr_start(2),rr_start(3), 'green', 'filled', LineWidth=10)
+scatter3(rr_end(1), rr_end(2), rr_end(3), 'magenta', 'filled', LineWidth=10)
+plotOrbit (O_start, 0, x(1), dth, 'k--');
+[rr, r_theta_transfer] = plotOrbit (O_opt_costo, O_opt_costo.th_t(1), O_opt_costo.th_t(2), dth, 'r');
+plotOrbit (O_end, x(2), 2*pi, dth, 'k--');
+% plotOrbit (O_start, 0, 2*pi, dth, 'k--');
+% plotOrbit (O_opt, 0, 2*pi, dth, 'k--');
+% plotOrbit (O_end, 0, 2*pi, dth, 'k--');
+% ga() trova in th1 = 3.6181, th2 = 3.4982, om = 3.7291, Dv = 6.3190, con
+% durata di 3304:29:10 (damn)
+
+% O_t.a = 1.4812e+08;
+% O_t.e = 0.0283;
+% O_t.i = 0.0440;
+% O_t.OM = 5.3829;
+% O_t.om = 3.7291;
+% O_t.mu = 1.327124400420000e+11;
+% th_t1 = 2.5551;
+% th_t2 = 4.8716;
+
+
+legend ('SOLE', 'START', 'END', 'Orbita terrestre', 'Orbita di trasferimento', 'Orbita Asteroide')
+
+O_opt_costo.tempo = seconds(O_opt_costo.tempo);
+O_opt_costo.tempo.Format = 'hh:mm:ss';
+O_opt_costo.tempo

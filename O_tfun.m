@@ -1,4 +1,4 @@
-function [O_t] = O_tfun(O_start,O_end,th1i,th2f,om, alpha)
+function [O_t] = O_tfun(O_start,O_end,th1i,th2f,om, p)
 %proviamo a fare una funzione che nserendo delle limitazioni in input
 %restituisce l'orbita di trasferimento in output.
 % O_start e O_end sono le orbite da unire. th1i, th2f e om sono le
@@ -77,8 +77,6 @@ O_t.OM=OM;
 O_t.om=om;
 O_t.mu=O_start.mu;
 
-beta = 1 - alpha;
-
 if e_t >= 0 && e_t < 1
     [~,vv1t]=par2car(O_t,th1_t);
     [~,vv2t]=par2car(O_t,th2_t);
@@ -86,7 +84,7 @@ if e_t >= 0 && e_t < 1
     O_t.cost2=norm(vv2t-vvf);
     O_t.cost= norm(vv1t-vvi) + norm(vv2t-vvf);
     O_t.tempo = TOF (O_t, th1_t, th2_t);
-    O_t.fun_pesata = alpha * O_t.cost + O_t.tempo;
+    O_t.fun_pesata = p(1) * 10^3 * O_t.cost + p(2) * O_t.tempo;
 else
     O_t.cost = 1e15;
     O_t.tempo = 1e20;
