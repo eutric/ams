@@ -151,7 +151,9 @@ vv_inf2_S = vv_th2_t - vv_th2_S; % km/s, velocità di eccesso iperbolico, rispet
 v_inf2 = norm(vv_inf2_S);
 rr_inf2_S = rr_th2_t - rr_th2_S; % km, distanza relativa rispetto allo 
 % asteroide, per approssimazione delle patched conics, = 0
-
+O_hyper2.i = O_t_scenario2.i;
+O_hyper2.om = O_t_scenario2.om;
+O_hyper2.OM = O_t_scenario2.OM;
 
 O_hyper2.a = - mu_A/v_inf2^2;
 O_hyper2.mu = mu_A;
@@ -171,11 +173,14 @@ O_hyper2.e = (O_hyper2.a-r_p)/O_hyper2.a;
 O_hyper2.thetainf = acos(-1/O_hyper2.e);
 
 
+
 % Dell'orbita d'arrivo impongo solo r_a
 O_arrivo.mu = mu_A;
 O_arrivo.a=(r_a+r_p)/2;
 O_arrivo.e=(r_a-r_p)/2/O_arrivo.a;
-
+O_arrivo.i = O_hyper2.i;
+O_arrivo.om = O_hyper2.om;
+O_arrivo.OM = O_hyper2.OM;
 % Quindi, l'impulso finale per pormi nell'ultima orbita di parcheggio, sarà
 DELTA_V2 = abs (v_theta (O_arrivo, 0) - v_theta (O_hyper2, 0))
 
@@ -186,6 +191,15 @@ DELTA_V2 = abs (v_theta (O_arrivo, 0) - v_theta (O_hyper2, 0))
 
 th_r_soi_ast=acos(1/O_hyper2.e*(O_hyper2.a*(1-O_hyper2.e^2)/R_SOI_A-1));
 DELTA_T_SOI2= TOF_open(O_hyper2, 0, th_r_soi_ast)
+figure
+Terra_3D(0.36)
+hold on
+plotOrbit (O_arrivo, 0, 2*pi, dth, 'k--');
+plotOrbit (O_hyper2, 0, O_hyper2.thetainf, dth, 'r');
+
+
+%APPROFONDIMENTO%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 % Cerco il piano in cui giacciono le orbite, per farlo devo ruotare il
 % sistema di riferimento cartesiano eliocentrico, lungo l'asse x, di eps,
@@ -213,8 +227,65 @@ plotOrbit (O_A, 0, 2*pi, dth, 'k--');
 plotOrbit (O_hyper2, 0, O_hyper2.thetainf, dth, 'green', rr_th2_S);
 
 
+%% avanzato
+
+clear all
+close all
+clc
+
+% Dati
+
+G = 6.67e-11; % N*m^2/kg^2
+
+m_T = 5.974e24;  % kg
+m_S = 1.989e30;  % kg
+m_A = 5.1827e11; % Kg
+
+R_T = 6378;   % km
+R_S = 696340; % km
+R_A = 0.79/2; % km
+
+mu_T = 398600;  % km^3/s^2
+mu_S = 1.32712440042e20 * 0.001^3; % km^3/s^2
+mu_A = G * m_A;
 
 
+dth = 0.1;
+
+% !!!! RIFERITA ALLA TERRA
+O_parcheggio.a = 3.918174284575137e+04; % km
+O_parcheggio.e = 0.597404804289614;
+O_parcheggio.i = 0.590342952766537;
+O_parcheggio.OM = 1.749480463333461;
+O_parcheggio.om = 1.177309652253865;
+O_parcheggio.mu = 398600;
+[rr_start_T, vv_start_T] = par2car(O_parcheggio, 0); % Per ora mi metto nel pericentro; SdR Terra
+
+
+% Sarebbe l'orbita di parcheggio del nostro gruppo, dello scenario 1
+
+% Terra !!!! RIFERITA AL SOLE
+O_start_scenario2.a = 1.4946e8;  % [km]
+O_start_scenario2.e = 0.016;     % [ ]
+O_start_scenario2.i = 9.1920e-5; % [rad]
+O_start_scenario2.OM = 2.7847;   % [rad]
+O_start_scenario2.om = 5.2643;   % [rad]
+O_start_scenario2.mu = mu_S;       % [km^3/s^2]
+th1_scenario2 = 3.618362149407213; % [rad]
+[rr_end1_S, vv_end1_S] = par2car (O_start_scenario2, th1_scenario2); % SdR Sole
+
+% Trasferimento dello scenario 2 !!! Riferita al sole
+O_t_scenario2.a = 1.481231188816134e+08;
+O_t_scenario2.e = 0.028295312693238;
+O_t_scenario2.i = 0.043993770239157;
+O_t_scenario2.OM = 5.382908205403476;
+O_t_scenario2.om = 3.729157082348018;
+O_t_scenario2.mu = 1.327124400420000e+11;
+th1_transfer = 2.555106932985983;
+th2_transfer = 4.871467598525006;
+
+[rr_t1, vv_t1, matrici] = par2car(O_t_scenario2, th1_transfer);
+vv_inf1 = vv_t1 - vv_end1_S;
 %Prova iperbole con modifica di piano
 %1)modifico sistema riferimento passando da eclittico(sole) a eci(terra)
 T_eci_eclip=[1 0 0;
@@ -223,16 +294,19 @@ T_eci_eclip=[1 0 0;
 vv_inf1_eci=T_eci_eclip'*vv_inf1;
 rr_inf_eci=vv_inf1_eci/norm(vv_inf1_eci);
 
-%2)cerco r_h raggio intersezione tra i piani iperbole e parcheggio =>
-%calcolo i vettori hh per iperbole e per ellisse di parcheggio 
-
-% hh_parc=cross(rr_start_T,vv_start_T);
-% hh_hyper=cross(rr_t1,vv_t1);
-% rr_h=cross(hh_parc,hh_hyper)/norm(cross(hh_parc,hh_hyper));
-% rh=norm(rr_h);
-% a_h
-% fun=@(eh,theta_inf,theta_h)[
-%     ]
+%2)scelgo r_h per esempio raggio di 90 gradi su orbita di parcheggio dell'orbita di parcheggio
+[rr_h_earth,vv_h_earth]=par2car(O_parcheggio,pi/2);
+rr_h=T_eci_eclip'*rr_h_earth;
+r_h=norm(rr_h);
+alpha=acos(dot(rr_h,rr_inf_eci));
+a_h=-O_parcheggio.mu/norm(vv_inf1_eci).^2;
+%X=[eh,theta_inf,theta_h]
+fun=@(X)[(a_h*(1-X(1).^2))./(1+X(1).*cos(X(3)))-r_h;
+    cos(X(2))+1./X(1);
+    X(3)+alpha-X(2)
+    ];
+x0=[0.5,pi/2,pi/2];
+X=fsolve(fun,x0)
 
 
 %verifica grafica
