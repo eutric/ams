@@ -373,9 +373,7 @@ if DELTA_V_AD<cost_min
 end
 
 
-figure
-plot(linspace(0,2*pi,100),COST_vect)
-grid on
+
 %plot%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Terra_3D(R_T)
@@ -393,21 +391,7 @@ legend('attrattore','iperbole','orbita di partenza','raggio di intersezione','di
 xlim([-1e5,1e5]);
 ylim([-1e5,1e5]);
 zlim([-1e5,1e5]);
-%verifica grafica
-% plane_parc=@(x,y)-(hh_parc(1)*x+hh_parc(2)*y)./hh_parc(3);
-% plane_hyper=@(x,y)-(hh_hyper(1)*x+hh_hyper(2)*y)./hh_hyper(3);
-% x=linspace(-1e16,1e16,100);
-% y=linspace(-1e16,1e16,100);
-% [X,Y]=meshgrid(x,y);
-% figure
-% % sist_can(2);
-% % hold on
-% % plotOrbit(O_t_scenario2,0,2*pi,0.01,'green');
-% surf(plane_hyper(X,Y),LineStyle="none")
-% hold on
-% quiver3(0,0,0,hh_hyper(1),hh_hyper(2),hh_hyper(3))
-% 
-% 
+
 
 
 

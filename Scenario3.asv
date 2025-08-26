@@ -299,7 +299,7 @@ cost_min=10;
 %2)scelgo r_h per esempio raggio di 90 gradi su orbita di parcheggio dell'orbita di parcheggio
 
 %uso una funzione che itera i passaggi successivi per trovare quale th è il
-%miglio
+%migliore, per poi usare questo th per il calcolo esplicito dell'iperbole
 costmin=10;
 for th=linspace(0,2*pi,100)
     [O_hyper_Ad,cost] = O_Hyper_ad(th);
@@ -373,9 +373,7 @@ if DELTA_V_AD<cost_min
 end
 
 
-figure
-plot(linspace(0,2*pi,100),COST_vect)
-grid on
+
 %plot%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Terra_3D(R_T)
