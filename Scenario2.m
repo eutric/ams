@@ -164,7 +164,7 @@ tic
 for th1i=linspace(a, b, n)
     for th2f=linspace(a, b, n)
         for om=linspace(1, 2*pi,n)
-            [O_t] = O_tfun(O_start,O_end,th1i,th2f,om);
+            [O_t] = O_tfun(O_start,O_end,th1i,th2f,om, [0,0]);
             if O_t.e<1 && O_t.e>=0
                 OO_t=[OO_t,O_t];
                 if O_t.cost<costmin
@@ -183,8 +183,8 @@ end
 toc
 % 
 [punto_1, ~] = par2car(O_start, th_best_12(1));
-[punto1_t, ~] = par2car(O_best, th_t_best(1));
-[punto2_t, ~] = par2car(O_best, th_t_best(2));
+[punto1_t, v1_car] = par2car(O_best, th_t_best(1));
+[punto2_t, v2_car] = par2car(O_best, th_t_best(2));
 [punto_2, ~] = par2car(O_end, th_best_12(2));
 
 scatter3 (punto1_t(1), punto1_t(2), punto1_t(3), 'red')
@@ -213,8 +213,7 @@ clear
 close all
 clc
 
-mu = 1.32712440042e20 * 0.001^3; % km^3/s^2
-dth = 0.001;
+
 
 % Terra
 O_start.a = 1.4946e8;  % [km]
@@ -239,9 +238,9 @@ O_end.mu = mu;
 
 % fun=@(th1,th2,om)brutta(th1,th2,om,O_start,O_end);
 % fun=@(x)brutta(x(1),x(2),x(3),O_start,O_end);
-fun_costo = @(x)O_tfun(O_start,O_end,x(1),x(2),x(3)).cost;
+fun_costo = @(x)O_tfun(O_start,O_end,x(1),x(2),x(3),[0,0]).cost;
 x = ga(fun_costo,3,[],[],[],[],[3.4,3.4,3.4],[3.8,3.8,3.8]);
-O_opt_costo = O_tfun(O_start, O_end,x(1),x(2),x(3))
+O_opt_costo = O_tfun(O_start, O_end,x(1),x(2),x(3),[0,0])
 
 figure
 scatter3 (0, 0, 0, 'y', 'filled', LineWidth=500)
@@ -255,7 +254,7 @@ plotOrbit (O_end, x(2), 2*pi, dth, 'k--');
 % plotOrbit (O_opt, 0, 2*pi, dth, 'k--');
 % plotOrbit (O_end, 0, 2*pi, dth, 'k--');
 % ga() trova in th1 = 3.6181, th2 = 3.4982, om = 3.7291, Dv = 6.3190, con
-% durata di 3304:29:10 (damn)
+% durata di 11896150 s = 3304:29:10 (damn)
 
 % O_t.a = 1.4812e+08;
 % O_t.e = 0.0283;
@@ -273,6 +272,58 @@ O_opt_costo.tempo = seconds(O_opt_costo.tempo);
 O_opt_costo.tempo.Format = 'hh:mm:ss';
 O_opt_costo.tempo
 
+%% Trasferimenti
+clear
+close all
+clc
+
+mu_S = 1.32712440042e20 * 0.001^3; % km^3/s^2
+dth = 0.001;
+
+% Terra
+O_start.a = 1.4946e8;  % [km]
+O_start.e = 0.016;     % [ ]
+O_start.i = 9.1920e-5; % [rad]
+O_start.OM = 2.7847;   % [rad]
+O_start.om = 5.2643;   % [rad]
+O_start.mu = mu_S;       % [km^3/s^2]
+
+% Asteroide 163899 (2003 SD220)
+O_end.a = 0.827903 *1.496e8; % [km]
+O_end.e = 0.209487;          % [ ]
+O_end.i = 8.55 *pi/180;      % [rad]
+O_end.OM = 273.63 *pi/180;   % [rad]
+O_end.om = 327.03 *pi/180;   % [rad]
+O_end.mu = mu_S;
+
+% Min delta v
+O_best_dv.a = 1.4812e+08;
+O_best_dv.e = 0.0283;
+O_best_dv.i = 0.0440;
+O_best_dv.OM = 5.3829;
+O_best_dv.om = 3.7291;
+O_best_dv.mu = 1.327124400420000e+11;
+O_best_dv.th_t = [2.5551, 4.8716];
+
+% x min dv =
+% 
+%     theta 1 = 6.0755   theta 2 = 3.6401   omega = 1.7471
+
+% Min delta t
+O_best_dt.a = 3.2632e+13;
+O_best_dt.e = 0.9999;
+O_best_dt.i = 1.5824;
+O_best_dt.OM = 1.5582;
+O_best_dt.om = 1.7471;
+O_best_dt.mu = mu_S;
+O_best_dt.th_t = [4.5360, 4.5475];
+
+% Punti di trasferimento
+[rr1_mindeltav, vv1_mindeltav] = par2car (O_best_dv, O_best_dv.th_t(1));
+[rr2_mindeltav, vv2_mindeltav] = par2car (O_best_dv, O_best_dv.th_t(2));
+
+[rr1_mindeltat, vv1_mindeltat] = par2car (O_best_dt, O_best_dt.th_t(1));
+[rr2_mindeltat, vv2_mindeltat] = par2car (O_best_dt, O_best_dt.th_t(2));
 %% Scenario 2 - ottimizzo il TOF con ga()
 clear
 close all
@@ -512,7 +563,7 @@ O_end.mu = mu;
 
 % fun=@(th1,th2,om)brutta(th1,th2,om,O_start,O_end);
 % fun=@(x)brutta(x(1),x(2),x(3),O_start,O_end);
-fun_opt = @(x)O_tfun(O_start,O_end,x(1),x(2),x(3),[8,1]).fun_pesata;
+fun_opt = @(x)O_tfun(O_start,O_end,x(1),x(2),x(3),[50,1]).fun_pesata;
 x = ga(fun_opt,3,[],[],[],[],[0,0,0],[2*pi,2*pi,2*pi])
 O_opt_pesata = O_tfun(O_start, O_end,x(1),x(2),x(3), [0,0])
 O_opt_pesata.tempo = seconds(O_opt_pesata.tempo);
@@ -520,39 +571,70 @@ O_opt_pesata.tempo.Format = 'hh:mm:ss';
 O_opt_pesata.tempo
 O_opt_pesata.cost
 
+% alpha = 50, beta = 1
 % x =
 % 
-%     6.0164    3.6966    2.1982
+%     6.0280    3.6867    2.1148
 % 
 % 
 % O_opt_pesata = 
 % 
 %   struct with fields:
 % 
-%              a: 1.3535e+08
-%              e: 0.1959
-%              i: 0.0272
-%             OM: 1.5022
-%             om: 2.1982
+%              a: 1.3704e+08
+%              e: 0.2160
+%              i: 0.0491
+%             OM: 1.5125
+%             om: 2.1148
 %             mu: 1.3271e+11
-%          cost1: 5.3826
-%          cost2: 5.4235
-%           cost: 10.8061
-%          tempo: 5.8680e+05
+%          cost1: 6.2575
+%          cost2: 6.2823
+%           cost: 12.5399
+%          tempo: 4.7740e+05
 %     fun_pesata: 0
-%           th_t: [4.0817 4.1967]
+%           th_t: [4.1666 4.2602]
 % 
 % 
 % ans = 
 % 
 %   duration
 % 
-%    162:59:59
+%    132:36:35
 % 
 % 
 % ans =
 % 
-%    10.8061
+%    12.5399
+
+O_best.a = 1.3704e+08;
+O_best.e = 0.2160;
+O_best.i = 0.0491;
+O_best.OM = 1.5125;
+O_best.om = 2.1148;
+O_best.cost = 12.5399;
+O_best.tempo = 4.7740e05;
+O_best.th_t = [4.1666, 4.2602];
+O_best.mu = mu;
+th_best_12 = [6.0280, 3.6867];
+
+[punto1_t, ~] = par2car(O_best, O_best.th_t(1));
+[punto_2, ~] = par2car(O_end, th_best_12(2));
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% figure 4 - scenario 2, trasferimento approccio a tappeto min (delta t)
+figure
+scatter3 (0,0,0,100,"yellow", 'filled')
+hold on
+plotOrbit(O_start, 0, 2*pi, dth, 'b--');
+plotOrbit(O_end, 0, 2*pi, dth, 'r--');
+plotOrbit(O_best, O_best.th_t(1), O_best.th_t(2), dth, 'g');
+scatter3 (punto1_t(1), punto1_t(2), punto1_t(3), 30, 'k', 'filled')
+scatter3 (punto_2(1), punto_2(2), punto_2(3), 30, 'k', 'filled')
+grid on
+legend ('SOLE', 'Orbita Terrestre', 'Orbita Asteroide', 'Orbita di Trasferimento')
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 %% 
 clear
