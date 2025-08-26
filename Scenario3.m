@@ -294,8 +294,24 @@ T_eci_eclip=[1 0 0;
 vv_inf1_eci=T_eci_eclip'*vv_inf1;
 rr_inf_eci=vv_inf1_eci/norm(vv_inf1_eci);
 
+COST_vect=[];
+cost_min=10;
 %2)scelgo r_h per esempio raggio di 90 gradi su orbita di parcheggio dell'orbita di parcheggio
-[rr_h_earth,vv_h_earth]=par2car(O_parcheggio,pi/2);
+
+%uso una funzione che itera i passaggi successivi per trovare quale th è il
+%migliore, per poi usare questo th per il calcolo esplicito dell'iperbole
+costmin=10;
+for th=linspace(0,2*pi,100)
+    [O_hyper_Ad,cost] = O_Hyper_ad(th);
+    if cost<costmin
+        costmin=cost;
+        O_opt=O_hyper_Ad;
+        th_opt=th;
+    end
+end
+
+theta_parc=th_opt;
+[rr_h_earth,vv_h_earth]=par2car(O_parcheggio,theta_parc);
 rr_h=rr_h_earth;
 r_h=norm(rr_h);
 alpha=acos(dot(rr_h,rr_inf_eci)./norm(rr_h)./norm(rr_inf_eci));
@@ -317,51 +333,65 @@ end
 
 %definisco il piano dell'iperbole uguale al piano dell orbita di
 %trasferimento delo sc2
-hh_hyper=cross(rr_t1,vv_t1)/norm(cross(rr_t1,vv_t1));
+hh_hyper=cross(rr_inf_eci,rr_h)/norm(cross(rr_inf_eci,rr_h));
 NN_h=cross([0;0;1],hh_hyper)/norm(cross([0;0;1],hh_hyper));
 O_hyper_Ad.i=acos(dot(hh_hyper,[0,0,1]));
-if dot(NN_h,[0,1,0])>=0
-    O_hyper_Ad.OM=acos(dot(NN_h,[1,0,0]));
-elseif dot(NN_h,[0,1,0])<0
-     O_hyper_Ad.OM=2*pi-acos(dot(NN_h,[1,0,0]));
+if NN_h(2)>=0
+    O_hyper_Ad.OM=acos(NN_h(1));
+elseif NN_h(2)<0
+     O_hyper_Ad.OM=2*pi-acos(NN_h(1));
 end
-fun2=@(e)[dot(rr_h,e)-cos(theta_h);
+%uso sistema
+fun2=@(e)[dot(rr_h,e)./norm(rr_h)-cos(theta_h);
     dot(rr_inf_eci,e)-cos(theta_inf);
     norm(e)-1
     ];
 e0=[1,1,1];
 ee_h=fsolve(fun2,e0);
 
+
 if dot(ee_h,[0,0,1])>=0
     O_hyper_Ad.om=acos(dot(NN_h,ee_h));
 elseif dot(ee_h,[0,0,1])<0
     O_hyper_Ad.om=2*pi-acos(dot(NN_h,ee_h));
 end
+
+
 O_hyper_Ad.a=-mu_T/norm(vv_inf1).^2;
 O_hyper_Ad.e=eh;
+
+
+%calcolo costi%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+O_hyper_Ad.mu=mu_T;
+[rr_hc,vv_h]=par2car(O_hyper_Ad,-theta_h);%uso - angolo perchè il vettore rr_h si trova prima del pericentro
+[rr_pc,vv_p]=par2car(O_parcheggio,theta_parc);
+DELTA_V_AD=norm(vv_h-vv_p);
+COST_vect=[COST_vect;DELTA_V_AD];
+if DELTA_V_AD<cost_min
+    cost_min=DELTA_V_AD;
+    th_opt=theta_parc;
+end
+
+
+
+%plot%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 Terra_3D(R_T)
 hold on
 plotOrbit(O_hyper_Ad,-theta_inf,theta_inf,0.01,'r')
 plotOrbit(O_parcheggio,0,2*pi,0.01,'k')
 quiver3(0,0,0,rr_h(1),rr_h(2),rr_h(3))
+
+ee_h_plot=0.5e5*ee_h;
+quiver3(0,0,0,ee_h_plot(1),ee_h_plot(2),ee_h_plot(3))
+quiver3(0,0,0,1e5*hh_hyper(1),1e5*hh_hyper(2),1e5*hh_hyper(3))
+quiver3(0,0,0,1e5*NN_h(1),1e5*NN_h(2),1e5*NN_h(3))
+quiver3(0,0,0,1e5*rr_inf_eci(1),1e5*rr_inf_eci(2),1e5*rr_inf_eci(3))
+legend('attrattore','iperbole','orbita di partenza','raggio di intersezione','direz. eccentricità','direz. vettore momento della qt. moto','direz. asse dei nodi','direz. velocità asintotica')
 xlim([-1e5,1e5]);
 ylim([-1e5,1e5]);
 zlim([-1e5,1e5]);
-%verifica grafica
-% plane_parc=@(x,y)-(hh_parc(1)*x+hh_parc(2)*y)./hh_parc(3);
-% plane_hyper=@(x,y)-(hh_hyper(1)*x+hh_hyper(2)*y)./hh_hyper(3);
-% x=linspace(-1e16,1e16,100);
-% y=linspace(-1e16,1e16,100);
-% [X,Y]=meshgrid(x,y);
-% figure
-% % sist_can(2);
-% % hold on
-% % plotOrbit(O_t_scenario2,0,2*pi,0.01,'green');
-% surf(plane_hyper(X,Y),LineStyle="none")
-% hold on
-% quiver3(0,0,0,hh_hyper(1),hh_hyper(2),hh_hyper(3))
-% 
-% 
+
 
 
 
@@ -394,3 +424,11 @@ zlim([-1e5,1e5]);
 % scatter3(rr_start(1), rr_start(2), rr_start(3), 'filled', LineWidth=1)
 % scatter3(rr_end(1), rr_end(2), rr_end(3), 'filled', LineWidth=1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
