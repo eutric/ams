@@ -1,3 +1,4 @@
+%% ricerca del min dv
 clear
 close all
 clc
@@ -20,6 +21,14 @@ O_end.i = 8.55 *pi/180;      % [rad]
 O_end.OM = 273.63 *pi/180;   % [rad]
 O_end.om = 327.03 *pi/180;   % [rad]
 O_end.mu = mu;               % [km^3/s^2]
+
+% Approccio a tappeto
+n = 10; % Dimensioni griglia
+a = [3.4, 3.4, 1]; % Si possono cambiare ad ogni lancio per infittire dove serve
+b = [3.7, 3.7, 2*pi]; 
+
+fun_ob = @(O1, O2, x) O_tfun(O1, O2, x(1), x(2), x(3), [0,0]).cost;
+[O_best, th_best_12] = tappeto(O_start, O_end, fun_ob, n, a, b);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Figure 1 scenario 2, subplot di orbita terrestre 3D e piano
@@ -63,124 +72,12 @@ hold on
 plotOrbit (O_start, 0, 2*pi, dth, 'b');
 plotOrbit (O_end, 0, 2*pi, dth, 'r');
 legend ('SOLE', 'Orbita Terrestre', 'Orbita Asteroide')
-% %prova caso esempio scelgo theta1i=theta2f=0
-% th1i=0;
-% th2f=0;
-% [rri,vvi] = par2car(O_start, th1i);
-% [rrf,vvf] = par2car(O_end, th2f);
-% scatter3(rri(1),rri(2),rri(3))
-% scatter3(rrf(1),rrf(2),rrf(3))
-% 
-% %identifico orbita
-% hh=cross(rri,rrf)./(norm(cross(rri,rrf)));
-% i=acos(dot(hh,[0,0,1]));
-% NN=cross([0,0,1],hh)./norm(cross([0,0,1],hh));
-% 
-% if dot(NN,[0,1,0])>=0
-%     OM=acos(dot(NN,[1,0,0]));
-% elseif dot(NN,[0,1,0])<0
-%     OM=2*pi-acos(dot(NN,[1,0,0]));
-% end
-% R_OM=[cos(OM) sin(OM) 0;
-%     -sin(OM) cos(OM) 0;
-%     0 0 1];
-% %scelgo 
-% om=0;
-% % Rotazione di i intorno al versore i'
-% R_i=[1 0 0;
-%     0 cos(i) sin(i);
-%     0 -sin(i) cos(i)];
-% 
-% % Rotaziozione di om intorno al versore k''
-% R_om=[cos(om) sin(om) 0;
-%     -sin(om) cos(om) 0;
-%     0 0 1];
-% T_e_pf=R_om*R_i*R_OM;
-% rri_t=T_e_pf*rri;
-% rrf_t=T_e_pf*rrf;
-% th1t=atan(rri(2)/rri(1));
-% th2t=atan(rrf(2)/rrf(1));
-% if th1t<=0 || th2t<=0
-%     th1t=th1t+2*pi;
-%     th2t=th2t+2*pi;
-% end
-% %calcolo valori scalari e parametri di forma
-% r1=norm(rri_t);
-% r2=norm(rrf_t);
-% et=(r2-r1)/(r1*cos(th1t)-r2*cos(th2t));
-% at=r1*(1+et*cos(th1t))/(1-et^2);
-% O_t.a=at;
-% O_t.e=et;
-% O_t.i=i;
-% O_t.OM=OM;
-% O_t.om=om;
-% O_t.mu=O_start.mu;
-% [rr1t,vv1t]=par2car(O_t,th1t);
-% [rr2t,vv2t]=par2car(O_t,th2t);
-% cost=abs(norm(vv1t-vvi))+abs(norm(vv2t-vvf));
-% plotOrbit(O_t,0,2*pi,0.01, 'k');
-% xlim([-2e8,2e8])
-% ylim([-2e8,2e8])
-% 
-% zlim([-2e8,2e8])
+
 
 %% test funzione cicli annidati
 clear
 close all
 clc
-
-mu = 1.32712440042e20 * 0.001^3; % km^3/s^2
-dth = 0.001;
-
-% Terra
-O_start.a = 1.4946e8;  % [km]
-O_start.e = 0.016;     % [ ]
-O_start.i = 9.1920e-5; % [rad]
-O_start.OM = 2.7847;   % [rad]
-O_start.om = 5.2643;   % [rad]
-O_start.mu = mu;       % [km^3/s^2]
-
-% Asteroide 163899 (2003 SD220)
-O_end.a = 0.827903 *1.496e8; % [km]
-O_end.e = 0.209487;          % [ ]
-O_end.i = 8.55 *pi/180;      % [rad]
-O_end.OM = 273.63 *pi/180;   % [rad]
-O_end.om = 327.03 *pi/180;   % [rad]
-O_end.mu = mu;          
-
-n = 30; % Dimensioni griglia
-a = 3.4;
-b = 3.7;
-OO_t = []; % Vettore di oggetti orbita, non si può preallocare
-kk = 0; % Contatore
-costmin=1e16;
-
-figure
-scatter3 (0,0,0, 'red', LineWidth=2)
-hold on
-plotOrbit (O_start, 0, 2*pi, dth, 'b');
-plotOrbit (O_end, 0, 2*pi, dth, 'k');
-tic
-for th1i=linspace(a, b, n)
-    for th2f=linspace(a, b, n)
-        for om=linspace(1, 2*pi,n)
-            [O_t] = O_tfun(O_start,O_end,th1i,th2f,om, [0,0]);
-            if O_t.e<1 && O_t.e>=0
-                OO_t=[OO_t,O_t];
-                if O_t.cost<costmin
-                    costmin=O_t.cost;
-                    O_best=O_t;
-                    th_t_best=O_t.th_t;
-                    th_best_12 = [th1i, th2f];
-                end
-            else 
-                kk = kk+1;
-            end
-
-        end
-    end
-end
-toc
 % 
 [punto_1, ~] = par2car(O_start, th_best_12(1));
 [punto1_t, v1_car] = par2car(O_best, th_t_best(1));
@@ -272,7 +169,7 @@ O_opt_costo.tempo = seconds(O_opt_costo.tempo);
 O_opt_costo.tempo.Format = 'hh:mm:ss';
 O_opt_costo.tempo
 
-%% Trasferimenti
+%% Dati definitivi Trasferimenti
 clear
 close all
 clc
@@ -305,9 +202,9 @@ O_best_dv.om = 3.7291;
 O_best_dv.mu = 1.327124400420000e+11;
 O_best_dv.th_t = [2.5551, 4.8716];
 
-% x min dv =
-% 
-%     theta 1 = 6.0755   theta 2 = 3.6401   omega = 1.7471
+% x min dv
+%
+% theta 1 = 3.6181  theta 2 = 3.4982  omega = 3.7291
 
 % Min delta t
 O_best_dt.a = 3.2632e+13;
@@ -317,6 +214,10 @@ O_best_dt.OM = 1.5582;
 O_best_dt.om = 1.7471;
 O_best_dt.mu = mu_S;
 O_best_dt.th_t = [4.5360, 4.5475];
+
+% x min dt =
+% 
+%     theta 1 = 6.0755   theta 2 = 3.6401   omega = 1.7471
 
 % Punti di trasferimento
 [rr1_mindeltav, vv1_mindeltav] = par2car (O_best_dv, O_best_dv.th_t(1));
