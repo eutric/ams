@@ -12,7 +12,7 @@ for th1i = linspace(a(1), b(1), n)
     for th2f = linspace(a(2), b(2), n)
         for om = linspace(a(3), b(3), n)
             x_t = [th1i, th2f, om];
-            costo = fun_ob(O1, O2, x_t);
+            costo = fun_ob(x_t);
             O_t = O_tfun(O1, O2, x_t(1), x_t(2), x_t(3), [0,0]);
             if O_t.e<1 && O_t.e>=0
                 if costo < costmin
