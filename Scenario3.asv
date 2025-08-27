@@ -199,9 +199,9 @@ Terra_3D(0.36)
 hold on
 plotOrbit (O_arrivo, 0, 2*pi, dth, 'k--');
 plotOrbit (O_hyper2, 0, O_hyper2.thetainf, dth, 'r');
-xlim([-10,10]);
-ylim([-10,10]);
-zlim([-10,10]);
+% xlim([-20,20]);
+% ylim([-1e5,1e5]);
+% zlim([-1e5,1e5]);
 
 
 %APPROFONDIMENTO%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
