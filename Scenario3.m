@@ -197,36 +197,6 @@ hold on
 plotOrbit (O_arrivo, 0, 2*pi, dth, 'k--');
 plotOrbit (O_hyper2, 0, O_hyper2.thetainf, dth, 'r');
 
-
-%APPROFONDIMENTO%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-% Cerco il piano in cui giacciono le orbite, per farlo devo ruotare il
-% sistema di riferimento cartesiano eliocentrico, lungo l'asse x, di eps,
-% cioè l'inclinazione del piano equatoriale dell'asteroide rispetto al
-% piano dell'eclittica:
-eps_A = 8.51490 * pi/180; % [rad], fonte: wikipedia
-
-% Quindi l'angolazione dell'orbita parabolica e d'arrivo, rispetto al SdR
-% inerziale dell'asteroide, cambierà solo in i:
-O_hyper2.i = O_t_scenario2.i;
-O_hyper2.om = O_t_scenario2.om;
-O_hyper2.OM = O_t_scenario2.OM;
-O_arrivo.i = O_hyper2.i;
-O_arrivo.om = O_hyper2.om;
-O_arrivo.OM = O_hyper2.OM;
-
-figure
-scatter3(0,0,0, 100, 'yellow', 'filled') % SOLE
-hold on
-scatter3(rr_th2_S(1), rr_th2_S(2), rr_th2_S(3), 'red', 'filled') % ASTEROIDE
-scatter3(rr_end1_S(1), rr_end1_S(2), rr_end1_S(3), 'blue', 'filled') % TERRA
-plotOrbit (O_t_scenario2, 0, 2*pi, dth, 'k--');
-plotOrbit (O_A, 0, 2*pi, dth, 'k--');
-% plotOrbit (O_arrivo, 0, 2*pi, dth, 'k--');
-plotOrbit (O_hyper2, 0, O_hyper2.thetainf, dth, 'green', rr_th2_S);
-
-
 %% avanzato
 
 clear all
