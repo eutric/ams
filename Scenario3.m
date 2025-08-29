@@ -28,7 +28,7 @@ O_parcheggio.i = 0.590342952766537;
 O_parcheggio.OM = 1.749480463333461;
 O_parcheggio.om = 1.177309652253865;
 O_parcheggio.mu = 398600;
-[rr_start_T, vv_start_T] = par2car(O_parcheggio, 0); % Per ora mi metto nel pericentro; SdR Terra
+[rr_start_T, vv_start_T] = par2car(O_parcheggio, 6.2832); % Per ora mi metto nel pericentro; SdR Terra
 
 
 % Sarebbe l'orbita di parcheggio del nostro gruppo, dello scenario 1
@@ -104,6 +104,9 @@ d_ear_sun=norm(rr_end1_S);
 r_soi_ear=d_ear_sun*(m_T/m_S)^(2/5);
 th_r_soi_ear=acos(1/O_hyper1.e*(O_hyper1.a*(1-O_hyper1.e^2)/r_soi_ear-1));
 DELTA_T_SOI1= TOF_open(O_hyper1, 0, th_r_soi_ear)
+
+
+
 
 
 
@@ -351,7 +354,12 @@ r_soi_ear=d_ear_sun*(m_T/m_S)^(2/5);
 th_r_soi_ear2=acos(1/O_hyper_Ad.e*(O_hyper_Ad.a*(1-O_hyper_Ad.e^2)/r_soi_ear-1));
 t1=TOF_open(O_hyper_Ad,theta_h,th_r_soi_ear2);
 
+%calcolo inoltre il tempo necessario a passare da th0=0 fino a theta
+%optimal
 
+t_parch=TOF(O_parcheggio,0,th_opt);
+
+t_tot=t_parch+t1
 %plot%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Terra_3D(R_T)
