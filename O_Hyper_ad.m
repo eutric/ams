@@ -85,7 +85,7 @@ end
 
 %definisco il piano dell'iperbole uguale al piano dell orbita di
 %trasferimento delo sc2
-hh_hyper=cross(rr_inf_eci,rr_h)/norm(cross(rr_inf_eci,rr_h));
+hh_hyper=cross(rr_h,rr_inf_eci)/norm(cross(rr_inf_eci,rr_h));
 NN_h=cross([0;0;1],hh_hyper)/norm(cross([0;0;1],hh_hyper));
 O_hyper_Ad.i=acos(dot(hh_hyper,[0,0,1]));
 if NN_h(2)>=0
