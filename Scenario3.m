@@ -44,14 +44,14 @@ th1_scenario2 = 3.618362149407213; % [rad]
 [rr_end1_S, vv_end1_S] = par2car (O_start_scenario2, th1_scenario2); % SdR Sole
 
 % Trasferimento dello scenario 2 !!! Riferita al sole
-O_t_scenario2.a = 1.481231188816134e+08;
-O_t_scenario2.e = 0.028295312693238;
-O_t_scenario2.i = 0.043993770239157;
-O_t_scenario2.OM = 5.382908205403476;
-O_t_scenario2.om = 3.729157082348018;
+O_t_scenario2.a = 1.481233898202188e+08;
+O_t_scenario2.e = 0.028294269485414;
+O_t_scenario2.i = 0.043999052217133;
+O_t_scenario2.OM = 5.382840011661747;
+O_t_scenario2.om = 3.729187666090036;
 O_t_scenario2.mu = 1.327124400420000e+11;
-th1_transfer = 2.555106932985983;
-th2_transfer = 4.871467598525006;
+th1_transfer = 2.555076341906757;
+th2_transfer = 4.871489330787082;
 
 [rr_t1, vv_t1, matrici] = par2car(O_t_scenario2, th1_transfer); % Coordinate cartesiane 
 % rispetto al sole del satellite quando fa la manovra, la velocità è la
@@ -254,14 +254,14 @@ th1_scenario2 = 3.618362149407213; % [rad]
 [rr_end1_S, vv_end1_S] = par2car (O_start_scenario2, th1_scenario2); % SdR Sole
 
 % Trasferimento dello scenario 2 !!! Riferita al sole
-O_t_scenario2.a = 1.481231188816134e+08;
-O_t_scenario2.e = 0.028295312693238;
-O_t_scenario2.i = 0.043993770239157;
-O_t_scenario2.OM = 5.382908205403476;
-O_t_scenario2.om = 3.729157082348018;
+O_t_scenario2.a = 1.481233898202188e+08;
+O_t_scenario2.e = 0.028294269485414;
+O_t_scenario2.i = 0.043999052217133;
+O_t_scenario2.OM = 5.382840011661747;
+O_t_scenario2.om = 3.729187666090036;
 O_t_scenario2.mu = 1.327124400420000e+11;
-th1_transfer = 2.555106932985983;
-th2_transfer = 4.871467598525006;
+th1_transfer = 2.555076341906757;
+th2_transfer = 4.871489330787082;
 
 [rr_t1, vv_t1, matrici] = par2car(O_t_scenario2, th1_transfer);
 vv_inf1 = vv_t1 - vv_end1_S;
