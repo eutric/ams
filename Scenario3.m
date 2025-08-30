@@ -364,8 +364,8 @@ t_tot=t_parch+t1
 
 Terra_3D(R_T)
 hold on
-plotOrbit(O_hyper_Ad,theta_h,theta_inf,0.01,'r')
-plotOrbit(O_parcheggio,0,2*pi,0.01,'k')
+plotOrbit(O_hyper_Ad,theta_h,theta_inf,0.01,'r');
+plotOrbit(O_parcheggio,0,2*pi,0.01,'k');
 quiver3(0,0,0,rr_h(1),rr_h(2),rr_h(3))
 
 ee_h_plot=0.5e5*ee_h;
