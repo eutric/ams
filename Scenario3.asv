@@ -105,8 +105,9 @@ r_soi_ear=d_ear_sun*(m_T/m_S)^(2/5);
 th_r_soi_ear=acos(1/O_hyper1.e*(O_hyper1.a*(1-O_hyper1.e^2)/r_soi_ear-1));
 DELTA_T_SOI1= TOF_open(O_hyper1, 0, th_r_soi_ear)
 
-%calcolo inoltre il tempo impiegato per arrivare dal punto finale della
-%manovra che porta in orbita di parcheggio fino
+
+
+
 
 
 % Vediamo se funziona, disegnando
@@ -311,7 +312,7 @@ end
 
 %definisco il piano dell'iperbole uguale al piano dell orbita di
 %trasferimento delo sc2
-hh_hyper=cross(rr_inf_eci,rr_h)/norm(cross(rr_inf_eci,rr_h));
+hh_hyper=cross(rr_h,rr_inf_eci)/norm(cross(rr_inf_eci,rr_h));
 NN_h=cross([0;0;1],hh_hyper)/norm(cross([0;0;1],hh_hyper));
 O_hyper_Ad.i=acos(dot(hh_hyper,[0,0,1]));
 if NN_h(2)>=0
@@ -353,12 +354,17 @@ r_soi_ear=d_ear_sun*(m_T/m_S)^(2/5);
 th_r_soi_ear2=acos(1/O_hyper_Ad.e*(O_hyper_Ad.a*(1-O_hyper_Ad.e^2)/r_soi_ear-1));
 t1=TOF_open(O_hyper_Ad,theta_h,th_r_soi_ear2);
 
+%calcolo inoltre il tempo necessario a passare da th0=0 fino a theta
+%optimal
 
+t_parch=TOF(O_parcheggio,0,th_opt);
+
+t_tot=t_parch+t1
 %plot%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Terra_3D(R_T)
 hold on
-plotOrbit(O_hyper_Ad,-theta_inf,theta_inf,0.01,'r')
+plotOrbit(O_hyper_Ad,-theta_inf,-theta_h,0.01,'r')
 plotOrbit(O_parcheggio,0,2*pi,0.01,'k')
 quiver3(0,0,0,rr_h(1),rr_h(2),rr_h(3))
 
