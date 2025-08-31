@@ -156,7 +156,7 @@ DV_1=abs(dv1)+abs(dv2)+abs(dv3)+abs(dv4);
 
 % Calcolo il tempo impiegato 
 
-% tempo dalla posizione iniziale fino al punto di cambio di piano
+% tempo dalla posizione iniziale fino al punto di cambio di pi<ano
 dt1 = TOF(O_start, th_start, th_cp); 
 % tempo dalla posizione di cambio di piano fino alla posizione di cambio anomalia di pericentro
 dt2 = TOF(O_cp, th_cp, th_best(1)); 
@@ -238,7 +238,6 @@ plotOrbit(O_bt,0,pi,dth,'c');
 plotOrbit(O_aus,0,th_cp,dth,'g');
 plotOrbit(O_cp,th_cp,th_best(1),dth,'m');
 plotOrbit(O_cper,th_best(2),th_end,dth,'r');
-
 
 legend('Attrattore','Partenza','Arrivo','Orbita iniziale','Orbita bitangente','Orbita ausiliaria', 'Orbita cambio piano', 'Orbita cambio pericentro coincidende con finale')
  
@@ -409,18 +408,21 @@ ra_t_v =[40000:1:200000];
 n = length(ra_t_v);
 for i = 1: n
     ra_t = ra_t_v(i);
-[dv3, dv4, dv5, d_t1, d_t2, O_biel1, O_biel2] = biellipticTransfer(O_cper,O_end, ra_t); 
-DV_5=abs(dv1)+abs(dv2)+abs(dv3)+abs(dv4)+abs(dv5);
-dVtot_v =[ dVtot_v, DV_5];
-
+    [dv3, dv4, dv5, d_t1, d_t2, O_biel1, O_biel2] = biellipticTransfer(O_cper,O_end, ra_t); 
+    DV_5=abs(dv3)+abs(dv4)+abs(dv5);
+    dVtot_v =[ dVtot_v, DV_5];
 end
-
+% 
+dv_STD_bitan = 0.7304; % Costo della bitangente nella STD
 figure
 plot(ra_t_v, dVtot_v, 'k', LineWidth=1.3)
+hold on
+yline(dv_STD_bitan, 'r', LineWidth=1.3)
 xlabel('r\_at (km)')
 ylabel('\DeltaV (km/s)')
+grid on
 title('Costo in funzione del raggio di apocentro dell''orbita di trasferimento' )
-
+legend ('Cost della biellittica al variare di r_{at}', 'Costo della Bitangente nella STD')
 %% Strategia 5.1
 
 % Calcolo i costi 
