@@ -105,8 +105,7 @@ DELTA_V1 = abs(vp_hyper - vp_parcheggio)
 d_ear_sun=norm(rr_end1_S);
 r_soi_ear=d_ear_sun*(m_T/m_S)^(2/5);
 th_r_soi_ear=acos(1/O_hyper1.e*(O_hyper1.a*(1-O_hyper1.e^2)/r_soi_ear-1));
-DELTA_T_SOI1= TOF_open(O_hyper1, 0, th_r_soi_ear)
-
+DELTA_T_SOI1 = TOF_open(O_hyper1, 0, th_r_soi_ear)
 
 
 % Vediamo se funziona, disegnando
