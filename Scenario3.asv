@@ -283,8 +283,6 @@ end
 
 O_hyper_Ad.a=-mu_T/norm(vv_inf1).^2;
 O_hyper_Ad.e=eh;
-O_hyper_Ad.delta=2*acos(1/O_hyper_Ad.e);
-O_hyper_Ad.Delta=-O_hyper_Ad.a*O_hyper_Ad.e*cos(O_hyper_Ad.delta/2);
 
 
 %calcolo costi velocità%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
