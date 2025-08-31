@@ -240,8 +240,56 @@ plotOrbit(O_cp,th_cp,th_best(1),dth,'m');
 plotOrbit(O_cper,th_best(2),th_end,dth,'r');
 
 legend('Attrattore','Partenza','Arrivo','Orbita iniziale','Orbita bitangente','Orbita ausiliaria', 'Orbita cambio piano', 'Orbita cambio pericentro coincidende con finale')
- 
-%% Strategia 3  
+
+%% Strategia 3
+% strategia più economica 
+
+% definizione di un'orbita circolare
+O_circ = O_start;
+O_circ.a = ra1;
+O_circ.e = 0;
+
+[dv3, dv4, dt4, O_bt] = bitangentTransfer(O_start, O_circ, 'aa');  % dv4 nullo 
+[dv1, th_cp, O_cp] = changeOrbitalPlane(O_bt, O_end); 
+[dv2, th_i, th_f, th_best, O_cper] = change_pericenter_arg(O_cp, O_end.om, th_cp); % dv2 nullo 
+[dv33, dv44, dt44, O_btt] = bitangentTransfer(O_cper, O_end, 'pa');
+
+% Costo totale 
+DV_1=abs(dv1)+abs(dv2)+abs(dv3)+abs(dv4)+abs(dv33)+abs(dv44);
+
+dt1 = TOF(O_start, th_start, pi); 
+dt2 = TOF(O_bt, 0, th_cp); 
+dt3 = TOF(O_cp,th_cp,th_best(1)); 
+dt_4 = TOF(O_cper,th_best(2),0); 
+dt5 = TOF(O_btt,0,pi); 
+dt6 = TOF(O_end,pi,th_end); 
+
+
+% Tempo totale
+DT_1= dt1 + dt2 + dt3 + dt_4 + dt5 + dt6;
+
+dtime = seconds(DT_1);
+    dtime.Format = 'hh:mm:ss';
+
+fprintf("Costo della manovra: %d \n", DV_1);
+fprintf("Tempo impiegato: %s \n", dtime);
+
+% rappresentazione grafica
+Terra_3D(r_terra)
+scatter3(rr_start(1),rr_start(2),rr_start(3))
+hold on
+scatter3(rr_end(1),rr_end(2), rr_end(3));
+plotOrbit(O_start,th_start,pi,dth,'b');
+plotOrbit(O_bt,0,th_cp,dth,'c');
+plotOrbit(O_cp,th_cp,th_best(1),dth,'k');
+plotOrbit(O_cper,th_best(2),0,dth,'g');
+plotOrbit(O_btt,0,pi,dth,'m');
+plotOrbit(O_end,pi,th_end,dth,'r');
+
+legend('Attrattore','Partenza','Arrivo','Orbita iniziale','orbita trasf 1','Orbita modificata di piano','Orbita modificata anomalia pericentro','orbita trasf 2','Orbita finale')
+
+
+%% Strategia non presente su latex 
 % Cambio il piano, effettuo il trasferimento bitangente e nel mentre cambio l'anomalia
 % del pericentro.
 
@@ -346,53 +394,6 @@ plotOrbit(O_cper, th_best(2), 2*pi,dth,'g');
 plotOrbit(O_end, 0, th_end,dth,'r--');
 
 legend('Attrattore','Partenza', 'Arrivo','Orbita iniaziale','Bitangente ausiliaria','Orbita cambio piano','Orbita cambio pericentro', 'Orbita finale')
-
-%% Strategia circolare
-% strategia più economica 
-
-% definizione di un'orbita circolare
-O_circ = O_start;
-O_circ.a = ra1;
-O_circ.e = 0;
-
-[dv3, dv4, dt4, O_bt] = bitangentTransfer(O_start, O_circ, 'aa');  % dv4 nullo 
-[dv1, th_cp, O_cp] = changeOrbitalPlane(O_bt, O_end); 
-[dv2, th_i, th_f, th_best, O_cper] = change_pericenter_arg(O_cp, O_end.om, th_cp); % dv2 nullo 
-[dv33, dv44, dt44, O_btt] = bitangentTransfer(O_cper, O_end, 'pa');
-
-% Costo totale 
-DV_1=abs(dv1)+abs(dv2)+abs(dv3)+abs(dv4)+abs(dv33)+abs(dv44);
-
-dt1 = TOF(O_start, th_start, pi); 
-dt2 = TOF(O_bt, 0, th_cp); 
-dt3 = TOF(O_cp,th_cp,th_best(1)); 
-dt_4 = TOF(O_cper,th_best(2),0); 
-dt5 = TOF(O_btt,0,pi); 
-dt6 = TOF(O_end,pi,th_end); 
-
-
-% Tempo totale
-DT_1= dt1 + dt2 + dt3 + dt_4 + dt5 + dt6;
-
-dtime = seconds(DT_1);
-    dtime.Format = 'hh:mm:ss';
-
-fprintf("Costo della manovra: %d \n", DV_1);
-fprintf("Tempo impiegato: %s \n", dtime);
-
-% rappresentazione grafica
-Terra_3D(r_terra)
-scatter3(rr_start(1),rr_start(2),rr_start(3))
-hold on
-scatter3(rr_end(1),rr_end(2), rr_end(3));
-plotOrbit(O_start,th_start,pi,dth,'b');
-plotOrbit(O_bt,0,th_cp,dth,'c');
-plotOrbit(O_cp,th_cp,th_best(1),dth,'k');
-plotOrbit(O_cper,th_best(2),0,dth,'g');
-plotOrbit(O_btt,0,pi,dth,'m');
-plotOrbit(O_end,pi,th_end,dth,'r');
-
-legend('Attrattore','Partenza','Arrivo','Orbita iniziale','orbita trasf 1','Orbita modificata di piano','Orbita modificata anomalia pericentro','orbita trasf 2','Orbita finale')
 
 %% ******************* Trasferimenti biellittici *********************
 
