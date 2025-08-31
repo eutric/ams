@@ -15,7 +15,7 @@ O_start.om = 5.2643;   % [rad]
 O_start.mu = mu;       % [km^3/s^2]
 
 % Asteroide 163899 (2003 SD220)
-O_end.a = 0.827903 *1.496e8; % [km]
+O_end.a = 0.827903 *1.496e8; % [km], era in UA
 O_end.e = 0.209487;          % [ ]
 O_end.i = 8.55 *pi/180;      % [rad]
 O_end.OM = 273.63 *pi/180;   % [rad]
@@ -78,7 +78,7 @@ legend ('SOLE', 'Orbita Terrestre', 'Orbita Asteroide')
 
 % min dv
 figure_dv = figure;
-scatter3 (0,0,0,100,"yellow", 'filled')
+scatter3 (0,0,0,100,[1, 0.5, 0], 'filled')
 hold on
 plotOrbit(O_start, 0, 2*pi, dth, 'b--');
 plotOrbit(O_end, 0, 2*pi, dth, 'r--');
@@ -90,7 +90,7 @@ legend ('SOLE', 'Orbita Terrestre', 'Orbita Asteroide', 'Orbita di Trasferimento
 
 % min dt
 figure_dt = figure;
-scatter3 (0,0,0,100,"yellow", 'filled')
+scatter3 (0,0,0, 100, [1, 0.5, 0], 'filled')
 hold on
 plotOrbit(O_start, 0, 2*pi, dth, 'b--');
 plotOrbit(O_end, 0, 2*pi, dth, 'r--');
