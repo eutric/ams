@@ -54,6 +54,7 @@ th2_transfer = 4.871467598525006;
 vv_inf1 = vv_t1 - vv_end1_S;
 %Prova iperbole con modifica di piano
 %1)modifico sistema riferimento passando da eclittico(sole) a eci(terra)
+eps=23.45*pi/180;
 T_eci_eclip=[1 0 0;
             0 cos(eps) sin(eps);
             0 -sin(eps) cos(eps)];

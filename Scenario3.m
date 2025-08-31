@@ -33,7 +33,7 @@ O_parcheggio.mu = 398600;
 
 % Sarebbe l'orbita di parcheggio del nostro gruppo, dello scenario 1
 
-% Terra !!!! RIFERITA AL SOLE
+% Terra RIFERITA AL SOLE
 O_start_scenario2.a = 1.4946e8;  % [km]
 O_start_scenario2.e = 0.016;     % [ ]
 O_start_scenario2.i = 9.1920e-5; % [rad]
@@ -43,7 +43,7 @@ O_start_scenario2.mu = mu_S;       % [km^3/s^2]
 th1_scenario2 = 3.618362149407213; % [rad]
 [rr_end1_S, vv_end1_S] = par2car (O_start_scenario2, th1_scenario2); % SdR Sole
 
-% Trasferimento dello scenario 2 !!! Riferita al sole
+% Trasferimento dello scenario 2  Riferita al sole
 O_t_scenario2.a = 1.481233898202188e+08;
 O_t_scenario2.e = 0.028294269485414;
 O_t_scenario2.i = 0.043999052217133;
@@ -58,20 +58,10 @@ th2_transfer = 4.871489330787082;
 % velocità subito dopo l'impulso, quindi sta già percorrendo l'orbita di
 % trasferimento
 
-% Per approssimazione della patched conics, uscito dalla SOI terrestre,
-% posso confondere la posizione del satellite con quella del pianeta,
-% quindi, centrandomi nella terra, scelgo il punto in cui passo ad
-% un'iperbole e da lì vado all'infinito
-% Per questa prima iperbole il piano è lo stesso dell'orbita di parcheggio,
-% visto che bisogna aumentare l'energia, direi che conviene fissare il
-% pericentro con il pericentro dell'orbita di parcheggio
-% Voglio arrivare all'infinito con, nel SdR Sole, la velocità che mi
-% permette di percorre l'orbita di trasferimento dello scenario 2, è così
-% imposta la v_inf dell'iperbole rispetto alla terra
 
 vv_inf1 = vv_t1 - vv_end1_S; % Velocità dell'orbita di T - la velocità 
 % della terra ==> Velocità infinito dell'iperbole relativa alla terra
-% ! Dovrebbe essere rispetto alla terra.
+% Dovrebbe essere rispetto alla terra.
 
 % Il raggio di pericentro dell'iperbole, lo facciamo coincidere col
 % pericentro del'orbita di parcheggio:
@@ -86,7 +76,7 @@ O_hyper1.e = (O_hyper1.a-rp_parcheggio)/O_hyper1.a;
 O_hyper1.i = 0.590342952766537;
 O_hyper1.OM = 1.749480463333461;
 O_hyper1.om = 1.177309652253865; % Stesso piano e orientazione dell'orbita di parcheggio
-O_hyper1.thetainf = acos(-1/O_hyper1.e); % 2.7413 rad %anomalia vera 'asintotica'
+O_hyper1.thetainf = acos(-1/O_hyper1.e); 
 O_hyper1.mu = 398600;
 O_hyper1.delta=2*acos(1/O_hyper1.e);
 O_hyper1.Delta=-O_hyper1.a*O_hyper1.e*cos(O_hyper1.delta/2);
@@ -212,6 +202,7 @@ zlim([-10,10]);
 
 %Prova iperbole con modifica di piano
 %1)modifico sistema riferimento passando da eclittico(sole) a eci(terra)
+eps=23.45*pi/180;
 T_eci_eclip=[1 0 0;
             0 cos(eps) sin(eps);
             0 -sin(eps) cos(eps)];
