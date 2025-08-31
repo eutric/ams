@@ -348,6 +348,7 @@ DELTA_V_AD=norm(vv_h-vv_p);
 
 
 
+
 %calcolo costi tempo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 d_ear_sun=norm(rr_end1_S);
 r_soi_ear=d_ear_sun*(m_T/m_S)^(2/5);
@@ -364,8 +365,10 @@ t_tot=t_parch+t1
 
 Terra_3D(R_T)
 hold on
+plotOrbit(O_hyper_Ad,-theta_inf,theta_h,0.01,'r -- ');
 plotOrbit(O_hyper_Ad,theta_h,theta_inf,0.01,'r');
-plotOrbit(O_parcheggio,0,2*pi,0.01,'k');
+plotOrbit(O_parcheggio,0,th_opt,0.01,'k');
+plotOrbit(O_parcheggio,th_opt,2*pi,0.01,'k--');
 quiver3(0,0,0,rr_h(1),rr_h(2),rr_h(3))
 
 ee_h_plot=0.5e5*ee_h;
@@ -373,7 +376,7 @@ quiver3(0,0,0,ee_h_plot(1),ee_h_plot(2),ee_h_plot(3))
 quiver3(0,0,0,1e5*hh_hyper(1),1e5*hh_hyper(2),1e5*hh_hyper(3))
 quiver3(0,0,0,1e5*NN_h(1),1e5*NN_h(2),1e5*NN_h(3))
 quiver3(0,0,0,1e5*rr_inf_eci(1),1e5*rr_inf_eci(2),1e5*rr_inf_eci(3))
-legend('attrattore','iperbole','orbita di partenza','raggio di intersezione','direz. eccentricità','direz. vettore momento della qt. moto','direz. asse dei nodi','direz. velocità asintotica')
+legend('attrattore','','iperbole','orbita di partenza','','raggio di intersezione','direz. eccentricità','direz. vettore momento della qt. moto','direz. asse dei nodi','direz. velocità asintotica')
 xlim([-1e5,1e5]);
 ylim([-1e5,1e5]);
 zlim([-1e5,1e5]);
